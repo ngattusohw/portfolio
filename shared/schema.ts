@@ -14,26 +14,17 @@ export const sessions = pgTable(
 );
 
 // User model for Replit Auth
+// Matching the actual database structure
 export const users = pgTable("users", {
-  id: varchar("id").primaryKey().notNull(),
-  username: varchar("username").unique().notNull(),
-  email: varchar("email").unique(),
-  firstName: varchar("first_name"),
-  lastName: varchar("last_name"),
-  bio: text("bio"),
-  profileImageUrl: varchar("profile_image_url"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  id: integer("id").primaryKey().notNull(),
+  username: text("username").unique().notNull(),
+  password: text("password").notNull(),
 });
 
 export const insertUserSchema = createInsertSchema(users, {
-  id: z.string(),
+  id: z.number(),
   username: z.string(),
-  email: z.string().email().optional().nullable(),
-  firstName: z.string().optional().nullable(),
-  lastName: z.string().optional().nullable(),
-  bio: z.string().optional().nullable(),
-  profileImageUrl: z.string().optional().nullable(),
+  password: z.string().optional(), // Password field might be managed differently
 });
 
 // Contact message model
