@@ -49,19 +49,28 @@ export default function AdminPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Check authentication status
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated, isAuthorized, isLoading: authLoading, user } = useAuth();
   
-  // Redirect to home if not authenticated
+  // Redirect to home if not authenticated or not authorized
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      toast({
-        title: "Access Denied",
-        description: "You must be logged in to access the admin area.",
-        variant: "destructive"
-      });
-      navigate("/");
+    if (!authLoading) {
+      if (!isAuthenticated) {
+        toast({
+          title: "Access Denied",
+          description: "Login required to access this area.",
+          variant: "destructive"
+        });
+        navigate("/");
+      } else if (!isAuthorized) {
+        toast({
+          title: "Access Denied",
+          description: `Sorry ${user?.username}, only Nick has access to this area.`,
+          variant: "destructive"
+        });
+        navigate("/");
+      }
     }
-  }, [isAuthenticated, authLoading, navigate]);
+  }, [isAuthenticated, isAuthorized, authLoading, navigate, user]);
 
   // Fetch all blog posts
   const { data: postsData, isLoading, error, refetch } = useQuery({

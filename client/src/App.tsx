@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import Admin from "@/pages/Admin";
+import { useAdminAccess } from "@/hooks/useAdminAccess";
 
 function Router() {
   return (
@@ -22,6 +23,9 @@ function Router() {
 }
 
 function App() {
+  // Enable secret admin access with Alt+Shift+A
+  useAdminAccess();
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

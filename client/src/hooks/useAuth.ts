@@ -7,9 +7,13 @@ export function useAuth() {
     retry: false,
   });
 
+  // Check if the user is Nick (username: ngattuso3)
+  const isNick = user?.username === "ngattuso3"; // Replace with your actual Replit username
+
   return {
     user,
     isLoading,
     isAuthenticated: !!user,
+    isAuthorized: isNick, // Only Nick is authorized to access admin features
   };
 }
