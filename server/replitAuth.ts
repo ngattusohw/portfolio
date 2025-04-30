@@ -100,9 +100,18 @@ export async function setupAuth(app: Express) {
     tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
     verified: passport.AuthenticateCallback
   ) => {
-    const user = {};
+    const claims = tokens.claims();
+    console.log("Auth claims:", JSON.stringify(claims, null, 2));
+    
+    const user = {
+      // Include all claims
+      ...claims
+    };
+    
     updateUserSession(user, tokens);
-    await upsertUser(tokens.claims());
+    await upsertUser(claims);
+    
+    console.log("Auth user created:", user.email, user.username);
     verified(null, user);
   };
 
@@ -153,9 +162,19 @@ export async function setupAuth(app: Express) {
   // User info endpoint
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
+      console.log("User info endpoint - user:", req.user);
+      
+      // Return the claims directly instead of looking up from database
+      // This ensures we have access to all the user information
+      res.json({
+        id: req.user.sub || req.user.claims?.sub,
+        username: req.user.username || req.user.claims?.username,
+        email: req.user.email || req.user.claims?.email,
+        firstName: req.user.first_name || req.user.claims?.first_name,
+        lastName: req.user.last_name || req.user.claims?.last_name,
+        bio: req.user.bio || req.user.claims?.bio,
+        profileImageUrl: req.user.profile_image_url || req.user.claims?.profile_image_url
+      });
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
@@ -171,11 +190,22 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
   
-  // Check if the user is Nick Gattuso
+  // Check if the user is Nick Gattuso by username or email
   const username = user.claims?.username;
-  if (!username || username !== "ngattuso3") { // Replace with your actual Replit username
+  const email = user.claims?.email;
+  
+  console.log("Auth checking - Username:", username, "Email:", email);
+  
+  // Allow access if user has the specified email or username
+  if (
+    (!username || username !== "ngattuso3") && 
+    (!email || email !== "ngattusohw@gmail.com")
+  ) {
+    console.log("Access denied. User not authorized.");
     return res.status(403).json({ message: "Access denied. Only Nick can access this area." });
   }
+  
+  console.log("User authorized:", email);
 
   const now = Math.floor(Date.now() / 1000);
   if (now <= user.expires_at) {
