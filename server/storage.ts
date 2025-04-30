@@ -11,9 +11,9 @@ import { eq, desc, and } from "drizzle-orm";
 // Storage interface with CRUD methods
 export interface IStorage {
   // User methods
-  getUser(id: number): Promise<User | undefined>;
+  getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  upsertUser(user: any): Promise<User>;
   
   // Contact methods
   saveContactMessage(message: ContactFormData): Promise<ContactMessage>;
@@ -36,7 +36,7 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   // User methods
-  async getUser(id: number): Promise<User | undefined> {
+  async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select()
       .from(users)
       .where(eq(users.id, id));
@@ -50,9 +50,31 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users)
-      .values(insertUser)
+  async upsertUser(userData: any): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values({
+        id: userData.id,
+        username: userData.username,
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        bio: userData.bio,
+        profileImageUrl: userData.profileImageUrl,
+        updatedAt: new Date(),
+      })
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          username: userData.username,
+          email: userData.email,
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          bio: userData.bio,
+          profileImageUrl: userData.profileImageUrl,
+          updatedAt: new Date(),
+        },
+      })
       .returning();
     return user;
   }

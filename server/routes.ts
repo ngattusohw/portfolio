@@ -2,6 +2,7 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { contactSchema, blogPostSchema, blogMediaSchema } from "@shared/schema";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
 // Helper function for handling errors
 function handleError(res: Response, error: unknown) {
@@ -14,6 +15,8 @@ function handleError(res: Response, error: unknown) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup authentication
+  await setupAuth(app);
   // Contact form endpoint
   app.post("/api/contact", async (req, res) => {
     try {
@@ -61,8 +64,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create a new blog post (admin only - will add auth later)
-  app.post("/api/blog", async (req, res) => {
+  // Create a new blog post (admin only)
+  app.post("/api/blog", isAuthenticated, async (req, res) => {
     try {
       const validatedData = blogPostSchema.parse(req.body);
       const post = await storage.createBlogPost(validatedData);
@@ -73,7 +76,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update a blog post (admin only)
-  app.put("/api/blog/:id", async (req, res) => {
+  app.put("/api/blog/:id", isAuthenticated, async (req, res) => {
     try {
       const postId = parseInt(req.params.id);
       const validatedData = blogPostSchema.partial().parse(req.body);
@@ -90,7 +93,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete a blog post (admin only)
-  app.delete("/api/blog/:id", async (req, res) => {
+  app.delete("/api/blog/:id", isAuthenticated, async (req, res) => {
     try {
       const postId = parseInt(req.params.id);
       const success = await storage.deleteBlogPost(postId);
