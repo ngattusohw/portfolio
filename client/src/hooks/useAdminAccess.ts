@@ -4,7 +4,7 @@ import { useAuth } from "./useAuth";
 
 /**
  * This hook creates a keyboard shortcut for admin access.
- * Press "Alt + Shift + A" to access the admin area.
+ * Press "Ctrl + Shift + A" to access the admin area.
  * This provides a hidden way to access the admin area without visible UI elements.
  */
 export function useAdminAccess() {
