@@ -74,8 +74,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get a single blog post by slug (public)
   app.get("/api/blog/:slug", async (req, res) => {
     try {
+      const isAdmin = req.isAuthenticated();
       const post = await storage.getBlogPostBySlug(req.params.slug);
+      
       if (!post) {
+        return res.status(404).json({ success: false, message: "Blog post not found" });
+      }
+      
+      // Check if the post is a draft and the user is not an admin
+      if (post.status === "draft" && !isAdmin) {
+        console.log(`Non-admin tried to access draft post: ${post.slug}`);
         return res.status(404).json({ success: false, message: "Blog post not found" });
       }
       
