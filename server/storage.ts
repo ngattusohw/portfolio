@@ -177,21 +177,23 @@ export class DatabaseStorage implements IStorage {
     return post;
   }
 
-  async getAllBlogPosts(limit = 10, offset = 0, tag?: string): Promise<BlogPost[]> {
-    let query = db.select()
-      .from(blogPosts)
-      .where(eq(blogPosts.status, "published"));
+  async getAllBlogPosts(limit = 10, offset = 0, tag?: string, includeDrafts = false): Promise<BlogPost[]> {
+    let query = db.select().from(blogPosts);
     
-    // We need to handle array contents differently
-    // This will need to be adjusted based on how PostgreSQL stores and queries arrays
-    // For now, we'll simplify by returning all posts when tag is specified
-    // and filter in memory - this should be optimized in a production environment
+    // Only filter by status if we're not including drafts
+    if (!includeDrafts) {
+      query = query.where(eq(blogPosts.status, "published"));
+    }
     
+    // Execute the query with ordering and pagination
     const posts = await query.orderBy(desc(blogPosts.published_at))
       .limit(limit)
       .offset(offset);
     
-    if (tag) {
+    console.log(`Fetched ${posts.length} blog posts (includeDrafts=${includeDrafts})`);
+    
+    // Filter by tag if specified
+    if (tag && posts.length > 0) {
       return posts.filter(post => post.tags && post.tags.includes(tag));
     }
     

@@ -52,7 +52,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
       const tag = req.query.tag as string | undefined;
       
-      const posts = await storage.getAllBlogPosts(limit, offset, tag);
+      // Check if the user is authenticated (admin) - if so, include draft posts
+      const isAdmin = req.isAuthenticated();
+      console.log(`Blog posts request - isAdmin: ${isAdmin}`);
+      
+      const posts = await storage.getAllBlogPosts(limit, offset, tag, isAdmin);
       res.json({ success: true, posts });
     } catch (error) {
       handleError(res, error);
