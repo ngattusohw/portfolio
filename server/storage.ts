@@ -5,7 +5,7 @@ import { users, contactMessages, blogPosts, blogMedia,
   type BlogPost, type InsertBlogPost,
   type BlogMedia, type InsertBlogMedia
 } from "@shared/schema";
-import { db } from "./db";
+import { db, pool } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 
 // Storage interface with CRUD methods
@@ -43,8 +43,8 @@ export class DatabaseStorage implements IStorage {
         return undefined;
       }
       
-      // Using a SQL query string directly to avoid type issues
-      const result = await db.execute(`
+      // Using a direct query using the database pool
+      const result = await pool.query(`
         SELECT * FROM users WHERE id = $1
       `, [userId]);
       
@@ -59,10 +59,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select()
-      .from(users)
-      .where(eq(users.username, username));
-    return user;
+    try {
+      // Using pool.query to directly query the database
+      const result = await pool.query(`
+        SELECT * FROM users WHERE username = $1
+      `, [username]);
+      
+      if (result.rows && result.rows.length > 0) {
+        return result.rows[0] as User;
+      }
+      return undefined;
+    } catch (error) {
+      console.error("Error getting user by username:", error);
+      return undefined;
+    }
   }
 
   async upsertUser(userData: any): Promise<User> {
