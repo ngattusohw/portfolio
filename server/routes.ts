@@ -79,10 +79,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a new blog post (admin only)
   app.post("/api/blog", isAuthenticated, async (req, res) => {
     try {
+      console.log("Received blog post creation request:", JSON.stringify(req.body, null, 2));
+      
+      // Validate the data
+      console.log("Validating blog post data with schema");
       const validatedData = blogPostSchema.parse(req.body);
+      console.log("Validated data:", JSON.stringify(validatedData, null, 2));
+      
+      // Create the post
+      console.log("Attempting to save blog post to database");
       const post = await storage.createBlogPost(validatedData);
+      console.log("Blog post created successfully with ID:", post.id);
+      
       res.status(201).json({ success: true, post });
     } catch (error) {
+      console.error("Error creating blog post:", error);
       handleError(res, error);
     }
   });
