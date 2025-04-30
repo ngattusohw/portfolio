@@ -5,13 +5,15 @@ import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { apiRequest } from "@/lib/queryClient";
 import { BlogPost, BlogMedia } from "@shared/schema";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 // Components
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 // Icons
 import { 
@@ -21,7 +23,8 @@ import {
   Facebook,
   Twitter,
   Linkedin,
-  Share2
+  Share2,
+  Home
 } from "lucide-react";
 
 interface MediaElementProps {
@@ -163,125 +166,143 @@ export default function BlogPostPage() {
         return media[mediaIndex] ? <MediaElement key={`media-${index}`} media={media[mediaIndex]} /> : null;
       }
       
-      // Process paragraphs and add proper styling
-      return part.split('\n\n').map((paragraph, pIndex) => (
-        <p key={`p-${index}-${pIndex}`} className="my-4">
-          {paragraph}
-        </p>
-      ));
+      // Return the markdown component for text content
+      return (
+        <div key={`markdown-${index}`} className="prose prose-lg dark:prose-invert max-w-none">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {part}
+          </ReactMarkdown>
+        </div>
+      );
     });
     
     setProcessedContent(processed);
   }, [post, media]);
 
-  if (isLoading) {
-    return (
-      <div className="container px-4 mx-auto py-16">
-        <div className="max-w-3xl mx-auto">
-          <Skeleton className="h-10 w-3/4 mb-4" />
-          <div className="flex items-center gap-4 mb-6">
-            <Skeleton className="h-6 w-32" />
-            <Skeleton className="h-6 w-24" />
-          </div>
-          <Skeleton className="h-80 w-full mb-8" />
-          <Skeleton className="h-6 w-full mb-4" />
-          <Skeleton className="h-6 w-full mb-4" />
-          <Skeleton className="h-6 w-3/4 mb-8" />
-          <Skeleton className="h-60 w-full mb-8" />
-          <Skeleton className="h-6 w-full mb-4" />
-          <Skeleton className="h-6 w-full mb-4" />
-          <Skeleton className="h-6 w-5/6 mb-4" />
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !post) {
-    return (
-      <div className="container px-4 mx-auto py-16">
-        <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-3xl font-bold mb-4">Blog Post Not Found</h1>
-          <p className="mb-6">Sorry, we couldn't find the blog post you're looking for.</p>
-          <Link href="/blog">
-            <Button>Return to Blog</Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="container px-4 mx-auto py-16">
-      <div className="max-w-3xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Link href="/blog">
-            <Button variant="ghost" className="mb-6 pl-0 flex items-center gap-1">
-              <ChevronLeft size={16} />
-              Back to Blog
-            </Button>
-          </Link>
-          
-          <h1 className="text-3xl md:text-4xl font-bold mb-6">{post.title}</h1>
-          
-          <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-600">
-            <div className="flex items-center gap-1">
-              <Calendar size={16} />
-              <span>{format(new Date(post.published_at || new Date()), 'MMMM dd, yyyy')}</span>
+    <>
+      <Header />
+      <main>
+        {isLoading ? (
+          <div className="container px-4 mx-auto py-16">
+            <div className="max-w-3xl mx-auto">
+              <Skeleton className="h-10 w-3/4 mb-4" />
+              <div className="flex items-center gap-4 mb-6">
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-6 w-24" />
+              </div>
+              <Skeleton className="h-80 w-full mb-8" />
+              <Skeleton className="h-6 w-full mb-4" />
+              <Skeleton className="h-6 w-full mb-4" />
+              <Skeleton className="h-6 w-3/4 mb-8" />
+              <Skeleton className="h-60 w-full mb-8" />
+              <Skeleton className="h-6 w-full mb-4" />
+              <Skeleton className="h-6 w-full mb-4" />
+              <Skeleton className="h-6 w-5/6 mb-4" />
             </div>
-            
-            {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2">
-                <Tag size={16} />
-                {post.tags.map(tag => (
-                  <Link key={tag} href={`/blog?tag=${tag}`}>
-                    <Badge variant="outline" className="cursor-pointer">
-                      {tag}
-                    </Badge>
+          </div>
+        ) : error || !post ? (
+          <div className="container px-4 mx-auto py-16">
+            <div className="max-w-3xl mx-auto text-center">
+              <h1 className="text-3xl font-bold mb-4">Blog Post Not Found</h1>
+              <p className="mb-6">Sorry, we couldn't find the blog post you're looking for.</p>
+              <div className="flex justify-center gap-4">
+                <Link href="/blog">
+                  <Button>Return to Blog</Button>
+                </Link>
+                <Link href="/">
+                  <Button variant="outline">
+                    <Home className="mr-2 h-4 w-4" />
+                    Home
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="container px-4 mx-auto py-8">
+            <div className="max-w-3xl mx-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <Link href="/blog">
+                    <Button variant="ghost" className="pl-0 flex items-center gap-1">
+                      <ChevronLeft size={16} />
+                      Back to Blog
+                    </Button>
                   </Link>
-                ))}
-              </div>
-            )}
-          </div>
-          
-          {post.thumbnail_url && (
-            <div className="mb-8 overflow-hidden rounded-lg">
-              <img 
-                src={post.thumbnail_url} 
-                alt={post.title} 
-                className="w-full"
-              />
+                  <Link href="/">
+                    <Button variant="outline" size="sm">
+                      <Home className="mr-2 h-4 w-4" />
+                      Home
+                    </Button>
+                  </Link>
+                </div>
+                
+                <h1 className="text-3xl md:text-4xl font-bold mb-6">{post.title}</h1>
+                
+                <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <Calendar size={16} />
+                    <span>{format(new Date(post.published_at || new Date()), 'MMMM dd, yyyy')}</span>
+                  </div>
+                  
+                  {post.tags && post.tags.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Tag size={16} />
+                      {post.tags.map(tag => (
+                        <Link key={tag} href={`/blog?tag=${tag}`}>
+                          <Badge variant="outline" className="cursor-pointer">
+                            {tag}
+                          </Badge>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                {post.thumbnail_url && (
+                  <div className="mb-8 overflow-hidden rounded-lg">
+                    <img 
+                      src={post.thumbnail_url} 
+                      alt={post.title} 
+                      className="w-full"
+                    />
+                  </div>
+                )}
+                
+                <div className="prose prose-lg dark:prose-invert max-w-none">
+                  {processedContent}
+                </div>
+                
+                <div className="mt-12 pt-6 border-t">
+                  <div className="flex flex-wrap justify-between items-center">
+                    <h3 className="text-lg font-semibold mb-4">Share this post</h3>
+                    <div className="flex gap-3">
+                      <Button size="icon" variant="outline">
+                        <Facebook size={18} />
+                      </Button>
+                      <Button size="icon" variant="outline">
+                        <Twitter size={18} />
+                      </Button>
+                      <Button size="icon" variant="outline">
+                        <Linkedin size={18} />
+                      </Button>
+                      <Button size="icon" variant="outline">
+                        <Share2 size={18} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
-          )}
-          
-          <div className="prose prose-lg dark:prose-invert max-w-none">
-            {processedContent}
           </div>
-          
-          <div className="mt-12 pt-6 border-t">
-            <div className="flex flex-wrap justify-between items-center">
-              <h3 className="text-lg font-semibold mb-4">Share this post</h3>
-              <div className="flex gap-3">
-                <Button size="icon" variant="outline">
-                  <Facebook size={18} />
-                </Button>
-                <Button size="icon" variant="outline">
-                  <Twitter size={18} />
-                </Button>
-                <Button size="icon" variant="outline">
-                  <Linkedin size={18} />
-                </Button>
-                <Button size="icon" variant="outline">
-                  <Share2 size={18} />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </div>
+        )}
+      </main>
+      <Footer />
+    </>
   );
 }
