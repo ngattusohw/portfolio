@@ -163,12 +163,18 @@ export async function setupAuth(app: Express) {
   });
 }
 
-// Middleware to check if user is authenticated
+// Middleware to check if user is authenticated and is Nick
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
 
   if (!req.isAuthenticated() || !user?.expires_at) {
     return res.status(401).json({ message: "Unauthorized" });
+  }
+  
+  // Check if the user is Nick Gattuso
+  const username = user.claims?.username;
+  if (!username || username !== "ngattuso3") { // Replace with your actual Replit username
+    return res.status(403).json({ message: "Access denied. Only Nick can access this area." });
   }
 
   const now = Math.floor(Date.now() / 1000);

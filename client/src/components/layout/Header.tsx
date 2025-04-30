@@ -37,14 +37,6 @@ export default function Header() {
                   Hire Me
                 </a>
               </li>
-              <li>
-                <Link href="/admin">
-                  <span className="font-medium hover:text-primary transition-colors">Admin</span>
-                </Link>
-              </li>
-              <li>
-                <AuthButtons />
-              </li>
             </ul>
           </nav>
           
@@ -107,16 +99,6 @@ export default function Header() {
             >
               Hire Me
             </a>
-            <Link 
-              href="/admin"
-              className="block px-3 py-2 rounded-md hover:bg-slate-100 mt-2"
-              onClick={closeMobileMenu}
-            >
-              Admin
-            </Link>
-            <div className="mt-3 px-3">
-              <AuthButtons />
-            </div>
           </div>
         </div>
       </div>
