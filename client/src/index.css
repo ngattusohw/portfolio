@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 210 40% 98%;
+  --foreground: 222 14.3% 14.1%;
+  --muted: 210 40% 93.1%;
+  --muted-foreground: 222 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 14.3% 14.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 14.3% 14.1%;
+  --border: 222 5.9% 90%;
+  --input: 222 5.9% 90%;
+  --primary: 214 90% 40%;
+  --primary-foreground: 214 100% 99%;
+  --secondary: 20 100% 50%;
+  --secondary-foreground: 210 40% 98%;
+  --accent: 174 100% 40%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 222 5.9% 90%;
+  --radius: 0.5rem;
+  --chart-1: 214 90% 40%;
+  --chart-2: 20 100% 50%;
+  --chart-3: 174 100% 40%;
+  --chart-4: 262 83% 58%;
+  --chart-5: 42 87% 55%;
+}
+
+.dark {
+  --background: 222 47% 11%;
+  --foreground: 210 40% 98%;
+  --muted: 222 47% 11%;
+  --muted-foreground: 210 40% 80%;
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 40% 98%;
+  --card: 222 47% 11%;
+  --card-foreground: 210 40% 98%;
+  --border: 222 47% 20%;
+  --input: 222 47% 20%;
+  --primary: 214 90% 40%;
+  --primary-foreground: 214 100% 99%;
+  --secondary: 20 100% 50%;
+  --secondary-foreground: 210 40% 98%;
+  --accent: 174 100% 40%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 222 47% 20%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.8);
+}
+
+/* Animation delays */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* Project card hover effect */
+.project-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Timeline styles */
+.timeline-container {
+  position: relative;
+}
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 18px;
+  height: 100%;
+  width: 4px;
+  background: hsl(var(--primary));
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideUp {
+  0% { transform: translateY(50px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.7s ease-out forwards;
+}
+
+.font-body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.font-mono {
+  font-family: 'Fira Mono', monospace;
+}
