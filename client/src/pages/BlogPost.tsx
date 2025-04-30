@@ -135,7 +135,10 @@ export default function BlogPostPage() {
   
   const { data, isLoading, error } = useQuery({
     queryKey: ['/api/blog', slug],
-    queryFn: () => apiRequest<{ success: boolean; post: BlogPost; media: BlogMedia[] }>(`/api/blog/${slug}`),
+    queryFn: async () => {
+      const response = await apiRequest(`/api/blog/${slug}`);
+      return response as { success: boolean; post: BlogPost; media: BlogMedia[] };
+    },
     enabled: !!slug,
   });
   
@@ -227,7 +230,7 @@ export default function BlogPostPage() {
           <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-600">
             <div className="flex items-center gap-1">
               <Calendar size={16} />
-              <span>{format(new Date(post.published_at), 'MMMM dd, yyyy')}</span>
+              <span>{format(new Date(post.published_at || new Date()), 'MMMM dd, yyyy')}</span>
             </div>
             
             {post.tags && post.tags.length > 0 && (

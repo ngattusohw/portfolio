@@ -20,9 +20,12 @@ export default function Blog() {
 
   const { data, isLoading } = useQuery({
     queryKey: ['/api/blog', activeTag],
-    queryFn: () => apiRequest<{ success: boolean; posts: BlogPost[] }>(
-      activeTag ? `/api/blog?tag=${activeTag}` : '/api/blog'
-    ),
+    queryFn: async () => {
+      const response = await apiRequest(
+        activeTag ? `/api/blog?tag=${activeTag}` : '/api/blog'
+      );
+      return response as { success: boolean; posts: BlogPost[] };
+    },
   });
   
   // For demo purposes, extract all unique tags from posts
@@ -138,7 +141,7 @@ export default function Blog() {
                     <CardHeader>
                       <CardTitle className="line-clamp-2">{post.title}</CardTitle>
                       <CardDescription>
-                        {format(new Date(post.published_at), 'MMMM dd, yyyy')}
+                        {format(new Date(post.published_at || new Date()), 'MMMM dd, yyyy')}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow">

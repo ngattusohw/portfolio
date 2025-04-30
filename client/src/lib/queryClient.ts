@@ -8,18 +8,36 @@ async function throwIfResNotOk(res: Response) {
 }
 
 export async function apiRequest(
-  method: string,
   url: string,
-  data?: unknown | undefined,
+  options?: RequestInit,
 ): Promise<Response> {
+  const method = options?.method || 'GET';
+  const hasData = !!options?.body;
+  
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
+    headers: {
+      ...(hasData ? { "Content-Type": "application/json" } : {}),
+      ...options?.headers,
+    },
+    body: options?.body,
     credentials: "include",
+    ...options,
   });
 
   await throwIfResNotOk(res);
+  
+  // Clone and parse JSON if it's JSON response
+  if (res.headers.get('content-type')?.includes('application/json')) {
+    const clonedRes = res.clone();
+    try {
+      const data = await clonedRes.json();
+      return data;
+    } catch (e) {
+      console.error('Failed to parse JSON response', e);
+    }
+  }
+  
   return res;
 }
 
