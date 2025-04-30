@@ -17,6 +17,18 @@ function handleError(res: Response, error: unknown) {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication
   await setupAuth(app);
+  
+  // Auth routes to check user authentication status
+  app.get("/api/auth/user", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
   // Contact form endpoint
   app.post("/api/contact", async (req, res) => {
     try {
@@ -109,7 +121,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Add media to a blog post (admin only)
-  app.post("/api/blog/:postId/media", async (req, res) => {
+  app.post("/api/blog/:postId/media", isAuthenticated, async (req, res) => {
     try {
       const postId = parseInt(req.params.postId);
       const post = await storage.getBlogPost(postId);
@@ -143,7 +155,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Update blog media
-  app.put("/api/blog/media/:id", async (req, res) => {
+  app.put("/api/blog/media/:id", isAuthenticated, async (req, res) => {
     try {
       const mediaId = parseInt(req.params.id);
       const validatedData = blogMediaSchema.partial().parse(req.body);
@@ -160,7 +172,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Delete blog media
-  app.delete("/api/blog/media/:id", async (req, res) => {
+  app.delete("/api/blog/media/:id", isAuthenticated, async (req, res) => {
     try {
       const mediaId = parseInt(req.params.id);
       const success = await storage.deleteBlogMedia(mediaId);

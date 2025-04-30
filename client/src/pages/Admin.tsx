@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { format } from "date-fns";
 import { Link, useLocation } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
 
 // Components
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -46,6 +47,21 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("posts");
   const [editingPostId, setEditingPostId] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Check authentication status
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  
+  // Redirect to home if not authenticated
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      toast({
+        title: "Access Denied",
+        description: "You must be logged in to access the admin area.",
+        variant: "destructive"
+      });
+      navigate("/");
+    }
+  }, [isAuthenticated, authLoading, navigate]);
 
   // Fetch all blog posts
   const { data: postsData, isLoading, error, refetch } = useQuery({
