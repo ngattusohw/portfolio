@@ -10,6 +10,12 @@ import BlogPost from "@/pages/BlogPost";
 import Admin from "@/pages/Admin";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
 
+function AdminShortcutWrapper() {
+  // Enable secret admin access with Alt+Shift+A
+  useAdminAccess();
+  return null;
+}
+
 function Router() {
   return (
     <Switch>
@@ -23,13 +29,11 @@ function Router() {
 }
 
 function App() {
-  // Enable secret admin access with Alt+Shift+A
-  useAdminAccess();
-  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
+        <AdminShortcutWrapper />
         <Router />
       </TooltipProvider>
     </QueryClientProvider>
