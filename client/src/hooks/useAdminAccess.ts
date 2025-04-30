@@ -13,7 +13,7 @@ export function useAdminAccess() {
     // Simple keyboard shortcut handler for admin access
     const handleKeyDown = (e: KeyboardEvent) => {
       // Check for Alt+Shift+A combination
-      if (e.altKey && e.shiftKey && e.key.toLowerCase() === "a") {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
         e.preventDefault();
         // Navigate to admin page when the shortcut is pressed
         navigate("/admin");
@@ -21,7 +21,7 @@ export function useAdminAccess() {
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
