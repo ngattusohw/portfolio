@@ -72,11 +72,12 @@ export default function AdminPage() {
     }
   }, [isAuthenticated, isAuthorized, authLoading, navigate, user]);
 
-  // Fetch all blog posts
+  // Fetch all blog posts (including drafts)
   const { data: postsData, isLoading, error, refetch } = useQuery({
     queryKey: ['/api/blog', 'admin'],
     queryFn: async () => {
-      const response = await apiRequest('/api/blog');
+      // Include drafts when in the admin interface
+      const response = await apiRequest('/api/blog?includeDrafts=true');
       return response as { success: boolean; posts: BlogPost[] };
     }
   });

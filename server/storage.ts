@@ -178,26 +178,48 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllBlogPosts(limit = 10, offset = 0, tag?: string, includeDrafts = false): Promise<BlogPost[]> {
-    let query = db.select().from(blogPosts);
+    console.log(`Running getAllBlogPosts with includeDrafts=${includeDrafts}`);
     
-    // Only filter by status if we're not including drafts
-    if (!includeDrafts) {
-      query = query.where(eq(blogPosts.status, "published"));
+    try {
+      // For debugging, let's first try to fetch all blog posts without any filters
+      const allPosts = await db.select().from(blogPosts);
+      console.log(`Debug: Found ${allPosts.length} total posts in database before filtering`);
+      
+      // Log the status of each post we found
+      for (const post of allPosts) {
+        console.log(`Debug: Post ID ${post.id}, Title: ${post.title}, Status: ${post.status}`);
+      }
+      
+      // Now continue with our regular query
+      let query = db.select().from(blogPosts);
+      
+      // Only filter by status if we're not including drafts
+      if (!includeDrafts) {
+        console.log("Filtering to only published posts");
+        query = query.where(eq(blogPosts.status, "published"));
+      } else {
+        console.log("Including all posts (including drafts)");
+      }
+      
+      // Execute the query with ordering and pagination
+      const posts = await query.orderBy(desc(blogPosts.published_at))
+        .limit(limit)
+        .offset(offset);
+      
+      console.log(`Fetched ${posts.length} blog posts after filtering (includeDrafts=${includeDrafts})`);
+      
+      // Filter by tag if specified
+      if (tag && posts.length > 0) {
+        const filteredPosts = posts.filter(post => post.tags && post.tags.includes(tag));
+        console.log(`Filtered to ${filteredPosts.length} posts after tag filtering`);
+        return filteredPosts;
+      }
+      
+      return posts;
+    } catch (error) {
+      console.error("Error fetching blog posts:", error);
+      throw error;
     }
-    
-    // Execute the query with ordering and pagination
-    const posts = await query.orderBy(desc(blogPosts.published_at))
-      .limit(limit)
-      .offset(offset);
-    
-    console.log(`Fetched ${posts.length} blog posts (includeDrafts=${includeDrafts})`);
-    
-    // Filter by tag if specified
-    if (tag && posts.length > 0) {
-      return posts.filter(post => post.tags && post.tags.includes(tag));
-    }
-    
-    return posts;
   }
 
   async deleteBlogPost(id: number): Promise<boolean> {
