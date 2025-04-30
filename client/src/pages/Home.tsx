@@ -5,6 +5,7 @@ import HeroSection from "@/components/sections/HeroSection";
 import AboutSection from "@/components/sections/AboutSection";
 import ProjectsSection from "@/components/sections/ProjectsSection";
 import ExperienceSection from "@/components/sections/ExperienceSection";
+import BlogSection from "@/components/sections/BlogSection";
 import ContactSection from "@/components/sections/ContactSection";
 import ProjectModal from "@/components/ui/ProjectModal";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
@@ -45,6 +46,7 @@ export default function Home() {
         <AboutSection />
         <ProjectsSection />
         <ExperienceSection />
+        <BlogSection />
         <ContactSection />
       </main>
       <Footer />

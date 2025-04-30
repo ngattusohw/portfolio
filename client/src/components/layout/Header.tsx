@@ -26,6 +26,7 @@ export default function Header() {
               <li><a href="#about" className="font-medium hover:text-primary transition-colors">About</a></li>
               <li><a href="#projects" className="font-medium hover:text-primary transition-colors">Projects</a></li>
               <li><a href="#experience" className="font-medium hover:text-primary transition-colors">Experience</a></li>
+              <li><a href="#blog" className="font-medium hover:text-primary transition-colors">Blog</a></li>
               <li><a href="#contact" className="font-medium hover:text-primary transition-colors">Contact</a></li>
               <li>
                 <a 
@@ -75,6 +76,13 @@ export default function Header() {
               onClick={closeMobileMenu}
             >
               Experience
+            </a>
+            <a 
+              href="#blog" 
+              className="block px-3 py-2 rounded-md hover:bg-slate-100"
+              onClick={closeMobileMenu}
+            >
+              Blog
             </a>
             <a 
               href="#contact" 

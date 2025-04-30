@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { format } from "date-fns";
@@ -6,8 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { motion, useInView } from "framer-motion";
 import { BlogPost } from "@shared/schema";
 
 interface BlogPostCardProps {
@@ -26,7 +26,7 @@ const BlogPostCard = ({ post, delay }: BlogPostCardProps) => {
         <CardHeader>
           <CardTitle className="line-clamp-2">{post.title}</CardTitle>
           <CardDescription>
-            {format(new Date(post.published_at), 'MMMM dd, yyyy')}
+            {format(new Date(post.published_at || new Date()), 'MMMM dd, yyyy')}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-grow">
@@ -41,7 +41,7 @@ const BlogPostCard = ({ post, delay }: BlogPostCardProps) => {
             </div>
           )}
           <div className="flex flex-wrap gap-2 mt-3">
-            {post.tags?.map(tag => (
+            {post.tags?.map((tag: string) => (
               <Badge key={tag} variant="secondary" className="text-xs">
                 {tag}
               </Badge>
@@ -59,22 +59,24 @@ const BlogPostCard = ({ post, delay }: BlogPostCardProps) => {
 };
 
 export default function BlogSection() {
-  const { ref, controls } = useScrollAnimation();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['/api/blog'],
-    queryFn: () => apiRequest<{ success: boolean; posts: BlogPost[] }>('/api/blog?limit=3'),
+    queryFn: async () => {
+      const response = await apiRequest('/api/blog?limit=3');
+      return response as { success: boolean; posts: BlogPost[] };
+    },
   });
 
   return (
-    <section ref={ref} id="blog" className="py-20 bg-gray-50 dark:bg-gray-900">
+    <section ref={sectionRef} id="blog" className="py-20 bg-gray-50 dark:bg-gray-900">
       <div className="container px-4 mx-auto">
         <motion.div 
-          animate={controls}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           initial={{ opacity: 0, y: 20 }}
-          variants={{
-            visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-          }}
+          transition={{ duration: 0.5 }}
           className="mb-12 text-center"
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Latest from My Blog</h2>
@@ -115,7 +117,7 @@ export default function BlogSection() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {data?.posts?.length ? (
-                data.posts.map((post, index) => (
+                data.posts.map((post: BlogPost, index: number) => (
                   <BlogPostCard 
                     key={post.id} 
                     post={post} 
