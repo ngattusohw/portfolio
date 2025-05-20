@@ -271,49 +271,110 @@ export default function ParticleAnimation() {
         }
         ctx.restore();
         
-        // Draw rocket body (simplified SpaceX Starship shape)
+        // Draw SpaceX Starship rocket (more realistic)
         ctx.save();
         
-        // Rocket body (silver/gray)
-        ctx.fillStyle = '#CCD1D9';
+        // Main rocket body (silver with slight gradient)
+        const bodyGradient = ctx.createLinearGradient(rocket.x, 0, rocket.x + rocket.width, 0);
+        bodyGradient.addColorStop(0, '#D8D8D8');
+        bodyGradient.addColorStop(0.5, '#E6E9ED');
+        bodyGradient.addColorStop(1, '#CCD1D9');
+        
+        // Draw cylindrical rocket body
+        ctx.fillStyle = bodyGradient;
         ctx.beginPath();
-        ctx.moveTo(rocket.x, rocket.y);
+        ctx.rect(
+          rocket.x, 
+          rocket.y + rocket.height * 0.2,
+          rocket.width, 
+          rocket.height * 0.65
+        );
+        ctx.fill();
+        
+        // Draw nose cone (pointed top)
+        ctx.fillStyle = bodyGradient;
+        ctx.beginPath();
+        ctx.moveTo(rocket.x, rocket.y + rocket.height * 0.2);
+        ctx.lineTo(rocket.x + rocket.width * 0.5, rocket.y);
         ctx.lineTo(rocket.x + rocket.width, rocket.y + rocket.height * 0.2);
-        ctx.lineTo(rocket.x + rocket.width, rocket.y + rocket.height);
-        ctx.lineTo(rocket.x, rocket.y + rocket.height);
         ctx.closePath();
         ctx.fill();
         
-        // Windows/details
-        ctx.fillStyle = '#656D78';
-        for (let i = 0; i < 3; i++) {
+        // Windows/portholes
+        ctx.fillStyle = '#34495E';
+        for (let i = 0; i < 4; i++) {
           ctx.beginPath();
-          ctx.rect(
-            rocket.x + rocket.width * 0.3, 
-            rocket.y + rocket.height * (0.3 + i * 0.15), 
-            rocket.width * 0.4, 
-            rocket.height * 0.08
+          ctx.arc(
+            rocket.x + rocket.width * 0.5,
+            rocket.y + rocket.height * (0.3 + i * 0.12),
+            rocket.width * 0.06,
+            0, 
+            Math.PI * 2
           );
           ctx.fill();
         }
         
-        // Nose cone
-        ctx.fillStyle = '#E6E9ED';
+        // Bottom engine section (darker)
+        ctx.fillStyle = '#AAB2BD';
         ctx.beginPath();
-        ctx.moveTo(rocket.x, rocket.y);
-        ctx.lineTo(rocket.x + rocket.width, rocket.y + rocket.height * 0.2);
-        ctx.lineTo(rocket.x + rocket.width * 0.8, rocket.y + rocket.height * 0.3);
+        ctx.rect(
+          rocket.x,
+          rocket.y + rocket.height * 0.85,
+          rocket.width,
+          rocket.height * 0.15
+        );
+        ctx.fill();
+        
+        // Engine nozzles
+        ctx.fillStyle = '#656D78';
+        for (let i = 0; i < 3; i++) {
+          const nozzleWidth = rocket.width * 0.2;
+          const spacing = (rocket.width - nozzleWidth * 3) / 4;
+          const nozzleX = rocket.x + spacing + (nozzleWidth + spacing) * i;
+          
+          ctx.beginPath();
+          ctx.rect(
+            nozzleX,
+            rocket.y + rocket.height,
+            nozzleWidth,
+            rocket.height * 0.1
+          );
+          ctx.fill();
+        }
+        
+        // Fins (more aerodynamic)
+        ctx.fillStyle = '#CCD1D9';
+        
+        // Left fin
+        ctx.beginPath();
+        ctx.moveTo(rocket.x, rocket.y + rocket.height * 0.6);
+        ctx.lineTo(rocket.x - rocket.width * 0.2, rocket.y + rocket.height * 0.9);
+        ctx.lineTo(rocket.x, rocket.y + rocket.height);
         ctx.closePath();
         ctx.fill();
         
-        // Fins
-        ctx.fillStyle = '#AAB2BD';
+        // Right fin
         ctx.beginPath();
-        ctx.moveTo(rocket.x, rocket.y + rocket.height);
-        ctx.lineTo(rocket.x - rocket.width * 0.2, rocket.y + rocket.height * 1.1);
-        ctx.lineTo(rocket.x + rocket.width * 0.2, rocket.y + rocket.height);
+        ctx.moveTo(rocket.x + rocket.width, rocket.y + rocket.height * 0.6);
+        ctx.lineTo(rocket.x + rocket.width + rocket.width * 0.2, rocket.y + rocket.height * 0.9);
+        ctx.lineTo(rocket.x + rocket.width, rocket.y + rocket.height);
         ctx.closePath();
         ctx.fill();
+        
+        // Detail lines for realism
+        ctx.strokeStyle = '#AAB2BD';
+        ctx.lineWidth = 0.5;
+        
+        // Horizontal line separating sections
+        ctx.beginPath();
+        ctx.moveTo(rocket.x, rocket.y + rocket.height * 0.85);
+        ctx.lineTo(rocket.x + rocket.width, rocket.y + rocket.height * 0.85);
+        ctx.stroke();
+        
+        // SpaceX logo (simplified)
+        ctx.fillStyle = '#34495E';
+        ctx.font = `bold ${rocket.width * 0.15}px Arial`;
+        ctx.fillText("SPACEX", rocket.x + rocket.width * 0.2, rocket.y + rocket.height * 0.55);
         
         ctx.restore();
         

@@ -35,18 +35,7 @@ export default function SpaceXSection() {
         </div>
         
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className={`relative rounded-xl overflow-hidden shadow-2xl transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-            <img 
-              src={starbaseImage} 
-              alt="SpaceX Starbase facility with Starship rocket" 
-              className="w-full h-auto"
-            />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-              <p className="text-white text-sm">SpaceX Starbase in Boca Chica, Texas</p>
-            </div>
-          </div>
-          
-          <div className={`transition-all duration-1000 delay-300 transform ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}`}>
+          <div className={`md:order-1 order-2 transition-all duration-1000 delay-300 transform ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}`}>
             <h3 className="text-2xl font-bold mb-4">Revolutionizing Space Transportation</h3>
             <p className="mb-6 text-slate-700">
               SpaceX's Starship is designed to be a fully reusable transportation system capable of carrying both crew and cargo to Earth orbit, the Moon, Mars, and beyond. 
@@ -77,6 +66,17 @@ export default function SpaceXSection() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
+          </div>
+          
+          <div className={`md:order-2 order-1 relative rounded-xl overflow-hidden shadow-2xl transition-all duration-1000 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+            <img 
+              src={starbaseImage} 
+              alt="SpaceX Starbase facility with Starship rocket" 
+              className="w-full h-auto"
+            />
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+              <p className="text-white text-sm">SpaceX Starbase in Boca Chica, Texas</p>
+            </div>
           </div>
         </div>
       </div>
