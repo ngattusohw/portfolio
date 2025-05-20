@@ -13,6 +13,17 @@ export interface Project {
 export const projects: Project[] = [
   {
     id: 1,
+    title: "aCrossMinistry",
+    subtitle: "Faith-Based Organization Platform",
+    description: "A digital platform for faith-based communities to connect, share resources, and coordinate ministry efforts across different locations and denominations.",
+    challenges: "Creating a platform that addresses the diverse needs of different faith communities while maintaining an inclusive and user-friendly interface was our primary challenge.",
+    results: "Successfully built a platform that serves multiple churches and ministry organizations, facilitating resource sharing and community building in a digital space.",
+    technologies: ["React", "Node.js", "Express", "MongoDB", "Tailwind CSS"],
+    categories: ["web", "startup"],
+    url: "https://a-crossministry.net"
+  },
+  {
+    id: 2,
     title: "What Did You Get Done",
     subtitle: "Productivity Tracking App",
     description: "A productivity tracking application designed to help users track daily accomplishments and boost motivation through achievement visualization.",
@@ -23,7 +34,7 @@ export const projects: Project[] = [
     url: "https://whatdidyougetdone.netlify.app/"
   },
   {
-    id: 2,
+    id: 3,
     title: "Everybody Polls",
     subtitle: "Interactive Polling Platform",
     description: "A real-time polling application enabling users to create, share, and participate in polls with instant results visualization and analytics.",
@@ -34,7 +45,7 @@ export const projects: Project[] = [
     url: "https://www.everybodypolls.com/"
   },
   {
-    id: 3,
+    id: 4,
     title: "LifeSkills.software",
     subtitle: "Educational Platform",
     description: "A comprehensive platform teaching essential life skills through interactive lessons, practical exercises, and personalized learning paths.",
@@ -45,7 +56,7 @@ export const projects: Project[] = [
     url: "https://lifeskills.software/"
   },
   {
-    id: 4,
+    id: 5,
     title: "Somethings",
     subtitle: "Head of Engineering",
     description: "Led engineering teams in building innovative solutions, establishing technical roadmaps, and implementing scalable architecture for product growth.",

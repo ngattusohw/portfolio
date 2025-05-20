@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
+// Types for our space objects
 interface Star {
   x: number;
   y: number;
@@ -8,6 +9,7 @@ interface Star {
   pulse: number;
   pulseSpeed: number;
   color: string;
+  type: 'star' | 'dust';
 }
 
 interface Connection {
@@ -17,10 +19,24 @@ interface Connection {
   highlight: boolean;
 }
 
+interface Rocket {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  speed: number;
+  visible: boolean;
+  nextLaunchTime: number;
+  exhaust: {
+    particles: Array<{x: number, y: number, size: number, opacity: number, speed: number}>;
+  };
+}
+
 export default function ParticleAnimation() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameId = useRef<number | null>(null);
   const mousePosition = useRef({ x: 0, y: 0 });
+  const rocketRef = useRef<Rocket | null>(null);
   const [isInteractive, setIsInteractive] = useState(true);
 
   useEffect(() => {
@@ -35,7 +51,7 @@ export default function ParticleAnimation() {
       const { width, height } = canvas.getBoundingClientRect();
       canvas.width = width;
       canvas.height = height;
-      initializeStars(); // Reinitialize stars when canvas is resized
+      initializeSpaceObjects(); // Reinitialize objects when canvas is resized
     };
     
     // Mouse movement tracking
@@ -62,37 +78,105 @@ export default function ParticleAnimation() {
     let stars: Star[] = [];
     let connections: Connection[] = [];
     
-    // Generate a vibrant palette
-    const primaryColors = [
-      '68, 138, 255',   // Blue
-      '255, 112, 67',   // Orange
-      '102, 187, 106',  // Green
-      '171, 71, 188',   // Purple
-      '255, 167, 38'    // Amber
+    // Generate a space-themed color palette
+    const starColors = [
+      '220, 230, 255',  // Blue-white
+      '255, 220, 180',  // Yellow-white
+      '255, 180, 180',  // Red-ish
+      '180, 180, 255',  // Blue-ish
+      '255, 255, 255',  // Pure white
     ];
     
-    const initializeStars = () => {
-      stars = [];
-      const starCount = Math.min(Math.floor(canvas.width * canvas.height / 10000), 150);
+    const dustColors = [
+      '100, 149, 237',  // Cornflower blue 
+      '147, 112, 219',  // Medium purple
+      '65, 105, 225',   // Royal blue
+      '72, 61, 139',    // Dark slate blue
+      '25, 25, 112',    // Midnight blue
+    ];
+    
+    const createStarShape = (ctx: CanvasRenderingContext2D, x: number, y: number, size: number, spikes = 4) => {
+      let rotation = Math.PI / 2 * 3;
+      let step = Math.PI / spikes;
       
-      // Create stars
-      for (let i = 0; i < starCount; i++) {
-        const colorIdx = Math.floor(Math.random() * primaryColors.length);
+      ctx.beginPath();
+      for (let i = 0; i < spikes; i++) {
+        const outerX = x + Math.cos(rotation) * size;
+        const outerY = y + Math.sin(rotation) * size;
+        ctx.lineTo(outerX, outerY);
+        rotation += step;
+        
+        const innerX = x + Math.cos(rotation) * (size * 0.4);
+        const innerY = y + Math.sin(rotation) * (size * 0.4);
+        ctx.lineTo(innerX, innerY);
+        rotation += step;
+      }
+      ctx.closePath();
+    };
+    
+    const initializeSpaceObjects = () => {
+      stars = [];
+      
+      // Reduce universe size factor for better performance
+      const universeSize = Math.min(Math.floor(canvas.width * canvas.height / 15000), 100);
+      
+      // Create main stars (larger, brighter)
+      const mainStarCount = Math.floor(universeSize * 0.2);
+      for (let i = 0; i < mainStarCount; i++) {
+        const colorIdx = Math.floor(Math.random() * starColors.length);
         stars.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          size: Math.random() * 2 + 2,
-          opacity: Math.random() * 0.5 + 0.5,
-          pulse: 0,
-          pulseSpeed: Math.random() * 0.02 + 0.01,
-          color: primaryColors[colorIdx]
+          size: Math.random() * 3 + 2.5, // Larger stars
+          opacity: Math.random() * 0.3 + 0.7, // Brighter
+          pulse: Math.random() * Math.PI * 2,
+          pulseSpeed: Math.random() * 0.01 + 0.005,
+          color: starColors[colorIdx],
+          type: 'star'
         });
       }
       
-      // Create connections
+      // Create small background stars (numerous, smaller)
+      const bgStarCount = Math.floor(universeSize * 0.4);
+      for (let i = 0; i < bgStarCount; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 1.2 + 0.8, // Smaller stars
+          opacity: Math.random() * 0.5 + 0.3, // Less bright
+          pulse: Math.random() * Math.PI * 2,
+          pulseSpeed: Math.random() * 0.005 + 0.002,
+          color: starColors[Math.floor(Math.random() * starColors.length)],
+          type: 'star'
+        });
+      }
+      
+      // Create cosmic dust (smallest, dimmest) - reduced count for performance
+      const dustCount = Math.floor(universeSize * 0.15);
+      for (let i = 0; i < dustCount; i++) {
+        const colorIdx = Math.floor(Math.random() * dustColors.length);
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 0.6 + 0.2, // Very small
+          opacity: Math.random() * 0.2 + 0.1, // Very dim
+          pulse: Math.random() * Math.PI * 2,
+          pulseSpeed: Math.random() * 0.015 + 0.005, // Moderate pulse
+          color: dustColors[colorIdx],
+          type: 'dust'
+        });
+      }
+      
+      // Create constellation connections between main stars (significantly reduced for performance)
       connections = [];
-      for (let i = 0; i < stars.length; i++) {
-        for (let j = i + 1; j < stars.length; j++) {
+      // Only create connections for a subset of main stars
+      const connectionLimit = Math.min(10, mainStarCount);
+      for (let i = 0; i < connectionLimit && i < stars.length; i++) {
+        // Limit the number of connections per star
+        const maxConnections = 2;
+        let starConnections = 0;
+        
+        for (let j = i + 1; j < connectionLimit && j < stars.length && starConnections < maxConnections; j++) {
           const dx = stars[i].x - stars[j].x;
           const dy = stars[i].y - stars[j].y;
           const distance = Math.sqrt(dx * dx + dy * dy);
@@ -102,10 +186,141 @@ export default function ParticleAnimation() {
             connections.push({
               startIndex: i,
               endIndex: j,
-              opacity: (1 - distance / (canvas.width / 5)) * 0.3,
+              opacity: (1 - distance / (canvas.width / 5)) * 0.2, // More subtle connections
               highlight: false
             });
+            starConnections++;
           }
+        }
+      }
+      
+      // Initialize rocket animation
+      initializeRocket();
+    };
+    
+    // Initialize rocket
+    const initializeRocket = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      
+      rocketRef.current = {
+        x: -100, // Start off-screen
+        y: canvas.height * (0.3 + Math.random() * 0.4), // Random vertical position
+        width: 40,
+        height: 80,
+        speed: 1 + Math.random() * 0.5, // Variable speed
+        visible: false,
+        nextLaunchTime: Date.now() + (10000 + Math.random() * 15000), // 10-25 seconds from now
+        exhaust: {
+          particles: []
+        }
+      };
+    };
+    
+    // Draw SpaceX Starship
+    const drawRocket = () => {
+      const rocket = rocketRef.current;
+      const canvas = canvasRef.current;
+      if (!rocket || !canvas || !ctx) return;
+      
+      // Check if it's time to launch rocket
+      if (!rocket.visible && Date.now() > rocket.nextLaunchTime) {
+        rocket.visible = true;
+        rocket.x = -rocket.width;
+        rocket.y = canvas.height * (0.3 + Math.random() * 0.4);
+        rocket.speed = 1 + Math.random() * 0.5;
+        rocket.exhaust.particles = [];
+      }
+      
+      // Update rocket position
+      if (rocket.visible) {
+        rocket.x += rocket.speed;
+        
+        // Create exhaust particles
+        if (Math.random() > 0.3) {
+          for (let i = 0; i < 3; i++) {
+            rocket.exhaust.particles.push({
+              x: rocket.x,
+              y: rocket.y + rocket.height,
+              size: 1 + Math.random() * 2,
+              opacity: 0.6 + Math.random() * 0.4,
+              speed: 0.5 + Math.random() * 0.5
+            });
+          }
+        }
+        
+        // Update and draw exhaust particles
+        ctx.save();
+        for (let i = 0; i < rocket.exhaust.particles.length; i++) {
+          const particle = rocket.exhaust.particles[i];
+          particle.x -= particle.speed;
+          particle.y += (Math.random() - 0.4) * 1.5;
+          particle.opacity -= 0.02;
+          
+          if (particle.opacity <= 0) {
+            rocket.exhaust.particles.splice(i, 1);
+            i--;
+            continue;
+          }
+          
+          // Draw exhaust particle
+          ctx.beginPath();
+          ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 160, 60, ${particle.opacity})`;
+          ctx.fill();
+        }
+        ctx.restore();
+        
+        // Draw rocket body (simplified SpaceX Starship shape)
+        ctx.save();
+        
+        // Rocket body (silver/gray)
+        ctx.fillStyle = '#CCD1D9';
+        ctx.beginPath();
+        ctx.moveTo(rocket.x, rocket.y);
+        ctx.lineTo(rocket.x + rocket.width, rocket.y + rocket.height * 0.2);
+        ctx.lineTo(rocket.x + rocket.width, rocket.y + rocket.height);
+        ctx.lineTo(rocket.x, rocket.y + rocket.height);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Windows/details
+        ctx.fillStyle = '#656D78';
+        for (let i = 0; i < 3; i++) {
+          ctx.beginPath();
+          ctx.rect(
+            rocket.x + rocket.width * 0.3, 
+            rocket.y + rocket.height * (0.3 + i * 0.15), 
+            rocket.width * 0.4, 
+            rocket.height * 0.08
+          );
+          ctx.fill();
+        }
+        
+        // Nose cone
+        ctx.fillStyle = '#E6E9ED';
+        ctx.beginPath();
+        ctx.moveTo(rocket.x, rocket.y);
+        ctx.lineTo(rocket.x + rocket.width, rocket.y + rocket.height * 0.2);
+        ctx.lineTo(rocket.x + rocket.width * 0.8, rocket.y + rocket.height * 0.3);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Fins
+        ctx.fillStyle = '#AAB2BD';
+        ctx.beginPath();
+        ctx.moveTo(rocket.x, rocket.y + rocket.height);
+        ctx.lineTo(rocket.x - rocket.width * 0.2, rocket.y + rocket.height * 1.1);
+        ctx.lineTo(rocket.x + rocket.width * 0.2, rocket.y + rocket.height);
+        ctx.closePath();
+        ctx.fill();
+        
+        ctx.restore();
+        
+        // Check if rocket has left the screen
+        if (rocket.x > canvas.width + 100) {
+          rocket.visible = false;
+          rocket.nextLaunchTime = Date.now() + (20000 + Math.random() * 30000); // 20-50 seconds until next appearance
         }
       }
     };
@@ -114,7 +329,25 @@ export default function ParticleAnimation() {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // First draw connections
+      // Update stars
+      stars.forEach(star => {
+        // Update star pulse
+        star.pulse += star.pulseSpeed;
+        if (star.pulse > Math.PI * 2) star.pulse = 0;
+      });
+      
+      // Draw cosmic dust first (background layer)
+      stars.forEach((star, index) => {
+        if (star.type === 'dust') {
+          // Simple circle for dust
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${star.color}, ${star.opacity * 0.5})`;
+          ctx.fill();
+        }
+      });
+      
+      // Draw connections (middle layer)
       connections.forEach(connection => {
         const startStar = stars[connection.startIndex];
         const endStar = stars[connection.endIndex];
@@ -128,7 +361,7 @@ export default function ParticleAnimation() {
             Math.pow(midY - mousePosition.current.y, 2)
           );
           
-          connection.highlight = distToMouse < 100;
+          connection.highlight = distToMouse < 120; // Increased interaction range
         }
         
         // Draw connection
@@ -139,14 +372,14 @@ export default function ParticleAnimation() {
         if (connection.highlight) {
           // Enhanced connection when mouse is near
           ctx.lineWidth = 1.5;
-          ctx.strokeStyle = `rgba(${startStar.color}, 0.8)`;
+          ctx.strokeStyle = `rgba(${startStar.color}, 0.7)`;
           
           // Glow effect
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = `rgba(${startStar.color}, 0.8)`;
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = `rgba(${startStar.color}, 0.7)`;
         } else {
           // Normal connection
-          ctx.lineWidth = 1;
+          ctx.lineWidth = 0.7;
           ctx.strokeStyle = `rgba(${startStar.color}, ${connection.opacity})`;
           ctx.shadowBlur = 0;
         }
@@ -155,15 +388,14 @@ export default function ParticleAnimation() {
         ctx.shadowBlur = 0; // Reset shadow for next drawing
       });
       
-      // Then draw stars
+      // Draw stars (foreground layer)
       stars.forEach((star, index) => {
-        // Update star pulse
-        star.pulse += star.pulseSpeed;
-        if (star.pulse > Math.PI * 2) star.pulse = 0;
+        if (star.type === 'dust') return; // Already drawn
         
-        // Calculate current size with pulsing effect
-        const pulseFactor = Math.sin(star.pulse) * 0.5 + 1;
-        const currentSize = star.size * pulseFactor;
+        // Calculate current size with pulsing effect for stars
+        let currentSize = star.size;
+        const pulseFactor = Math.sin(star.pulse) * 0.2 + 1; // Reduced pulse effect
+        currentSize = star.size * pulseFactor;
         
         // Check if mouse is near this star
         if (isInteractive) {
@@ -172,34 +404,40 @@ export default function ParticleAnimation() {
             Math.pow(star.y - mousePosition.current.y, 2)
           );
           
-          if (distToMouse < 80) {
+          const interactionRange = 60; // Reduced range
+          
+          if (distToMouse < interactionRange) {
             // Enhanced star when mouse is near
-            const glow = 20 * (1 - distToMouse / 80);
+            const glowIntensity = 10; // Reduced glow
+            const glow = glowIntensity * (1 - distToMouse / interactionRange);
             ctx.shadowBlur = glow;
             ctx.shadowColor = `rgba(${star.color}, ${star.opacity})`;
             
-            // Draw star with glow
+            // Draw star with glow - no random special shapes for better performance
             ctx.beginPath();
-            ctx.arc(star.x, star.y, currentSize * 1.3, 0, Math.PI * 2);
+            ctx.arc(star.x, star.y, currentSize * 1.2, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(${star.color}, ${star.opacity})`;
             ctx.fill();
           } else {
-            // Normal star
+            // Normal drawing
             ctx.beginPath();
             ctx.arc(star.x, star.y, currentSize, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${star.color}, ${star.opacity * 0.7})`;
+            ctx.fillStyle = `rgba(${star.color}, ${star.opacity * 0.8})`;
             ctx.fill();
           }
         } else {
-          // Normal star (non-interactive mode)
+          // Non-interactive mode
           ctx.beginPath();
           ctx.arc(star.x, star.y, currentSize, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${star.color}, ${star.opacity * 0.7})`;
+          ctx.fillStyle = `rgba(${star.color}, ${star.opacity * 0.8})`;
           ctx.fill();
         }
         
         ctx.shadowBlur = 0; // Reset shadow for next drawing
       });
+      
+      // Draw the SpaceX Starship rocket if needed
+      drawRocket();
       
       animationFrameId.current = requestAnimationFrame(animate);
     };
@@ -229,7 +467,7 @@ export default function ParticleAnimation() {
       className="absolute top-0 left-0 w-full h-full z-0" 
       style={{ 
         zIndex: 0,
-        background: 'linear-gradient(to bottom, #0f172a, #1e293b)'
+        background: 'radial-gradient(ellipse at center, #0f1729 0%, #0c0d20 50%, #050510 100%)'
       }}
     />
   );

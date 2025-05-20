@@ -31,19 +31,6 @@ export default function Header() {
               <li><a href="#contact" className="font-medium hover:text-primary transition-colors">Contact</a></li>
               <li>
                 <a 
-                  href="https://a-crossministry.net" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="font-medium text-primary hover:text-primary/80 transition-colors flex items-center"
-                >
-                  <span>aCrossMinistry</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
-              </li>
-              <li>
-                <a 
                   href="#contact" 
                   className="inline-block px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary/90 transition-colors"
                 >
@@ -104,18 +91,6 @@ export default function Header() {
               onClick={closeMobileMenu}
             >
               Contact
-            </a>
-            <a 
-              href="https://a-crossministry.net" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="block px-3 py-2 rounded-md text-primary hover:bg-slate-100 flex items-center"
-              onClick={closeMobileMenu}
-            >
-              <span>aCrossMinistry</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
             </a>
             <a 
               href="#contact" 
