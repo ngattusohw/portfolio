@@ -63,119 +63,115 @@ export default function ProjectsSection() {
             {/* Glow effect on hover */}
             <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-blue-400/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-            <div className="relative bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition-colors">
-              <div className="grid lg:grid-cols-5 gap-0">
-                {/* Left - Visual */}
-                <div className="lg:col-span-2 relative bg-gradient-to-br from-blue-600 to-blue-400 p-8 lg:p-12 flex items-center justify-center min-h-[300px]">
-                  {/* Pattern overlay */}
-                  <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                      backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-                      backgroundSize: "32px 32px",
-                    }}
-                  />
-
-                  <div className="relative text-center">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-white/80 text-sm mb-4">
-                      <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-                      Current Role
-                    </div>
-                    <h3 className="text-4xl lg:text-5xl font-bold text-white mb-2">
+            <div className="relative bg-slate-900/50 border border-slate-800 rounded-2xl p-8 lg:p-10 hover:border-slate-700 transition-colors">
+              {/* Header with logo and title */}
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-slate-800 flex items-center justify-center overflow-hidden">
+                    <img
+                      src="/logos/somethings.png"
+                      alt="Somethings"
+                      className="w-10 h-10 object-contain"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-slate-100">
                       {featuredProject.title}
                     </h3>
-                    <p className="text-white/80 font-medium">
+                    <p className="text-slate-400">
                       {featuredProject.subtitle}
                     </p>
                   </div>
                 </div>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-sm">
+                  <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+                  Current Role
+                </div>
+              </div>
 
-                {/* Right - Details */}
-                <div className="lg:col-span-3 p-8 lg:p-12">
-                  {/* Metrics row */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    {featuredProject.metrics?.map((metric, i) => (
-                      <div key={i}>
-                        <p className="text-2xl lg:text-3xl font-bold text-slate-100">
-                          {metric.value}
-                        </p>
-                        <p className="text-slate-500 text-sm">{metric.label}</p>
+              {/* Metrics row */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 p-6 bg-slate-800/30 rounded-xl">
+                {featuredProject.metrics?.map((metric, i) => (
+                  <div key={i} className="text-center sm:text-left">
+                    <p className="text-2xl lg:text-3xl font-bold text-slate-100">
+                      {metric.value}
+                    </p>
+                    <p className="text-slate-500 text-sm">{metric.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Description */}
+              <p className="text-slate-400 text-lg leading-relaxed mb-8">
+                {featuredProject.description}
+              </p>
+
+              {/* Backers and Press in a row */}
+              <div className="grid sm:grid-cols-2 gap-6 mb-8">
+                {/* Backers */}
+                <div>
+                  <p className="text-slate-500 text-sm mb-3">Backed by</p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {investors.map((investor) => (
+                      <div
+                        key={investor}
+                        className="px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg hover:border-slate-600 transition-colors"
+                      >
+                        <CompanyLogo company={investor} size="sm" />
                       </div>
                     ))}
                   </div>
+                </div>
 
-                  {/* Description */}
-                  <p className="text-slate-400 text-lg leading-relaxed mb-6">
-                    {featuredProject.description}
-                  </p>
-
-                  {/* Backers with logos */}
-                  <div className="mb-6">
-                    <p className="text-slate-500 text-sm mb-3">Backed by</p>
-                    <div className="flex flex-wrap items-center gap-4">
-                      {investors.map((investor) => (
-                        <div
-                          key={investor}
-                          className="px-4 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-lg hover:border-slate-600 transition-colors"
+                {/* Press mentions */}
+                {pressMentions.length > 0 && (
+                  <div>
+                    <p className="text-slate-500 text-sm mb-3">Featured in</p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {pressMentions.map((press) => (
+                        <a
+                          key={press.name}
+                          href={press.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3 py-2 bg-slate-800/30 border border-slate-800 rounded-lg hover:border-slate-600 hover:bg-slate-800/50 transition-colors"
                         >
-                          <CompanyLogo company={investor} size="md" />
-                        </div>
+                          <CompanyLogo company={press.name} size="sm" />
+                        </a>
                       ))}
                     </div>
                   </div>
+                )}
+              </div>
 
-                  {/* Press mentions with logos */}
-                  {pressMentions.length > 0 && (
-                    <div className="mb-6">
-                      <p className="text-slate-500 text-sm mb-3">Featured in</p>
-                      <div className="flex flex-wrap items-center gap-3">
-                        {pressMentions.map((press) => (
-                          <a
-                            key={press.name}
-                            href={press.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-3 py-2 bg-slate-800/30 border border-slate-800 rounded-lg hover:border-slate-600 hover:bg-slate-800/50 transition-colors"
-                          >
-                            <CompanyLogo company={press.name} size="sm" />
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Technologies */}
-                  <div className="flex flex-wrap gap-2 mb-8">
-                    {featuredProject.technologies.slice(0, 6).map((tech, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1 bg-blue-500/10 text-blue-400 text-sm rounded-lg"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex flex-wrap gap-4">
-                    <a
-                      href={featuredProject.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group/btn inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-400 text-white font-medium rounded-lg transition-colors"
+              {/* Technologies and CTA */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex flex-wrap gap-2">
+                  {featuredProject.technologies.slice(0, 6).map((tech, i) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1 bg-blue-500/10 text-blue-400 text-sm rounded-lg"
                     >
-                      Visit Site
-                      <svg
-                        className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </a>
-                  </div>
+                      {tech}
+                    </span>
+                  ))}
                 </div>
+                <a
+                  href={featuredProject.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group/btn inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-400 text-white font-medium rounded-lg transition-colors"
+                >
+                  Visit Site
+                  <svg
+                    className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
               </div>
             </div>
           </div>

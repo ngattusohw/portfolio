@@ -16,7 +16,7 @@ const logoMap: Record<string, { file: string; displayName: string }> = {
   "tusk ventures": { file: "tusk.svg", displayName: "Tusk Ventures" },
 
   // Companies
-  "somethings": { file: "somethings.svg", displayName: "Somethings" },
+  "somethings": { file: "somethings.png", displayName: "Somethings" },
   "ibm": { file: "ibm.svg", displayName: "IBM" },
   "wells fargo": { file: "wells-fargo.svg", displayName: "Wells Fargo" },
 
