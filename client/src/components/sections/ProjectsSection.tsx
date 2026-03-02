@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { projects, featuredProject } from "@/data/projects";
+import CompanyLogo from "@/components/ui/CompanyLogo";
 
 export default function ProjectsSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -22,6 +23,9 @@ export default function ProjectsSection() {
     return () => observer.disconnect();
   }, []);
 
+  const investors = ["Catalio Capital", "General Catalyst", "Tusk Ventures"];
+  const pressMentions = featuredProject.press || [];
+
   return (
     <section
       ref={sectionRef}
@@ -29,7 +33,7 @@ export default function ProjectsSection() {
       className="py-32 bg-slate-950 relative overflow-hidden"
     >
       {/* Subtle gradient */}
-      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-[120px]" />
+      <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[120px]" />
 
       <div className="container mx-auto px-6 lg:px-8 relative">
         {/* Section header */}
@@ -57,12 +61,12 @@ export default function ProjectsSection() {
         >
           <div className="group relative">
             {/* Glow effect on hover */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-emerald-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-blue-400/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
             <div className="relative bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition-colors">
               <div className="grid lg:grid-cols-5 gap-0">
                 {/* Left - Visual */}
-                <div className="lg:col-span-2 relative bg-gradient-to-br from-blue-600 to-emerald-600 p-8 lg:p-12 flex items-center justify-center min-h-[300px]">
+                <div className="lg:col-span-2 relative bg-gradient-to-br from-blue-600 to-blue-400 p-8 lg:p-12 flex items-center justify-center min-h-[300px]">
                   {/* Pattern overlay */}
                   <div
                     className="absolute inset-0 opacity-10"
@@ -74,7 +78,7 @@ export default function ProjectsSection() {
 
                   <div className="relative text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-white/80 text-sm mb-4">
-                      <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+                      <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
                       Current Role
                     </div>
                     <h3 className="text-4xl lg:text-5xl font-bold text-white mb-2">
@@ -105,20 +109,40 @@ export default function ProjectsSection() {
                     {featuredProject.description}
                   </p>
 
-                  {/* Backers */}
+                  {/* Backers with logos */}
                   <div className="mb-6">
                     <p className="text-slate-500 text-sm mb-3">Backed by</p>
-                    <div className="flex flex-wrap items-center gap-3">
-                      {["Catalio Capital", "General Catalyst", "Tusk Ventures"].map((investor) => (
-                        <span
+                    <div className="flex flex-wrap items-center gap-4">
+                      {investors.map((investor) => (
+                        <div
                           key={investor}
-                          className="px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-300 text-sm"
+                          className="px-4 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-lg hover:border-slate-600 transition-colors"
                         >
-                          {investor}
-                        </span>
+                          <CompanyLogo company={investor} size="md" />
+                        </div>
                       ))}
                     </div>
                   </div>
+
+                  {/* Press mentions with logos */}
+                  {pressMentions.length > 0 && (
+                    <div className="mb-6">
+                      <p className="text-slate-500 text-sm mb-3">Featured in</p>
+                      <div className="flex flex-wrap items-center gap-3">
+                        {pressMentions.map((press) => (
+                          <a
+                            key={press.name}
+                            href={press.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-2 bg-slate-800/30 border border-slate-800 rounded-lg hover:border-slate-600 hover:bg-slate-800/50 transition-colors"
+                          >
+                            <CompanyLogo company={press.name} size="sm" />
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Technologies */}
                   <div className="flex flex-wrap gap-2 mb-8">

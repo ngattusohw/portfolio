@@ -66,7 +66,7 @@ export default function AboutSection() {
             </p>
 
             <p className="text-slate-400 text-lg leading-relaxed mb-8">
-              Before Somethings, I built{" "}
+              Before Somethings, I was an engineer at{" "}
               <a
                 href="https://joinkai.app"
                 target="_blank"
@@ -75,7 +75,7 @@ export default function AboutSection() {
               >
                 kAI
               </a>{" "}
-              (an AI code assistant),{" "}
+              (an AI code assistant) and{" "}
               <a
                 href="https://watchpoint.dev"
                 target="_blank"
@@ -84,7 +84,7 @@ export default function AboutSection() {
               >
                 Watchpoint
               </a>{" "}
-              (API monitoring), and founded{" "}
+              (API monitoring). I also co-founded{" "}
               <a
                 href="https://lifeskills.software"
                 target="_blank"

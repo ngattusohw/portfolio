@@ -1,3 +1,8 @@
+export interface PressMention {
+  name: string;
+  url: string;
+}
+
 export interface Project {
   id: number;
   title: string;
@@ -13,7 +18,7 @@ export interface Project {
     label: string;
     value: string;
   }[];
-  press?: string[];
+  press?: PressMention[];
 }
 
 // Featured project - shown prominently at top
@@ -34,7 +39,13 @@ export const featuredProject: Project = {
     { label: "Depression Reduction", value: "65%" },
     { label: "User Growth", value: "1,100x" },
   ],
-  press: ["MobiHealthNews", "Yahoo Finance", "Behavioral Health Business", "AlleyWatch", "PR Newswire"]
+  press: [
+    { name: "MobiHealthNews", url: "https://www.mobihealthnews.com/news/somethings-raises-192m-expand-teen-mental-health-platform" },
+    { name: "Yahoo Finance", url: "https://finance.yahoo.com/news/somethings-raises-19-2m-series-150000668.html" },
+    { name: "Behavioral Health Business", url: "https://bhbusiness.com/2026/02/10/youth-peer-support-platform-somethings-raises-19-2m/" },
+    { name: "AlleyWatch", url: "https://www.alleywatch.com/2026/02/somethings-teen-peer-mentorship-platform-youth-suicide-prevention-medicaid-mental-health-patrick-gilligan/" },
+    { name: "PR Newswire", url: "https://www.prnewswire.com/news-releases/somethings-raises-19-2m-in-series-a-funding-to-expand-peer-support-for-todays-youth-302683705.html" }
+  ]
 };
 
 export const projects: Project[] = [

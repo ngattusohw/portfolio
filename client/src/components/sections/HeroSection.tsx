@@ -70,7 +70,7 @@ export default function HeroSection() {
           {/* Name */}
           <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-slate-100 mb-4 tracking-tight">
             Nick Gattuso
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400"> III</span>
+            <span className="text-blue-400"> III</span>
           </h1>
 
           {/* Tagline */}
@@ -91,7 +91,7 @@ export default function HeroSection() {
             </a>
             , where I lead the team behind an AI-powered mental health platform.
             We've helped <span className="text-slate-200 font-medium">11,000+ teens</span> achieve
-            a <span className="text-emerald-400 font-medium">65% reduction in depression</span>.
+            a <span className="text-blue-400 font-medium">65% reduction in depression</span>.
           </p>
 
           {/* CTA buttons */}

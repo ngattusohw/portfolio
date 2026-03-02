@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { experiences } from "@/data/experiences";
+import CompanyLogo from "@/components/ui/CompanyLogo";
 
 export default function ExperienceSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -72,13 +73,22 @@ export default function ExperienceSection() {
               {/* Content */}
               <div className="bg-slate-800/30 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-colors">
                 <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
-                  <div>
-                    <h3 className="text-xl font-semibold text-slate-100">
-                      {experience.role}
-                    </h3>
-                    <p className="text-blue-400 font-medium">
-                      {experience.company}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    {/* Company logo */}
+                    <div className="hidden sm:flex items-center justify-center w-12 h-12 bg-slate-800 rounded-lg">
+                      <CompanyLogo company={experience.company} size="md" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold text-slate-100">
+                        {experience.role}
+                      </h3>
+                      <p className="text-blue-400 font-medium flex items-center gap-2">
+                        <span className="sm:hidden">
+                          <CompanyLogo company={experience.company} size="sm" />
+                        </span>
+                        <span className="hidden sm:inline">{experience.company}</span>
+                      </p>
+                    </div>
                   </div>
                   <span className="px-3 py-1 bg-slate-800 text-slate-400 text-sm rounded-lg font-mono">
                     {experience.period}

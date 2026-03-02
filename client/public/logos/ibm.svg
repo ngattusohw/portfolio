@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" fill="none">
+  <!-- IBM 8-bar logo -->
+  <g fill="#3b82f6">
+    <!-- I -->
+    <rect x="0" y="0" width="20" height="4"/>
+    <rect x="5" y="5" width="10" height="4"/>
+    <rect x="5" y="10" width="10" height="4"/>
+    <rect x="5" y="15" width="10" height="4"/>
+    <rect x="5" y="20" width="10" height="4"/>
+    <rect x="5" y="25" width="10" height="4"/>
+    <rect x="5" y="30" width="10" height="4"/>
+    <rect x="0" y="35" width="20" height="4"/>
+    <!-- B -->
+    <rect x="25" y="0" width="28" height="4"/>
+    <rect x="25" y="5" width="10" height="4"/>
+    <rect x="43" y="5" width="10" height="4"/>
+    <rect x="25" y="10" width="10" height="4"/>
+    <rect x="40" y="10" width="10" height="4"/>
+    <rect x="25" y="15" width="25" height="4"/>
+    <rect x="25" y="20" width="10" height="4"/>
+    <rect x="43" y="20" width="10" height="4"/>
+    <rect x="25" y="25" width="10" height="4"/>
+    <rect x="43" y="25" width="10" height="4"/>
+    <rect x="25" y="30" width="10" height="4"/>
+    <rect x="40" y="30" width="10" height="4"/>
+    <rect x="25" y="35" width="28" height="4"/>
+    <!-- M -->
+    <rect x="58" y="0" width="10" height="4"/>
+    <rect x="90" y="0" width="10" height="4"/>
+    <rect x="58" y="5" width="13" height="4"/>
+    <rect x="87" y="5" width="13" height="4"/>
+    <rect x="58" y="10" width="10" height="4"/>
+    <rect x="70" y="10" width="18" height="4"/>
+    <rect x="90" y="10" width="10" height="4"/>
+    <rect x="58" y="15" width="10" height="4"/>
+    <rect x="73" y="15" width="12" height="4"/>
+    <rect x="90" y="15" width="10" height="4"/>
+    <rect x="58" y="20" width="10" height="4"/>
+    <rect x="76" y="20" width="6" height="4"/>
+    <rect x="90" y="20" width="10" height="4"/>
+    <rect x="58" y="25" width="10" height="4"/>
+    <rect x="90" y="25" width="10" height="4"/>
+    <rect x="58" y="30" width="10" height="4"/>
+    <rect x="90" y="30" width="10" height="4"/>
+    <rect x="58" y="35" width="10" height="4"/>
+    <rect x="90" y="35" width="10" height="4"/>
+  </g>
+</svg>
