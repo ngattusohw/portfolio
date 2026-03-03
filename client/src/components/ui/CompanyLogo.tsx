@@ -17,8 +17,10 @@ const logoMap: Record<string, { file: string; displayName: string }> = {
 
   // Companies
   "somethings": { file: "somethings.png", displayName: "Somethings" },
-  "ibm": { file: "ibm.svg", displayName: "IBM" },
-  "wells fargo": { file: "wells-fargo.svg", displayName: "Wells Fargo" },
+  "ibm": { file: "ibm.png", displayName: "IBM" },
+  "wells fargo": { file: "wells-fargo.png", displayName: "Wells Fargo" },
+  "mira therapeutics": { file: "mira.png", displayName: "Mira Therapeutics" },
+  "life skills software": { file: "lifeskills.png", displayName: "Life Skills Software" },
 
   // Press
   "mobihealthnews": { file: "mobihealthnews.svg", displayName: "MobiHealthNews" },
