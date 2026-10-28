@@ -2,7 +2,7 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { contactSchema, blogPostSchema, blogMediaSchema } from "@shared/schema";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated, hasAdminSession } from "./replitAuth";
 
 // Helper function for handling errors
 function handleError(res: Response, error: unknown) {
@@ -15,6 +15,10 @@ function handleError(res: Response, error: unknown) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  app.get("/api/health", (_req, res) => {
+    res.status(200).json({ status: "ok" });
+  });
+
   // Setup authentication
   await setupAuth(app);
   
@@ -52,17 +56,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
       const tag = req.query.tag as string | undefined;
       
-      // Check if the user is authenticated (admin) or if includeDrafts is explicitly set to 'true'
-      const isAdmin = req.isAuthenticated();
-      // Parse query string parameter for includeDrafts
-      const includeDraftsParam = req.query.includeDrafts === 'true';
-      
-      // For debugging
-      console.log(`Blog posts request - isAdmin: ${isAdmin}, includeDraftsParam: ${includeDraftsParam}`);
-      
-      // Either show drafts if user is admin or if includeDrafts is explicitly requested
-      // In production you would typically only want isAdmin, but for testing we'll allow the param
-      const includeDrafts = isAdmin || includeDraftsParam;
+      const includeDrafts = hasAdminSession(req);
       
       const posts = await storage.getAllBlogPosts(limit, offset, tag, includeDrafts);
       res.json({ success: true, posts });
@@ -74,7 +68,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get a single blog post by slug (public)
   app.get("/api/blog/:slug", async (req, res) => {
     try {
-      const isAdmin = req.isAuthenticated();
+      const isAdmin = hasAdminSession(req);
       const post = await storage.getBlogPostBySlug(req.params.slug);
       
       if (!post) {
@@ -82,7 +76,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if the post is a draft and the user is not an admin
-      if (post.status === "draft" && !isAdmin) {
+      if (post.status !== "published" && !isAdmin) {
         console.log(`Non-admin tried to access draft post: ${post.slug}`);
         return res.status(404).json({ success: false, message: "Blog post not found" });
       }
@@ -178,6 +172,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/blog/:postId/media", async (req, res) => {
     try {
       const postId = parseInt(req.params.postId);
+      const post = await storage.getBlogPost(postId);
+      if (!post || (post.status !== "published" && !hasAdminSession(req))) {
+        return res.status(404).json({ success: false, message: "Blog post not found" });
+      }
       const media = await storage.getBlogMediaForPost(postId);
       res.json({ success: true, media });
     } catch (error) {

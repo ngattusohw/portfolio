@@ -2,17 +2,28 @@ import * as client from "openid-client";
 import { Strategy, type VerifyFunction } from "openid-client/passport";
 import passport from "passport";
 import session from "express-session";
-import type { Express, RequestHandler } from "express";
+import type { Express, Request, RequestHandler } from "express";
 import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
-import { db } from "./db";
-import ws from "ws";
-import * as schema from "@shared/schema";
 
-// Check for environment variables
-if (!process.env.REPLIT_DOMAINS) {
-  throw new Error("Environment variable REPLIT_DOMAINS not provided");
+const authDomains = (process.env.REPLIT_DOMAINS ?? "")
+  .split(",")
+  .map((domain) => domain.trim())
+  .filter(Boolean);
+const authConfigured = Boolean(process.env.REPL_ID?.trim() && authDomains.length);
+
+function isNick(user: any): boolean {
+  return user?.claims?.username === "ngattuso3" ||
+    user?.claims?.email === "ngattusohw@gmail.com";
+}
+
+// Public endpoints may show drafts only to a current, authorized admin session.
+export function hasAdminSession(req: Request): boolean {
+  const user = req.user as any;
+  return authConfigured && Boolean(req.isAuthenticated?.()) && isNick(user) &&
+    Number.isFinite(user?.expires_at) &&
+    Math.floor(Date.now() / 1000) <= user.expires_at;
 }
 
 // Cache OIDC configuration to avoid hitting Replit's API too often
@@ -84,6 +95,14 @@ async function upsertUser(claims: any) {
 
 // Set up Replit Auth
 export async function setupAuth(app: Express) {
+  if (!authConfigured) {
+    console.warn("Replit authentication is not configured; admin access is unavailable.");
+    app.get(["/api/login", "/api/callback", "/api/logout"], (_req, res) => {
+      res.status(503).json({ message: "Admin authentication is not configured" });
+    });
+    return;
+  }
+
   // Trust proxies
   app.set("trust proxy", 1);
   
@@ -116,7 +135,7 @@ export async function setupAuth(app: Express) {
   };
 
   // Set up strategies for each domain
-  for (const domain of process.env.REPLIT_DOMAINS!.split(",")) {
+  for (const domain of authDomains) {
     const strategy = new Strategy(
       {
         name: `replitauth:${domain}`,
@@ -186,7 +205,7 @@ export async function setupAuth(app: Express) {
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
 
-  if (!req.isAuthenticated() || !user?.expires_at) {
+  if (!authConfigured || !req.isAuthenticated?.() || !Number.isFinite(user?.expires_at)) {
     return res.status(401).json({ message: "Unauthorized" });
   }
   
@@ -197,10 +216,7 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
   console.log("Auth checking - Username:", username, "Email:", email);
   
   // Allow access if user has the specified email or username
-  if (
-    (!username || username !== "ngattuso3") && 
-    (!email || email !== "ngattusohw@gmail.com")
-  ) {
+  if (!isNick(user)) {
     console.log("Access denied. User not authorized.");
     return res.status(403).json({ message: "Access denied. Only Nick can access this area." });
   }
