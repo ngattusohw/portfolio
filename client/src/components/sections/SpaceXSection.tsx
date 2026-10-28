@@ -26,15 +26,15 @@ export default function SpaceXSection() {
   }, []);
   
   return (
-    <section id="spacex-section" className="py-16 bg-gradient-to-b from-slate-100 to-white">
+    <section id="spacex-section" className="py-12 sm:py-16 overflow-hidden bg-gradient-to-b from-slate-100 to-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <p className="text-primary font-mono mb-2">SpaceX Starbase</p>
           <h2 className="text-3xl md:text-4xl font-sans font-bold mb-4">The Future of Space Travel</h2>
           <div className="w-20 h-1 bg-secondary mx-auto mb-8"></div>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className={`md:order-1 order-2 transition-all duration-1000 delay-300 transform ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}`}>
             <h3 className="text-2xl font-bold mb-4">Revolutionizing Space Transportation</h3>
             <p className="mb-6 text-slate-700">
@@ -59,7 +59,7 @@ export default function SpaceXSection() {
               href="https://www.spacex.com/vehicles/starship/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center px-5 py-2.5 font-medium bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="inline-flex min-h-11 items-center px-5 py-2.5 font-medium bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
             >
               Learn More
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

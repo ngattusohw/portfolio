@@ -1,0 +1,187 @@
+.roman-hero {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: clamp(2rem, 4vw, 3rem);
+  min-height: 100svh;
+  padding: 8rem clamp(1.25rem, 4vw, 4rem) 4rem;
+  isolation: isolate;
+}
+
+.roman-hero .scanlines {
+  z-index: -1;
+  opacity: 0.45;
+}
+
+.roman-hero__scene {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 16fr) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(0.5rem, 2vw, 1.75rem);
+  width: min(100%, 64rem);
+  min-width: 0;
+}
+
+.roman-hero__art {
+  justify-self: center;
+  width: max-content;
+  margin: 0;
+  color: hsl(var(--roman-gold));
+  font-family: "Fira Mono", monospace;
+  font-size: clamp(2px, 1.05vw, 12px);
+  font-size: min(1.16cqi, 12px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  white-space: pre;
+  text-shadow: 0 0 8px hsl(var(--roman-gold) / 0.25);
+}
+
+.roman-hero__column {
+  display: flex;
+  flex-direction: column;
+  height: clamp(4rem, 23vw, 15rem);
+  height: clamp(3.5rem, 23cqi, 15rem);
+  min-width: 0;
+  color: hsl(var(--roman-text));
+  filter: drop-shadow(0 4px 0 hsl(var(--roman-bg) / 0.4));
+}
+
+.roman-hero__column-cap {
+  flex: 0 0 8%;
+  border: 2px solid currentColor;
+  background: hsl(var(--roman-marble));
+  box-shadow: inset 3px 3px 0 hsl(var(--roman-marble-dark));
+}
+
+.roman-hero__column-cap--base {
+  box-shadow: inset -3px -3px 0 hsl(var(--roman-marble-dark));
+}
+
+.roman-hero__column-shaft {
+  flex: 1;
+  margin-inline: 12%;
+  border-inline: 2px solid currentColor;
+  background: linear-gradient(
+    to right,
+    hsl(var(--roman-marble-dark)) 20%,
+    hsl(var(--roman-marble)) 20% 80%,
+    hsl(var(--roman-marble-dark)) 80%
+  );
+}
+
+.roman-hero__content {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  width: min(100%, 48rem);
+  min-width: 0;
+  text-align: center;
+}
+
+.roman-hero__title {
+  max-width: 100%;
+  margin: 0;
+  color: hsl(var(--roman-parchment));
+  font-family: "Press Start 2P", cursive;
+  font-size: clamp(1.375rem, 4.6vw, 2.75rem);
+  line-height: 1.55;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.roman-hero__subtitle {
+  max-width: 30ch;
+  margin: 0;
+  color: hsl(var(--roman-gold));
+  font-family: "Press Start 2P", cursive;
+  font-size: clamp(0.625rem, 2.1vw, 1rem);
+  line-height: 2;
+  text-wrap: balance;
+}
+
+.roman-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  max-width: 100%;
+}
+
+.roman-hero__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 48px;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid hsl(var(--roman-gold) / 0.6);
+  color: hsl(var(--roman-parchment));
+  font-family: "Fira Mono", monospace;
+  font-size: 0.8125rem;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.roman-hero__link:hover {
+  border-color: hsl(var(--roman-gold));
+  background: hsl(var(--roman-gold) / 0.12);
+}
+
+.roman-hero__link--primary {
+  border-color: hsl(var(--roman-gold));
+  background: hsl(var(--roman-gold));
+  color: hsl(var(--roman-bg));
+}
+
+.roman-hero__link--primary:hover {
+  background: hsl(var(--roman-parchment));
+  border-color: hsl(var(--roman-parchment));
+}
+
+.roman-hero__link:focus-visible {
+  outline: 2px solid hsl(var(--roman-parchment));
+  outline-offset: 4px;
+}
+
+@media (max-width: 767px) {
+  .roman-hero {
+    min-height: min(42rem, 82svh);
+    gap: 2.25rem;
+    padding-top: 7rem;
+    padding-bottom: 3rem;
+  }
+
+  .roman-hero__content {
+    gap: 0.875rem;
+  }
+
+  .roman-hero__actions {
+    gap: 0.625rem;
+    margin-top: 0.75rem;
+  }
+}
+
+@media (max-height: 600px) {
+  .roman-hero {
+    min-height: auto;
+    padding-top: 6.5rem;
+    padding-bottom: 3rem;
+  }
+}
+
+@media (max-width: 359px) {
+  .roman-hero__actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roman-hero__link {
+    transition: none;
+  }
+}

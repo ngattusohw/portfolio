@@ -16,7 +16,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <div 
-      className="project-card bg-white rounded-xl shadow-md overflow-hidden"
+      className="project-card min-w-0 bg-white rounded-xl shadow-md overflow-hidden"
       data-category={project.categories.join(" ")}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -44,7 +44,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </div>
         </div>
       </div>
-      <div className="p-6">
+      <div className="p-4 sm:p-6 break-words">
         <p className="text-slate-600 mb-4">
           {project.description}
         </p>
@@ -55,12 +55,12 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             </span>
           ))}
         </div>
-        <div className="flex justify-between">
+        <div className="flex flex-wrap justify-between gap-x-3 gap-y-1">
           <a 
             href={project.url} 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="text-primary hover:text-primary/80 font-medium flex items-center gap-1"
+            className="min-h-11 text-primary hover:text-primary/80 font-medium flex items-center gap-1"
           >
             <span>Visit Site</span>
             <svg 
@@ -74,7 +74,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             </svg>
           </a>
           <button 
-            className="text-slate-600 hover:text-slate-800 flex items-center"
+            className="min-h-11 text-slate-600 hover:text-slate-800 flex items-center"
             onClick={handleShowDetails}
           >
             <span>Details</span>

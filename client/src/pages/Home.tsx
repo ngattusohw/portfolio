@@ -15,28 +15,7 @@ export default function Home() {
   const { setupScrollAnimations } = useScrollAnimation();
 
   useEffect(() => {
-    // Setup scroll animations when component mounts
-    setupScrollAnimations();
-
-    // Setup smooth scrolling
-    const links = document.querySelectorAll('a[href^="#"]');
-    links.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        const href = link.getAttribute('href');
-        if (!href) return;
-        
-        const targetElement = document.querySelector(href) as HTMLElement;
-        
-        if (targetElement) {
-          window.scrollTo({
-            top: targetElement.offsetTop - 80, // Account for header
-            behavior: 'smooth'
-          });
-        }
-      });
-    });
+    return setupScrollAnimations();
   }, [setupScrollAnimations]);
 
   return (

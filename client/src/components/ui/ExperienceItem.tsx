@@ -33,8 +33,8 @@ export default function ExperienceItem({ experience, delay }: ExperienceItemProp
           </svg>
         )}
       </div>
-      <div className={`bg-white p-6 rounded-lg shadow-md border-l-4 ${experience.type === 'startup' ? 'border-secondary' : 'border-primary'}`}>
-        <div className="flex flex-wrap justify-between items-start mb-2">
+      <div className={`bg-white p-4 sm:p-6 break-words rounded-lg shadow-md border-l-4 ${experience.type === 'startup' ? 'border-secondary' : 'border-primary'}`}>
+        <div className="flex flex-wrap justify-between items-start gap-2 mb-2">
           <h3 className="text-xl font-bold">{experience.role}</h3>
           <span className="text-sm text-slate-500 bg-slate-100 px-2 py-1 rounded">{experience.period}</span>
         </div>

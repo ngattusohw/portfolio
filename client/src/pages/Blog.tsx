@@ -12,7 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Blog() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,15 +50,15 @@ export default function Blog() {
   });
 
   return (
-    <div className="container px-4 mx-auto py-16">
+    <div className="container px-4 sm:px-6 mx-auto py-12 sm:py-16">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-12"
+        className="mb-8 sm:mb-12"
       >
-        <h1 className="text-4xl md:text-5xl font-bold mb-6 text-center">The Blog</h1>
-        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto text-center mb-8">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 text-center">The Blog</h1>
+        <p className="text-base sm:text-xl leading-relaxed text-gray-600 dark:text-gray-400 max-w-3xl mx-auto text-center mb-8">
           Thoughts, tutorials, and insights from my journey in tech and entrepreneurship
         </p>
         
@@ -77,7 +76,7 @@ export default function Blog() {
           <div className="flex flex-wrap justify-center gap-2 mb-8">
             <Badge
               variant={activeTag === null ? "default" : "outline"}
-              className="cursor-pointer py-1 px-3"
+              className="cursor-pointer min-h-10 py-2 px-3"
               onClick={() => setActiveTag(null)}
             >
               All
@@ -86,7 +85,7 @@ export default function Blog() {
               <Badge
                 key={tag}
                 variant={activeTag === tag ? "default" : "outline"}
-                className="cursor-pointer py-1 px-3"
+                className="cursor-pointer min-h-10 max-w-full py-2 px-3 [overflow-wrap:anywhere]"
                 onClick={() => setActiveTag(tag)}
               >
                 {tag}
@@ -97,7 +96,7 @@ export default function Blog() {
       </motion.div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {[...Array(6)].map((_, i) => (
             <Card key={i}>
               <CardHeader>
@@ -129,23 +128,24 @@ export default function Blog() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {filteredPosts?.map((post, index) => (
                 <motion.div
                   key={post.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="min-w-0"
                 >
-                  <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300">
+                  <Card className="h-full min-w-0 flex flex-col hover:shadow-lg transition-shadow duration-300">
                     <CardHeader>
-                      <CardTitle className="line-clamp-2">{post.title}</CardTitle>
+                      <CardTitle className="line-clamp-2 leading-snug [overflow-wrap:anywhere]">{post.title}</CardTitle>
                       <CardDescription>
                         {format(new Date(post.published_at || new Date()), 'MMMM dd, yyyy')}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="flex-grow">
-                      <p className="text-sm line-clamp-4 mb-4">{post.summary}</p>
+                      <p className="text-sm leading-relaxed line-clamp-4 mb-4 [overflow-wrap:anywhere]">{post.summary}</p>
                       {post.thumbnail_url && (
                         <div className="relative aspect-video mb-4 overflow-hidden rounded-md">
                           <img 
@@ -157,15 +157,15 @@ export default function Blog() {
                       )}
                       <div className="flex flex-wrap gap-2 mt-3">
                         {post.tags?.map(tag => (
-                          <Badge key={tag} variant="secondary" className="text-xs">
+                          <Badge key={tag} variant="secondary" className="max-w-full text-xs [overflow-wrap:anywhere]">
                             {tag}
                           </Badge>
                         ))}
                       </div>
                     </CardContent>
                     <CardFooter>
-                      <Link href={`/blog/${post.slug}`}>
-                        <Button variant="outline" className="w-full">Read More</Button>
+                      <Link href={`/blog/${post.slug}`} className="w-full">
+                        <Button variant="outline" className="min-h-11 w-full">Read More</Button>
                       </Link>
                     </CardFooter>
                   </Card>
