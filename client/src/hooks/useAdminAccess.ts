@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useLocation } from "wouter";
-import { useAuth } from "./useAuth";
 
 /**
  * This hook creates a keyboard shortcut for admin access.
@@ -9,7 +8,6 @@ import { useAuth } from "./useAuth";
  */
 export function useAdminAccess() {
   const [, navigate] = useLocation();
-  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     // Simple keyboard shortcut handler for admin access
@@ -18,12 +16,7 @@ export function useAdminAccess() {
       if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
         e.preventDefault();
         
-        // If already authenticated, go to admin, otherwise go to login first
-        if (isAuthenticated) {
-          navigate("/admin");
-        } else {
-          window.location.href = "/api/login"; // Go to login endpoint
-        }
+        navigate("/admin");
       }
     };
 
@@ -32,5 +25,5 @@ export function useAdminAccess() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [navigate, isAuthenticated]);
+  }, [navigate]);
 }

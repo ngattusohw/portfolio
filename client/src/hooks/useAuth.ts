@@ -1,33 +1,26 @@
 import { useQuery } from "@tanstack/react-query";
+import { getQueryFn } from "@/lib/queryClient";
 
 // Extended user type to include email
-interface UserWithEmail {
-  id: number;
+interface OwnerUser {
+  id: string;
   username: string;
-  password: string;
-  email?: string;  // Added for auth check
+  role: "owner";
 }
 
 export function useAuth() {
-  const { data: user, isLoading } = useQuery<UserWithEmail>({
+  const { data: user, isLoading } = useQuery<OwnerUser | null>({
     queryKey: ["/api/auth/user"],
+    queryFn: getQueryFn({ on401: "returnNull" }),
     retry: false,
+    staleTime: 30_000,
+    refetchOnWindowFocus: true,
   });
-
-  // Check if the user is Nick using any method available
-  // Using any to bypass type checking during development
-  const userAny = user as any;
-  
-  const isNick = 
-    userAny?.username === "ngattuso3" || // Check username 
-    userAny?.email === "ngattusohw@gmail.com"; // Check email
-    
-  console.log("Auth check in client:", userAny?.username, userAny?.email, isNick);
 
   return {
     user,
     isLoading,
     isAuthenticated: !!user,
-    isAuthorized: isNick, // Only Nick is authorized to access admin features
+    isAuthorized: user?.role === "owner",
   };
 }
