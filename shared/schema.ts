@@ -1,4 +1,5 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json, varchar, index } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, varchar, index, check } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -12,6 +13,13 @@ export const sessions = pgTable(
   },
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
+
+// Matches the additive owner-auth migration in server/auth.ts.
+export const portfolioAdmin = pgTable("portfolio_admin", {
+  singleton: boolean("singleton").primaryKey().default(true),
+  password_hash: text("password_hash").notNull(),
+  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, table => [check("portfolio_admin_singleton_check", sql`${table.singleton} = true`)]);
 
 // User model for Replit Auth
 // Matching the actual database structure
