@@ -33,6 +33,10 @@ The setup link stops working after the password is saved. To recover a lost pass
 
 ## Deploy
 
-The Render service uses branch `codex/render-portfolio`, build command `npm ci --include=dev && npm run build`, start command `npm start`, and health path `/api/health`. It uses the free web instance and keeps the database on Neon.
+Production should track `main` through Render’s connected GitHub provider, with **Auto-Deploy → After CI Checks Pass**. The build command is `npm ci --include=dev && npm run build`, the start command is `npm start`, and the health path is `/api/health`. Keep the free web instance and the existing Neon database.
 
-This service was created from a public repository URL, so Render requires a manual deployment after pushing code. Check for an in-progress deployment before triggering one. Domain aliases redirect to https://nickgattuso.com, preserving the path and query string.
+Make changes on a feature branch, create a pull request targeting `main`, wait for the `build-and-test` check, and merge the PR. GitHub Actions runs the type check, isolated tests, and production build on PRs and pushes to `main`. After the merged commit passes CI, Render automatically deploys it. Do not deploy feature branches or manually trigger a duplicate deployment.
+
+The service was originally created using a public repository URL. That source requires manual deploys even when the API reports auto-deploy enabled. To enable the workflow above, give Render’s GitHub App access to `ngattusohw/portfolio`, reconnect the service through **Settings → Build → Source → Git Provider**, select `main`, and enable **After CI Checks Pass**. Verify a merge produces an automatic deploy before considering setup complete.
+
+Domain aliases redirect to https://nickgattuso.com, preserving the path and query string.
