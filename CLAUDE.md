@@ -16,6 +16,6 @@ Nick Gattuso’s portfolio uses React, TypeScript, Vite, Tailwind, and an Expres
 
 - Use Node.js 22 or newer and `npm ci --include=dev`.
 - Run `npm run check`, `npm test`, and `npm run build`. Tests use isolated in-memory data, not production Neon.
-- Create feature branches and PRs targeting `main`; merge after the `build-and-test` check passes. Production should deploy from `main` through Render’s connected GitHub provider after CI passes.
+- Create feature branches and PRs targeting `main`; merge after the `build-and-test` check passes. Production deploys from `main` through Render’s connected GitHub provider after CI passes. Do not push directly to `main` or manually deploy feature branches.
 - Keep secrets out of Git, PRs, logs, and chat. Do not copy production credentials into CI.
 - Keep the free Render compute plan and existing Neon database unless the owner requests infrastructure changes.
