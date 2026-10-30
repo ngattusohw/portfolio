@@ -3,271 +3,78 @@
 @tailwind utilities;
 
 :root {
-  --background: 210 40% 98%;
-  --foreground: 222 14.3% 14.1%;
-  --muted: 210 40% 93.1%;
-  --muted-foreground: 222 5.3% 44.7%;
+  --background: 40 33% 96%;
+  --foreground: 30 12% 15%;
+  --muted: 38 20% 91%;
+  --muted-foreground: 30 8% 42%;
   --popover: 0 0% 100%;
-  --popover-foreground: 222 14.3% 14.1%;
+  --popover-foreground: 30 12% 15%;
   --card: 0 0% 100%;
-  --card-foreground: 222 14.3% 14.1%;
-  --border: 222 5.9% 90%;
-  --input: 222 5.9% 90%;
-  --primary: 214 90% 40%;
-  --primary-foreground: 214 100% 99%;
-  --secondary: 20 100% 50%;
-  --secondary-foreground: 210 40% 98%;
-  --accent: 174 100% 40%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-  --ring: 222 5.9% 90%;
-  --radius: 0.5rem;
-  --chart-1: 214 90% 40%;
-  --chart-2: 20 100% 50%;
-  --chart-3: 174 100% 40%;
-  --chart-4: 262 83% 58%;
-  --chart-5: 42 87% 55%;
-
-  /* Roman Empire Theme */
-  --roman-bg: 23 14% 10%; /* Dark, earthy brown */
-  --roman-parchment: 35 33% 88%; /* Aged parchment */
-  --roman-text: 45 6% 25%; /* Dark ink */
-  --roman-text-soft: 45 6% 45%; 
-  --roman-gold: 38 68% 45%; /* Gold accent */
-  --roman-purple: 275 40% 30%; /* Imperial purple */
-  --roman-marble: 35 20% 80%;
-  --roman-marble-dark: 35 15% 65%;
+  --card-foreground: 30 12% 15%;
+  --border: 35 18% 83%;
+  --input: 35 18% 83%;
+  --primary: 8 44% 36%;
+  --primary-foreground: 40 33% 98%;
+  --secondary: 36 28% 87%;
+  --secondary-foreground: 30 12% 20%;
+  --accent: 35 25% 88%;
+  --accent-foreground: 30 12% 20%;
+  --destructive: 0 72% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --ring: 8 44% 36%;
+  --radius: 0.35rem;
+  --chart-1: 8 44% 36%;
+  --chart-2: 35 40% 47%;
+  --chart-3: 140 15% 36%;
+  --chart-4: 262 30% 45%;
+  --chart-5: 42 60% 45%;
+  --folio-paper: #f5f1e9;
+  --folio-white: #fdfbf7;
+  --folio-ink: #292720;
+  --folio-muted: #6b675e;
+  --folio-red: #873d32;
+  --folio-line: #d9d2c5;
+  --folio-serif: "Cormorant Garamond", Georgia, serif;
 }
-
 .dark {
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  --muted: 222 47% 11%;
-  --muted-foreground: 210 40% 80%;
-  --popover: 222 47% 11%;
-  --popover-foreground: 210 40% 98%;
-  --card: 222 47% 11%;
-  --card-foreground: 210 40% 98%;
-  --border: 222 47% 20%;
-  --input: 222 47% 20%;
-  --primary: 214 90% 40%;
-  --primary-foreground: 214 100% 99%;
-  --secondary: 20 100% 50%;
-  --secondary-foreground: 210 40% 98%;
-  --accent: 174 100% 40%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --ring: 222 47% 20%;
+  --background: 30 10% 12%;
+  --foreground: 40 33% 96%;
+  --muted: 30 8% 18%;
+  --muted-foreground: 35 15% 72%;
+  --popover: 30 10% 15%;
+  --popover-foreground: 40 33% 96%;
+  --card: 30 10% 15%;
+  --card-foreground: 40 33% 96%;
+  --border: 30 8% 25%;
+  --input: 30 8% 25%;
+  --primary: 12 50% 64%;
+  --primary-foreground: 30 10% 12%;
 }
-
 @layer base {
-  html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 5rem;
-    -webkit-text-size-adjust: 100%;
-  }
-
   * {
     @apply border-border;
   }
-
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 95px;
+    -webkit-text-size-adjust: 100%;
+  }
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--primary));
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary) / 0.8);
-}
-
-/* Animation delays */
-.delay-100 { animation-delay: 0.1s; }
-.delay-200 { animation-delay: 0.2s; }
-.delay-300 { animation-delay: 0.3s; }
-.delay-400 { animation-delay: 0.4s; }
-.delay-500 { animation-delay: 0.5s; }
-
-/* Project card hover effect */
-.project-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.project-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-/* Timeline styles */
-.timeline-container {
-  position: relative;
-}
-.timeline-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 18px;
-  height: 100%;
-  width: 4px;
-  background: hsl(var(--primary));
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes slideUp {
-  0% { transform: translateY(50px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.7s ease-out forwards;
-}
-
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  ::selection {
+    background: #d9b6a8;
+    color: #292720;
   }
 }
-
-.animate-fade-in-up {
-  opacity: 0;
-  animation: fade-in-up 0.5s ease-out forwards;
-}
-
-.font-body {
-  font-family: 'Roboto', sans-serif;
-}
-
-.font-mono {
-  font-family: 'Fira Mono', monospace;
-}
-
-.font-pixel {
-  font-family: 'Press Start 2P', cursive;
-}
-
-.pixel-art-border {
-  border: 4px solid hsl(var(--roman-text));
-  box-shadow: 
-    0 0 0 4px hsl(var(--roman-gold)),
-    inset 0 0 0 4px hsl(var(--roman-gold));
-  image-rendering: pixelated;
-}
-
-.pixel-art-border-inset {
-  border: 4px solid hsl(var(--roman-text));
-  image-rendering: pixelated;
-}
-
-/* New Roman Scene Styles */
-.roman-scene {
-  background-color: hsl(var(--roman-bg));
-  background-image: linear-gradient(to right, #1a1a1a 1px, transparent 1px),
-                    linear-gradient(to bottom, #1a1a1a 1px, transparent 1px);
-  background-size: 20px 20px;
-}
-
-.scanlines {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.05) 50%,
-    transparent 50%,
-    transparent
-  );
-  background-size: 100% 4px;
-  pointer-events: none;
-  z-index: 5;
-}
-
-.pixel-column {
-  display: flex;
-  flex-direction: column;
-  width: 60px;
-}
-
-.pixel-column-top {
-  height: 20px;
-  background-color: hsl(var(--roman-marble));
-  border: 4px solid hsl(var(--roman-text));
-  border-bottom: none;
-  box-shadow: inset 4px 4px 0 0 hsl(var(--roman-marble-dark));
-}
-
-.pixel-column-body {
-  height: 200px;
-  background-color: hsl(var(--roman-marble));
-  border-left: 4px solid hsl(var(--roman-text));
-  border-right: 4px solid hsl(var(--roman-text));
-  background-image: linear-gradient(to right, hsl(var(--roman-marble-dark)) 20%, transparent 20%, transparent 80%, hsl(var(--roman-marble-dark)) 80%);
-}
-
-.pixel-column-base {
-  height: 20px;
-  background-color: hsl(var(--roman-marble));
-  border: 4px solid hsl(var(--roman-text));
-  border-top: none;
-  box-shadow: inset -4px -4px 0 0 hsl(var(--roman-marble-dark));
-}
-
-.coliseum {
-  text-shadow: 0 0 5px hsl(var(--roman-gold));
-  line-height: 0.8;
-  letter-spacing: -1px;
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-
-  .animate-slide-up,
-  .animate-fade-in,
-  .animate-fade-in-up,
-  .animate-float {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  .project-card {
-    transition: none;
   }
 }

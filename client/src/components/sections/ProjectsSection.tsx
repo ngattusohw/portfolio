@@ -1,66 +1,132 @@
 import { useState } from "react";
+import { ArrowUpRight, Plus } from "lucide-react";
 import ProjectCard from "@/components/ui/ProjectCard";
-import { COLLECT_SOFTWARE_URL, projects, type ProjectCategory } from "@/data/projects";
+import {
+  COLLECT_SOFTWARE_URL,
+  projects,
+  type ProjectCategory,
+} from "@/data/projects";
 
-type FilterType = "all" | ProjectCategory;
-
-const filters: { value: FilterType; label: string }[] = [
-  { value: "all", label: "All Projects" },
+const filters: { value: "all" | ProjectCategory; label: string }[] = [
+  { value: "all", label: "All projects" },
   { value: "ai", label: "AI" },
-  { value: "developer-tools", label: "Developer Tools" },
-  { value: "platforms", label: "Platforms & Sites" },
+  { value: "developer-tools", label: "Developer tools" },
+  { value: "platforms", label: "Platforms & sites" },
 ];
+const featuredIds = ["kai", "recollect-ai", "somethings", "watchpoint"];
 
 export default function ProjectsSection() {
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
-
-  const filteredProjects = projects.filter(project =>
-    activeFilter === "all" || project.categories.includes(activeFilter)
+  const [activeFilter, setActiveFilter] = useState<"all" | ProjectCategory>(
+    "all",
   );
-
+  const matches = projects.filter(
+    (project) =>
+      activeFilter === "all" || project.categories.includes(activeFilter),
+  );
+  const featured = featuredIds.flatMap((id) =>
+    matches.filter((project) => project.id === id),
+  );
+  const more = matches.filter((project) => !featuredIds.includes(project.id));
   return (
-    <section id="projects" className="py-12 sm:py-20 bg-slate-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8 sm:mb-16">
-          <p className="text-primary font-mono mb-2">Collect Software</p>
-          <h2 className="text-3xl md:text-4xl font-sans font-bold mb-4">Selected Projects</h2>
-          <div className="w-20 h-1 bg-secondary mx-auto mb-6"></div>
-          <p className="max-w-2xl mx-auto text-slate-600 mb-8">
-            Selected products and client work across AI, developer tools, and digital platforms. More at{" "}
+    <section
+      id="projects"
+      className="folio-section work-section"
+      aria-labelledby="work-title"
+    >
+      <div className="folio-container">
+        <div className="section-heading">
+          <div>
+            <p className="folio-kicker">I / Selected work</p>
+            <h2 id="work-title">
+              Ideas, <em>made real.</em>
+            </h2>
+          </div>
+          <p>
+            Selected products and client work across AI, developer tools, and
+            digital platforms.{" "}
             <a
               href={COLLECT_SOFTWARE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary underline underline-offset-4 hover:text-primary/80"
             >
-              Collect Software
+              Explore Collect Software{" "}
+              <ArrowUpRight size={14} aria-hidden="true" />
             </a>
-            .
           </p>
-          <div
-            className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-3 mb-8"
-            role="group"
-            aria-label="Filter projects"
-          >
-            {filters.map(filter => (
-              <button
-                key={filter.value}
-                type="button"
-                className={`min-h-11 px-4 py-2 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${activeFilter === filter.value ? "bg-primary text-white" : "bg-slate-200 hover:bg-slate-300"}`}
-                aria-pressed={activeFilter === filter.value}
-                onClick={() => setActiveFilter(filter.value)}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
         </div>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {filteredProjects.map(project => (
-            <ProjectCard key={project.id} project={project} />
+        <div className="work-filters" role="group" aria-label="Filter projects">
+          {filters.map((filter) => (
+            <button
+              key={filter.value}
+              type="button"
+              aria-pressed={activeFilter === filter.value}
+              onClick={() => setActiveFilter(filter.value)}
+            >
+              {filter.label}
+              <span aria-hidden="true">
+                {filter.value === "all"
+                  ? projects.length
+                  : projects.filter((p) =>
+                      p.categories.includes(filter.value as ProjectCategory),
+                    ).length}
+              </span>
+            </button>
           ))}
         </div>
+        <div className="featured-grid">
+          {featured.map((project, index) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              number={index + 1}
+            />
+          ))}
+        </div>
+        {more.length > 0 && (
+          <div className="more-work">
+            <p className="folio-kicker">Also in the collection</p>
+            <div>
+              {more.map((project) => (
+                <article key={project.id} className="project-row">
+                  <div>
+                    <h3>{project.title}</h3>
+                    <p>{project.subtitle}</p>
+                  </div>
+                  <span className="project-row-category">
+                    {project.tags[0]}
+                  </span>
+                  <div className="project-row-actions">
+                    <button
+                      type="button"
+                      aria-label={`Details about ${project.title}`}
+                      onClick={() =>
+                        document.dispatchEvent(
+                          new CustomEvent("openProjectModal", {
+                            detail: project,
+                          }),
+                        )
+                      }
+                    >
+                      Details <Plus size={16} aria-hidden="true" />
+                    </button>
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Visit ${project.title} website (opens in a new tab)`}
+                    >
+                      <ArrowUpRight size={20} aria-hidden="true" />
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
+        <p className="work-count" aria-live="polite">
+          Showing {matches.length}{" "}
+          {matches.length === 1 ? "project" : "projects"}
+        </p>
       </div>
     </section>
   );
