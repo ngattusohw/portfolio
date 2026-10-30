@@ -4,6 +4,14 @@ export type ProjectIconName =
   | "automation" | "legal" | "wedding" | "creative" | "support"
   | "monitoring" | "community" | "analytics" | "education" | "polling";
 
+export interface ProjectHeroImage {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  srcSet?: string;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -13,6 +21,11 @@ export interface Project {
   tags: string[];
   categories: ProjectCategory[];
   icon: ProjectIconName;
+  hero?: {
+    images: ProjectHeroImage[];
+    layout?: "paired";
+    label?: string;
+  };
   url: string;
   sourceUrl?: string;
 }
@@ -35,6 +48,18 @@ export const projects: Project[] = [
     tags: ["AI", "Infrastructure", "Developer Tools"],
     categories: ["ai", "developer-tools"],
     icon: "automation",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/kai-clouds-640.f8f5ae1b9801.webp",
+          "alt": "kAI product",
+          "width": 1920,
+          "height": 1080,
+          "srcSet": "/images/projects/collect/kai-clouds-640.f8f5ae1b9801.webp 640w, /images/projects/collect/kai-clouds-1280.f0ee63240131.webp 1280w, /images/projects/collect/kai-clouds-1920.ba38a9adb52d.webp 1920w"
+        }
+      ]
+    },
     url: "https://joinkai.app/",
     sourceUrl: COLLECT_SOFTWARE_URL,
   },
@@ -46,6 +71,17 @@ export const projects: Project[] = [
     tags: ["Legal", "Franchising"],
     categories: ["platforms"],
     icon: "legal",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/franiq-dashboard.png",
+          "alt": "FranIQ compliance dashboard",
+          "width": 800,
+          "height": 480
+        }
+      ]
+    },
     url: "https://www.franchiselawsolutions.com/",
     sourceUrl: COLLECT_SOFTWARE_URL,
   },
@@ -57,6 +93,18 @@ export const projects: Project[] = [
     tags: ["AI", "Wedding Planning"],
     categories: ["ai", "platforms"],
     icon: "wedding",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/wedded-venue-800.2cc6a5ba058e.webp",
+          "alt": "Illustrative wedding setting from Wedded’s website",
+          "width": 800,
+          "height": 599
+        }
+      ],
+      "label": "Venue illustration"
+    },
     url: "https://getwedded.ai/",
     sourceUrl: COLLECT_SOFTWARE_URL,
   },
@@ -68,6 +116,25 @@ export const projects: Project[] = [
     tags: ["AI", "Marketing", "Ad Creative"],
     categories: ["ai", "platforms"],
     icon: "creative",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/persona-ad-400.a98d87abed72.webp",
+          "alt": "Example nutrition ad creative from Persona’s public gallery",
+          "width": 400,
+          "height": 500
+        },
+        {
+          "src": "/images/projects/collect/persona-haircare-400.edb9e33bf735.webp",
+          "alt": "Example haircare ad creative from Persona’s public gallery",
+          "width": 400,
+          "height": 500
+        }
+      ],
+      "layout": "paired",
+      "label": "Example ad creatives"
+    },
     url: "https://personaapp.ai/",
     sourceUrl: COLLECT_SOFTWARE_URL,
   },
@@ -79,6 +146,17 @@ export const projects: Project[] = [
     tags: ["Peer Support", "Mentorship"],
     categories: ["platforms"],
     icon: "support",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/somethings-brand-800.63223c77949f.webp",
+          "alt": "Somethings wordmark with its yellow graffiti loop",
+          "width": 800,
+          "height": 420
+        }
+      ]
+    },
     url: "https://www.somethings.com/",
     sourceUrl: COLLECT_SOFTWARE_URL,
   },
@@ -96,6 +174,17 @@ export const projects: Project[] = [
     tags: ["Developer Tools", "Monitoring", "Analytics"],
     categories: ["developer-tools"],
     icon: "monitoring",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/watchpoint-brand-800.ff45553ced85.webp",
+          "alt": "Watchpoint’s purple tower brand illustration",
+          "width": 800,
+          "height": 500
+        }
+      ]
+    },
     url: "https://watchpoint.dev/",
     sourceUrl: COLLECT_SOFTWARE_URL,
   },
@@ -107,6 +196,17 @@ export const projects: Project[] = [
     tags: ["Community", "Sports"],
     categories: ["platforms"],
     icon: "community",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/punch-brand-800.fdebeee58b23.webp",
+          "alt": "3PunchConvo community",
+          "width": 800,
+          "height": 447
+        }
+      ]
+    },
     url: "https://3punchconvo.com/",
     sourceUrl: COLLECT_SOFTWARE_URL,
   },

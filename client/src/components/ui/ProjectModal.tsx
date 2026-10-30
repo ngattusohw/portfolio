@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import type { Project } from "@/data/projects";
-import ProjectIcon from "@/components/ui/ProjectIcon";
+import ProjectHero from "@/components/ui/ProjectHero";
 
 export default function ProjectModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -63,8 +63,8 @@ export default function ProjectModal() {
               </DialogPrimitive.Close>
             </div>
             <div className="p-4 sm:p-6 break-words">
-              <div className="w-full h-32 sm:h-40 bg-primary/10 rounded-lg mb-6 flex items-center justify-center">
-                <ProjectIcon name={project.icon} className="h-20 w-20 text-primary/50" />
+              <div className="overflow-hidden rounded-lg mb-6">
+                <ProjectHero project={project} variant="detail" />
               </div>
               <p className="text-primary font-medium mb-3">{project.subtitle}</p>
               <p className="text-slate-700 mb-6">{project.description}</p>

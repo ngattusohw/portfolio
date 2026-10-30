@@ -1,6 +1,6 @@
 import { ChevronRight, ExternalLink } from "lucide-react";
 import type { Project } from "@/data/projects";
-import ProjectIcon from "@/components/ui/ProjectIcon";
+import ProjectHero from "@/components/ui/ProjectHero";
 
 interface ProjectCardProps {
   project: Project;
@@ -16,18 +16,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       className="project-card min-w-0 flex flex-col bg-white rounded-xl shadow-md overflow-hidden"
       data-category={project.categories.join(" ")}
     >
-      <div className="relative h-48 shrink-0 overflow-hidden">
-        <div className="w-full h-full bg-primary/20 flex items-center justify-center">
-          <ProjectIcon name={project.icon} className="h-20 w-20 text-primary/50" />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
-          <div className="p-4 text-white">
-            <h3 className="text-lg font-bold">{project.title}</h3>
-            <p className="text-sm opacity-90">{project.subtitle}</p>
-          </div>
-        </div>
-      </div>
+      <ProjectHero project={project} />
       <div className="p-4 sm:p-6 break-words flex flex-col flex-1">
+        <h3 className="text-lg font-bold text-slate-900">{project.title}</h3>
+        <p className="mb-4 text-sm text-primary">{project.subtitle}</p>
         <p className="text-slate-600 mb-4">
           {project.description}
         </p>
