@@ -5,22 +5,16 @@ export default {
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["DM Sans", "sans-serif"],
+        display: ["Cormorant Garamond", "Georgia", "serif"],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        roman: {
-          bg: "hsl(var(--roman-bg) / <alpha-value>)",
-          parchment: "hsl(var(--roman-parchment) / <alpha-value>)",
-          text: "hsl(var(--roman-text) / <alpha-value>)",
-          "text-soft": "hsl(var(--roman-text-soft) / <alpha-value>)",
-          gold: "hsl(var(--roman-gold) / <alpha-value>)",
-          purple: "hsl(var(--roman-purple) / <alpha-value>)",
-          marble: "hsl(var(--roman-marble) / <alpha-value>)",
-          "marble-dark": "hsl(var(--roman-marble-dark) / <alpha-value>)",
-        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

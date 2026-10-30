@@ -7,6 +7,7 @@ Nick Gattuso’s portfolio uses React, TypeScript, Vite, Tailwind, and an Expres
 - Preserve the owner-reviewed career history in `client/src/data/experiences.ts` and project details in `client/src/data/projects.ts`. Do not invent dates, metrics, technology stacks, or personal authorship.
 - Nick is President of Collect Software and a founding team member and Head of Engineering at Somethings. Collect’s presidency start date is unconfirmed; list it as current until the owner supplies a date.
 - Use `RomanHero.tsx` for the hero. SpaceX content and its unused rocket animation were intentionally removed.
+- The public design uses warm stone, ink, Roman red, editorial serif typography, and a decorative architectural SVG. Keep the home, journal, and article layouts cohesive; the earlier pixel fonts and ASCII scene were intentionally replaced. Main content should remain visible without scroll-triggered entrance animations.
 - Recollect AI replaces Everybody Polls. Reuse the original project artwork already stored in `client/public/images/projects/`.
 - `client/src/data/blog-posts-seed.ts` contains old, incomplete outlines only. Do not seed or publish them automatically. Actual post content and publication status are managed in the database-backed owner editor.
 - Preserve mobile layouts, keyboard navigation, accessible controls, and private-draft handling.
