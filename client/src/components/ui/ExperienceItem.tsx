@@ -3,13 +3,14 @@ import { Experience } from "@/data/experiences";
 interface ExperienceItemProps {
   experience: Experience;
   delay: number;
+  animate?: boolean;
 }
 
-export default function ExperienceItem({ experience, delay }: ExperienceItemProps) {
+export default function ExperienceItem({ experience, delay, animate = true }: ExperienceItemProps) {
   const delayClass = `delay-${delay}`;
   
   return (
-    <div className={`mb-12 relative animate-slide-up opacity-0 ${delayClass}`}>
+    <div className={`mb-12 relative ${animate ? `animate-slide-up opacity-0 ${delayClass}` : ""}`}>
       <div className="absolute left-[-40px] w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
         {experience.type === 'work' ? (
           <svg 
@@ -38,7 +39,14 @@ export default function ExperienceItem({ experience, delay }: ExperienceItemProp
           <h3 className="text-xl font-bold">{experience.role}</h3>
           <span className="text-sm text-slate-500 bg-slate-100 px-2 py-1 rounded">{experience.period}</span>
         </div>
-        <p className="text-lg text-primary mb-2">{experience.company}</p>
+        <p className="text-lg text-primary mb-2">
+          {experience.companyUrl ? (
+            <a href={experience.companyUrl} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">
+              {experience.company}
+            </a>
+          ) : experience.company}
+          {experience.arrangement && <span className="block text-sm text-slate-500">{experience.arrangement}</span>}
+        </p>
         <p className="text-slate-700 mb-4">
           {experience.description}
         </p>

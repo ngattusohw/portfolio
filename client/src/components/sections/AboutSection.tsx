@@ -10,16 +10,19 @@ export default function AboutSection() {
         
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className="order-2 md:order-1 animate-slide-up opacity-0">
-            <h3 className="text-2xl font-bold font-sans mb-6">Turning ideas into digital reality</h3>
+            <h3 className="text-2xl font-bold font-sans mb-6">Building products and leading engineering teams</h3>
             <p className="text-slate-700 mb-6">
-              As an entrepreneur and engineer, I've built a career on creating innovative solutions and 
-              leading teams to deliver exceptional products. With expertise spanning from front-end 
-              development to system architecture, I bring a holistic approach to every project.
+              I'm President of <a href="https://collectsoftware.org/" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-4">Collect Software</a> and
+              a founding team member and Head of Engineering at Somethings. At Collect, we build custom
+              web, mobile, and enterprise software, integrate AI into business workflows, and provide
+              senior technical consulting. At Somethings, I lead engineering for a platform connecting
+              young people with mental health support.
             </p>
             <p className="text-slate-700 mb-6">
-              My passion lies at the intersection of technology and business strategy. I've founded multiple 
-              companies, led engineering teams at both startups and enterprise organizations, and continuously 
-              seek opportunities to solve complex problems through elegant technical solutions.
+              My background includes engineering roles at IBM and Wells Fargo, co-founding Mira
+              Therapeutics and Life Skills Software, and building across digital health, education,
+              and financial services. My work spans hands-on development, system architecture,
+              and leading onshore and offshore teams.
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">

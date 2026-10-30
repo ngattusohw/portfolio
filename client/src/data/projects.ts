@@ -1,69 +1,151 @@
+export type ProjectCategory = "ai" | "developer-tools" | "platforms";
+
+export type ProjectIconName =
+  | "automation" | "legal" | "wedding" | "creative" | "support"
+  | "monitoring" | "community" | "analytics" | "education" | "polling";
+
 export interface Project {
-  id: number;
+  id: string;
   title: string;
   subtitle: string;
   description: string;
-  challenges: string;
-  results: string;
-  technologies: string[];
-  categories: string[];
+  features?: string[];
+  tags: string[];
+  categories: ProjectCategory[];
+  icon: ProjectIconName;
   url: string;
+  sourceUrl?: string;
 }
 
+export const COLLECT_SOFTWARE_URL = "https://collectsoftware.org/";
+
+// Company portfolio attribution: https://collectsoftware.org/.
+// Product descriptions do not imply individual authorship or a specific stack.
 export const projects: Project[] = [
   {
-    id: 1,
-    title: "aCrossMinistry",
-    subtitle: "Faith-Based Organization Platform",
-    description: "A digital platform for faith-based communities to connect, share resources, and coordinate ministry efforts across different locations and denominations.",
-    challenges: "Creating a platform that addresses the diverse needs of different faith communities while maintaining an inclusive and user-friendly interface was our primary challenge.",
-    results: "Successfully built a platform that serves multiple churches and ministry organizations, facilitating resource sharing and community building in a digital space.",
-    technologies: ["React", "Node.js", "Express", "MongoDB", "Tailwind CSS"],
-    categories: ["web", "startup"],
-    url: "https://a-crossministry.net"
+    id: "kai",
+    title: "kAI",
+    subtitle: "AI Infrastructure",
+    description: "An AI engineering product that investigates infrastructure issues and proposes fixes through pull requests.",
+    // Product features: https://joinkai.app/.
+    features: [
+      "Brings logs, metrics, code, and other integrations into investigations.",
+      "Supports reusable workflows and a Command Center for reviewing work.",
+    ],
+    tags: ["AI", "Infrastructure", "Developer Tools"],
+    categories: ["ai", "developer-tools"],
+    icon: "automation",
+    url: "https://joinkai.app/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
   },
   {
-    id: 2,
-    title: "What Did You Get Done",
-    subtitle: "Productivity Tracking App",
-    description: "A productivity tracking application designed to help users track daily accomplishments and boost motivation through achievement visualization.",
-    challenges: "One of the main challenges was creating an intuitive interface that encourages daily use without becoming a burden. We implemented a minimalist design with smart reminders and quick-entry functionality to make tracking accomplishments as frictionless as possible.",
-    results: "The application has significantly improved user productivity, with 75% of active users reporting higher motivation and better task completion rates. The visual progress tracking feature has been particularly effective in helping users maintain consistent daily habits.",
-    technologies: ["React", "Firebase", "Tailwind CSS", "Redux", "Node.js"],
-    categories: ["web", "startup"],
-    url: "https://whatdidyougetdone.netlify.app/"
+    id: "internicola",
+    title: "Internicola Law Firm",
+    subtitle: "Franchise Law",
+    description: "A national franchise law firm providing counsel, compliance support, and resources for growing franchise businesses.",
+    tags: ["Legal", "Franchising"],
+    categories: ["platforms"],
+    icon: "legal",
+    url: "https://www.franchiselawsolutions.com/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
   },
   {
-    id: 3,
-    title: "Everybody Polls",
-    subtitle: "Interactive Polling Platform",
-    description: "A real-time polling application enabling users to create, share, and participate in polls with instant results visualization and analytics.",
-    challenges: "Real-time data synchronization across thousands of concurrent users was a significant technical challenge. We implemented a WebSocket architecture with an efficient caching layer to ensure instantaneous updates without overloading the server.",
-    results: "The platform has facilitated over 100,000 polls with more than 1 million votes. It's been used by organizations ranging from small businesses to educational institutions for gathering instant feedback and making data-driven decisions.",
-    technologies: ["Vue.js", "Node.js", "MongoDB", "Socket.IO", "D3.js"],
-    categories: ["web", "startup"],
-    url: "https://www.everybodypolls.com/"
+    id: "wedded",
+    title: "Wedded",
+    subtitle: "Wedding Planning",
+    description: "AI-assisted wedding venue discovery, matching, outreach, and tour coordination.",
+    tags: ["AI", "Wedding Planning"],
+    categories: ["ai", "platforms"],
+    icon: "wedding",
+    url: "https://getwedded.ai/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
   },
   {
-    id: 4,
-    title: "LifeSkills.software",
-    subtitle: "Educational Platform",
-    description: "A comprehensive platform teaching essential life skills through interactive lessons, practical exercises, and personalized learning paths.",
-    challenges: "Creating engaging educational content that adapts to different learning styles while maintaining high retention rates was challenging. We developed an adaptive learning algorithm that personalizes content delivery based on user progress and engagement patterns.",
-    results: "The platform has seen impressive user retention, with 82% completion rates for courses (compared to the industry average of 30%). Users report significant improvements in practical life skills, with the financial literacy and communication modules being particularly impactful.",
-    technologies: ["Next.js", "GraphQL", "Prisma", "PostgreSQL", "AWS"],
-    categories: ["web", "startup"],
-    url: "https://lifeskills.software/"
+    id: "persona-ai",
+    title: "Persona AI",
+    subtitle: "Ad Creative",
+    description: "AI market research, buyer personas, and static-ad generation for review and download.",
+    tags: ["AI", "Marketing", "Ad Creative"],
+    categories: ["ai", "platforms"],
+    icon: "creative",
+    url: "https://personaapp.ai/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
   },
   {
-    id: 5,
+    id: "somethings",
     title: "Somethings",
-    subtitle: "Head of Engineering",
-    description: "Led engineering teams in building innovative solutions, establishing technical roadmaps, and implementing scalable architecture for product growth.",
-    challenges: "Scaling the technical infrastructure to support rapid user growth while maintaining system reliability and performance was a major challenge. We implemented a microservices architecture with robust monitoring and automated scaling protocols.",
-    results: "Successfully led the engineering team through a period of 300% growth, while improving system reliability to 99.99% uptime. Implemented CI/CD pipelines that reduced deployment time by 70% and established a technical mentorship program that improved team retention by 40%.",
-    technologies: ["Leadership", "System Design", "Team Building", "Cloud Architecture", "Agile"],
-    categories: ["enterprise", "startup"],
-    url: "https://somethings.com/"
-  }
+    subtitle: "Peer Support",
+    description: "A platform connecting young people with Certified Peer Specialist Mentors for ongoing one-to-one support.",
+    tags: ["Peer Support", "Mentorship"],
+    categories: ["platforms"],
+    icon: "support",
+    url: "https://www.somethings.com/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
+  },
+  {
+    id: "watchpoint",
+    title: "Watchpoint",
+    subtitle: "Application Monitoring",
+    description: "A dashboard bringing service health, errors, analytics, and custom metrics together across applications and APIs.",
+    // Product features: https://watchpoint.dev/.
+    features: [
+      "Monitors uptime with HTTP health checks and tracks application errors.",
+      "Connects App Store Connect, CloudWatch, Sentry, OneSignal, PostHog, and Sendbird.",
+      "Accepts application-specific metrics through a custom metrics API.",
+    ],
+    tags: ["Developer Tools", "Monitoring", "Analytics"],
+    categories: ["developer-tools"],
+    icon: "monitoring",
+    url: "https://watchpoint.dev/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
+  },
+  {
+    id: "3punchconvo",
+    title: "3PunchConvo",
+    subtitle: "MMA & UFC Community",
+    description: "A community for MMA and UFC discussion, analysis, and fan engagement.",
+    tags: ["Community", "Sports"],
+    categories: ["platforms"],
+    icon: "community",
+    url: "https://3punchconvo.com/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
+  },
+  {
+    id: "modern-ai",
+    title: "Modern.ai",
+    subtitle: "Commerce Analytics",
+    description: "Commerce reporting and AI-powered insights that bring data from sales channels and business tools together.",
+    // Product positioning: https://www.modern.ai/.
+    features: [
+      "Unifies reporting across ecommerce, marketplace, advertising, and other business data.",
+      "Provides structured data for dashboards and AI workflows.",
+    ],
+    tags: ["AI", "Commerce", "Analytics"],
+    categories: ["ai", "platforms"],
+    icon: "analytics",
+    url: "https://modern.ai/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
+  },
+  {
+    id: "life-skills-software",
+    title: "Life Skills Software",
+    subtitle: "Educational Games",
+    description: "Educational web games for K–12 special-needs students, covering academic, social, and transitional life skills.",
+    tags: ["Education", "Web Games"],
+    categories: ["platforms"],
+    icon: "education",
+    url: "https://lifeskills.software/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
+  },
+  {
+    id: "everybody-polls",
+    title: "Everybody Polls",
+    subtitle: "Political Polling",
+    description: "A mobile political polling app with issue voting, demographic insights, and predictions.",
+    tags: ["Polling", "Mobile"],
+    categories: ["platforms"],
+    icon: "polling",
+    url: "https://everybodypolls.com/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
+  },
 ];

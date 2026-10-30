@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { Project } from "@/data/projects";
+import { X } from "lucide-react";
+import type { Project } from "@/data/projects";
+import ProjectIcon from "@/components/ui/ProjectIcon";
 
 export default function ProjectModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,56 +58,46 @@ export default function ProjectModal() {
                   className="min-h-11 min-w-11 shrink-0 inline-flex items-center justify-center text-slate-400 hover:text-slate-600"
                   aria-label="Close modal"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <X className="h-6 w-6" aria-hidden="true" />
                 </button>
               </DialogPrimitive.Close>
             </div>
             <div className="p-4 sm:p-6 break-words">
-              <div className="w-full h-40 sm:h-64 bg-primary/10 rounded-lg mb-6 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-32 w-32 text-primary/30"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  {project.id === 1 && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />}
-                  {project.id === 2 && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />}
-                  {project.id === 3 && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />}
-                  {project.id === 4 && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />}
-                </svg>
+              <div className="w-full h-32 sm:h-40 bg-primary/10 rounded-lg mb-6 flex items-center justify-center">
+                <ProjectIcon name={project.icon} className="h-20 w-20 text-primary/50" />
               </div>
-              <h4 className="text-xl font-bold mb-3">Project Overview</h4>
+              <p className="text-primary font-medium mb-3">{project.subtitle}</p>
               <p className="text-slate-700 mb-6">{project.description}</p>
-
-              <h4 className="text-xl font-bold mb-3">Challenges & Solutions</h4>
-              <p className="text-slate-700 mb-6">
-                {project.challenges}
-              </p>
-
-              <h4 className="text-xl font-bold mb-3">Technologies Used</h4>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {project.technologies.map((tech, index) => (
-                  <span key={index} className="px-3 py-2 bg-slate-100 text-slate-700 rounded">
-                    {tech}
-                  </span>
+              {project.features && project.features.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="text-lg font-bold mb-3">Product Features</h4>
+                  <ul className="list-disc pl-5 space-y-2 text-slate-700">
+                    {project.features.map(feature => <li key={feature}>{feature}</li>)}
+                  </ul>
+                </div>
+              )}
+              <ul className="flex flex-wrap gap-2 mb-6" aria-label="Project topics">
+                {project.tags.map(tag => (
+                  <li key={tag} className="px-3 py-2 bg-slate-100 text-slate-700 rounded">
+                    {tag}
+                  </li>
                 ))}
-              </div>
-
-              <h4 className="text-xl font-bold mb-3">Results & Impact</h4>
-              <p className="text-slate-700">
-                {project.results}
-              </p>
+              </ul>
+              {project.sourceUrl && (
+                <p className="text-sm text-slate-600">
+                  Listed in{" "}
+                  <a
+                    href={project.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline underline-offset-4"
+                  >
+                    Collect Software’s portfolio
+                  </a>.
+                </p>
+              )}
             </div>
-            <div className="p-4 sm:p-6 border-t border-slate-200 flex justify-end gap-3">
+            <div className="p-4 sm:p-6 border-t border-slate-200 flex flex-wrap justify-end gap-3">
               <DialogPrimitive.Close asChild>
                 <button
                   className="min-h-11 px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded-md"
@@ -117,6 +109,7 @@ export default function ProjectModal() {
                 href={project.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`Visit ${project.title} website (opens in a new tab)`}
                 className="inline-flex min-h-11 items-center px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-md"
               >
                 Visit Site
