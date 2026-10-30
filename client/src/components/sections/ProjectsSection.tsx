@@ -26,16 +26,16 @@ export default function ProjectsSection() {
           <h2 className="text-3xl md:text-4xl font-sans font-bold mb-4">Selected Projects</h2>
           <div className="w-20 h-1 bg-secondary mx-auto mb-6"></div>
           <p className="max-w-2xl mx-auto text-slate-600 mb-8">
-            Projects from{" "}
+            Selected products and client work across AI, developer tools, and digital platforms. More at{" "}
             <a
               href={COLLECT_SOFTWARE_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary underline underline-offset-4 hover:text-primary/80"
             >
-              Collect Software’s portfolio
+              Collect Software
             </a>
-            , spanning AI products, developer tools, and digital platforms.
+            .
           </p>
           <div
             className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-3 mb-8"

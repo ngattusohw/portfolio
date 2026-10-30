@@ -2,7 +2,7 @@ export type ProjectCategory = "ai" | "developer-tools" | "platforms";
 
 export type ProjectIconName =
   | "automation" | "legal" | "wedding" | "creative" | "support"
-  | "monitoring" | "community" | "analytics" | "education" | "polling";
+  | "monitoring" | "community" | "analytics" | "education" | "memory";
 
 export interface ProjectHeroImage {
   src: string;
@@ -23,7 +23,7 @@ export interface Project {
   icon: ProjectIconName;
   hero?: {
     images: ProjectHeroImage[];
-    layout?: "paired";
+    layout?: "paired" | "contained";
     label?: string;
   };
   url: string;
@@ -32,7 +32,7 @@ export interface Project {
 
 export const COLLECT_SOFTWARE_URL = "https://collectsoftware.org/";
 
-// Company portfolio attribution: https://collectsoftware.org/.
+// Company portfolio attribution: https://collectsoftware.org/; Recollect's own landing page is linked below.
 // Product descriptions do not imply individual authorship or a specific stack.
 export const projects: Project[] = [
   {
@@ -238,14 +238,29 @@ export const projects: Project[] = [
     sourceUrl: COLLECT_SOFTWARE_URL,
   },
   {
-    id: "everybody-polls",
-    title: "Everybody Polls",
-    subtitle: "Political Polling",
-    description: "A mobile political polling app with issue voting, demographic insights, and predictions.",
-    tags: ["Polling", "Mobile"],
-    categories: ["platforms"],
-    icon: "polling",
-    url: "https://everybodypolls.com/",
-    sourceUrl: COLLECT_SOFTWARE_URL,
+    id: "recollect-ai",
+    title: "Recollect AI",
+    subtitle: "Flashcards & Spaced Repetition",
+    description: "AI-assisted flashcards for curious minds, with ready-made decks, editable AI drafts, spaced repetition, and offline practice.",
+    // Product features and beta status: https://recollect-ai.netlify.app/.
+    features: [
+      "Start with a ready-made deck, draft cards with AI, or write your own.",
+      "Review and edit AI suggestions before saving them to a deck.",
+      "Practice saved cards offline and space reviews over days and weeks.",
+      "Currently in beta for iPhone.",
+    ],
+    tags: ["AI", "Learning", "Mobile"],
+    categories: ["ai", "platforms"],
+    icon: "memory",
+    hero: {
+      images: [{
+        src: "/images/projects/recollect/curiosity-sculpture.png",
+        alt: "Recollect’s sculptural flashcards with a cobalt ribbon and colorful geometric shapes",
+        width: 1254,
+        height: 1254,
+      }],
+      layout: "contained",
+    },
+    url: "https://recollect-ai.netlify.app/",
   },
 ];
