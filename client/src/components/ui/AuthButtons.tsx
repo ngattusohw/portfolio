@@ -1,37 +1,28 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { Loader2 } from "lucide-react";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AuthButtons() {
-  const { user, isLoading, isAuthenticated } = useAuth();
-
-  if (isLoading) {
-    return (
-      <Button variant="ghost" disabled>
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        Loading...
-      </Button>
-    );
+  const { user, isAuthenticated } = useAuth();
+  const [busy, setBusy] = useState(false);
+  const { toast } = useToast();
+  if (!isAuthenticated) return null;
+  async function logout() {
+    setBusy(true);
+    try {
+      await apiRequest("/api/auth/logout", { method: "POST", body: "{}" });
+      // Remove private draft caches as soon as the session ends.
+      queryClient.clear();
+      window.location.replace("/admin");
+    } catch (error) {
+      toast({ title: "Couldn't sign out", description: error instanceof Error ? error.message : "Please try again.", variant: "destructive" });
+      setBusy(false);
+    }
   }
-
-  if (isAuthenticated) {
-    return (
-      <div className="flex items-center gap-2">
-        <div className="text-sm">
-          <span className="font-semibold mr-1">
-            {user?.username}
-          </span>
-        </div>
-        <Button variant="outline" size="sm" onClick={() => window.location.href = "/api/logout"}>
-          Log out
-        </Button>
-      </div>
-    );
-  }
-
-  return (
-    <Button variant="outline" size="sm" onClick={() => window.location.href = "/api/login"}>
-      Log in
-    </Button>
-  );
+  return <div className="flex items-center gap-3 text-sm">
+    <span>{user?.username}</span>
+    <Button variant="outline" className="min-h-11" disabled={busy} onClick={logout}>{busy ? "Signing out…" : "Sign out"}</Button>
+  </div>;
 }

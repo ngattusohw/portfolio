@@ -1,528 +1,252 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
-import { BlogPost, blogPostSchema } from "@shared/schema";
+import { ApiError, apiRequest, queryClient } from "@/lib/queryClient";
+import { type BlogPost, blogPostSchema } from "@shared/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { format } from "date-fns";
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useAuth } from "@/hooks/useAuth";
-
-// Components
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import AdminLogin from "@/components/AdminLogin";
+import AuthButtons from "@/components/ui/AuthButtons";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
+import { AlertCircle, Check, Eye, Loader2, PenSquare, Plus, Trash2 } from "lucide-react";
 
-// Icons
-import { 
-  PenSquare, 
-  Trash2,
-  Eye, 
-  Plus,
-  AlertCircle,
-  Check
-} from "lucide-react";
-
-// Extend the blog post schema with form validations
+// Keep text inputs as strings; normalize them when building the API payload.
 const blogFormSchema = blogPostSchema.extend({
-  tags: z.string().optional().transform(val => 
-    val ? val.split(',').map(tag => tag.trim()) : []
+  thumbnail_url: z.string().trim().refine(
+    value => value === "" || z.string().url().safeParse(value).success,
+    "Enter a valid image URL, or leave this blank.",
   ),
+  tags: z.string(),
+  status: z.enum(["draft", "published"]),
 });
-
-// Form type
 type BlogFormValues = z.infer<typeof blogFormSchema>;
+type PostsResponse = { success: boolean; posts: BlogPost[] };
+
+const emptyPost: BlogFormValues = {
+  title: "", slug: "", summary: "", content: "", thumbnail_url: "", tags: "", status: "draft",
+};
+const slugFromTitle = (title: string) => title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 export default function AdminPage() {
-  const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("posts");
   const [editingPostId, setEditingPostId] = useState<number | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Check authentication status
-  const { isAuthenticated, isAuthorized, isLoading: authLoading, user } = useAuth();
-  
-  // Redirect to home if not authenticated or not authorized
-  useEffect(() => {
-    if (!authLoading) {
-      if (!isAuthenticated) {
-        toast({
-          title: "Access Denied",
-          description: "Login required to access this area.",
-          variant: "destructive"
-        });
-        navigate("/");
-      } else if (!isAuthorized) {
-        toast({
-          title: "Access Denied",
-          description: `Sorry ${user?.username}, only Nick has access to this area.`,
-          variant: "destructive"
-        });
-        navigate("/");
-      }
-    }
-  }, [isAuthenticated, isAuthorized, authLoading, navigate, user]);
-
-  // Fetch all blog posts (including drafts)
-  const { data: postsData, isLoading, error, refetch } = useQuery({
-    queryKey: ['/api/blog', 'admin'],
-    queryFn: async () => {
-      // Include drafts when in the admin interface
-      const response = await apiRequest('/api/blog?includeDrafts=true');
-      return response as { success: boolean; posts: BlogPost[] };
-    }
-  });
-
-  // Get the post being edited if any
-  const editingPost = editingPostId ? postsData?.posts.find(post => post.id === editingPostId) : null;
-
-  // Setup form
+  const [preview, setPreview] = useState(false);
+  const [postToDelete, setPostToDelete] = useState<BlogPost | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { isAuthenticated, isAuthorized, isLoading: authLoading } = useAuth();
+  const canManage = isAuthenticated && isAuthorized;
   const form = useForm<BlogFormValues>({
     resolver: zodResolver(blogFormSchema),
-    defaultValues: {
-      title: editingPost?.title || "",
-      slug: editingPost?.slug || "",
-      summary: editingPost?.summary || "",
-      content: editingPost?.content || "",
-      thumbnail_url: editingPost?.thumbnail_url || "",
-      tags: editingPost?.tags ? editingPost.tags.join(', ') : "",
-      status: editingPost?.status || "draft"
-    }
+    defaultValues: emptyPost,
+  });
+  const { isDirty, isSubmitting } = form.formState;
+  const selectedStatus = form.watch("status");
+  const previewContent = form.watch("content");
+
+  const { data: postsData, isLoading, error, refetch } = useQuery({
+    queryKey: ["/api/blog", "admin"],
+    queryFn: () => apiRequest<PostsResponse>("/api/blog?limit=100"),
+    enabled: canManage,
+    staleTime: 0,
   });
 
-  // Update form values when editing post changes
   useEffect(() => {
-    if (editingPost) {
-      form.reset({
-        title: editingPost.title,
-        slug: editingPost.slug,
-        summary: editingPost.summary,
-        content: editingPost.content,
-        thumbnail_url: editingPost.thumbnail_url || "",
-        tags: editingPost.tags ? editingPost.tags.join(', ') : "",
-        status: editingPost.status
-      });
-    } else {
-      form.reset({
-        title: "",
-        slug: "",
-        summary: "",
-        content: "",
-        thumbnail_url: "",
-        tags: "",
-        status: "draft"
-      });
-    }
-  }, [editingPost, form]);
+    if (!isDirty) return;
+    const warnBeforeLeaving = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warnBeforeLeaving);
+    return () => window.removeEventListener("beforeunload", warnBeforeLeaving);
+  }, [isDirty]);
 
-  // Form submission handler
-  const onSubmit = async (data: BlogFormValues) => {
-    setIsSubmitting(true);
+  const canDiscardChanges = () => !isDirty || window.confirm("Discard your unsaved changes?");
+  const startNewPost = () => {
+    if (!canDiscardChanges()) return;
+    setEditingPostId(null);
+    form.reset(emptyPost);
+    setPreview(false);
+    setActiveTab("editor");
+  };
+  const editPost = (post: BlogPost) => {
+    if (!canDiscardChanges()) return;
+    setEditingPostId(post.id);
+    form.reset({
+      title: post.title,
+      slug: post.slug,
+      summary: post.summary,
+      content: post.content,
+      thumbnail_url: post.thumbnail_url || "",
+      tags: (post.tags || []).join(", "),
+      status: post.status === "published" ? "published" : "draft",
+    });
+    setPreview(false);
+    setActiveTab("editor");
+  };
+  const cancelEditing = () => {
+    if (!canDiscardChanges()) return;
+    form.reset(emptyPost);
+    setEditingPostId(null);
+    setActiveTab("posts");
+    setPreview(false);
+  };
+  const refreshPosts = () => queryClient.invalidateQueries({ queryKey: ["/api/blog"] });
+
+  const onSubmit = async (values: BlogFormValues) => {
+    form.clearErrors("root");
+    const data = {
+      ...values,
+      thumbnail_url: values.thumbnail_url || null,
+      tags: Array.from(new Set(values.tags.split(",").map(tag => tag.trim()).filter(Boolean))),
+    };
     try {
-      if (editingPostId) {
-        // Update existing post
-        await apiRequest(`/api/blog/${editingPostId}`, {
-          method: 'PUT',
-          body: JSON.stringify(data)
-        });
-        toast({
-          title: "Post updated",
-          description: "Your blog post has been updated successfully."
-        });
-      } else {
-        // Create new post
-        await apiRequest('/api/blog', {
-          method: 'POST',
-          body: JSON.stringify(data)
-        });
-        toast({
-          title: "Post created",
-          description: "Your blog post has been created successfully."
-        });
-      }
-      
-      // Reset form and refetch posts
-      form.reset();
+      await apiRequest(editingPostId ? `/api/blog/${editingPostId}` : "/api/blog", {
+        method: editingPostId ? "PUT" : "POST",
+        body: JSON.stringify(data),
+      });
+      toast({
+        title: values.status === "published" ? "Post published" : "Draft saved",
+        description: values.status === "published" ? "Your post is visible on the blog." : "Only you can see this post until you publish it.",
+      });
+      form.reset(emptyPost);
       setEditingPostId(null);
       setActiveTab("posts");
-      queryClient.invalidateQueries({ queryKey: ['/api/blog'] });
-      await refetch();
+      setPreview(false);
+      await refreshPosts();
     } catch (error) {
-      console.error("Error saving post:", error);
-      toast({
-        title: "Error",
-        description: "There was an error saving your post. Please try again.",
-        variant: "destructive"
+      if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
+        await queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      }
+      form.setError("root.server", {
+        message: error instanceof Error ? error.message : "Your post could not be saved. Please try again.",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
-  // Delete post handler
-  const handleDeletePost = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this post? This action cannot be undone.")) {
-      return;
-    }
-
+  const deletePost = async () => {
+    if (!postToDelete || isDeleting) return;
+    setIsDeleting(true);
     try {
-      await apiRequest(`/api/blog/${id}`, {
-        method: 'DELETE'
-      });
-      toast({
-        title: "Post deleted",
-        description: "Your blog post has been deleted successfully."
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/blog'] });
-      await refetch();
+      await apiRequest(`/api/blog/${postToDelete.id}`, { method: "DELETE" });
+      if (editingPostId === postToDelete.id) {
+        form.reset(emptyPost);
+        setEditingPostId(null);
+      }
+      setPostToDelete(null);
+      toast({ title: "Post deleted" });
+      await refreshPosts();
     } catch (error) {
-      console.error("Error deleting post:", error);
-      toast({
-        title: "Error",
-        description: "There was an error deleting your post. Please try again.",
-        variant: "destructive"
-      });
+      toast({ title: "Post could not be deleted", description: error instanceof Error ? error.message : "Please try again.", variant: "destructive" });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
-  // Auto-generate slug from title
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!form.getValues().slug || editingPostId === null) {
-      const title = e.target.value;
-      const slug = title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '');
-      form.setValue('slug', slug);
-    }
-  };
+  if (authLoading) {
+    return <div className="container mx-auto max-w-5xl px-4 pb-16 pt-28" role="status"><Loader2 className="mr-2 inline h-5 w-5 animate-spin" />Checking sign-in…</div>;
+  }
+  if (!isAuthenticated) return <AdminLogin />;
+  if (!isAuthorized) {
+    return <div className="container mx-auto max-w-lg px-4 pb-16 pt-28"><Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Owner access required</AlertTitle><AlertDescription>Sign in with the portfolio owner's account to manage posts.</AlertDescription></Alert><div className="mt-6"><AuthButtons /></div></div>;
+  }
 
   return (
-    <div className="container px-4 mx-auto py-16">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Blog Management</h1>
-          <p className="text-gray-600 dark:text-gray-400">Create and manage your blog posts</p>
+    <div className="container mx-auto max-w-5xl px-4 pb-16 pt-28 sm:px-6">
+      <div className="mb-8 flex flex-col gap-5">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div><h1 className="text-3xl font-bold">Blog management</h1><p className="mt-1 text-muted-foreground">Write drafts, preview Markdown, and publish when you're ready.</p></div>
+          <AuthButtons />
         </div>
-        <div className="flex gap-4">
-          <Link href="/">
-            <Button variant="outline">Back to Website</Button>
-          </Link>
-          {activeTab === "posts" ? (
-            <Button onClick={() => setActiveTab("editor")}>
-              <Plus className="mr-2 h-4 w-4" />
-              New Post
-            </Button>
-          ) : (
-            <Button onClick={() => {
-              setEditingPostId(null);
-              form.reset();
-              setActiveTab("posts");
-            }} variant="outline">
-              Cancel
-            </Button>
-          )}
+        <div className="flex flex-wrap gap-3">
+          <Button asChild variant="outline" className="min-h-11"><Link href="/blog">View blog</Link></Button>
+          <Button onClick={startNewPost} disabled={isSubmitting} className="min-h-11"><Plus className="mr-2 h-4 w-4" />New post</Button>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="w-full md:w-auto">
-          <TabsTrigger value="posts">All Posts</TabsTrigger>
-          <TabsTrigger value="editor">{editingPostId ? "Edit Post" : "New Post"}</TabsTrigger>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="min-w-0 space-y-6">
+        <TabsList className="grid h-auto w-full grid-cols-2 sm:w-72">
+          <TabsTrigger value="posts" className="min-h-11">All posts</TabsTrigger>
+          <TabsTrigger value="editor" className="min-h-11">{editingPostId ? "Edit post" : "New post"}{isDirty ? " •" : ""}</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="posts" className="space-y-6">
-          {isLoading ? (
-            <div className="space-y-4">
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-            </div>
-          ) : error ? (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>
-                Failed to load blog posts. Please refresh the page and try again.
-              </AlertDescription>
-            </Alert>
+        <TabsContent value="posts" className="space-y-4">
+          {isLoading ? <div className="space-y-4" role="status" aria-label="Loading posts"><Skeleton className="h-28 w-full" /><Skeleton className="h-28 w-full" /></div> : error ? (
+            <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Posts could not be loaded</AlertTitle><AlertDescription><p>Please try again. Your saved posts have not changed.</p><Button variant="outline" className="mt-3 min-h-11" onClick={() => refetch()}>Try again</Button></AlertDescription></Alert>
+          ) : !postsData?.posts.length ? (
+            <Card><CardContent className="pt-6 text-center"><p className="text-muted-foreground">No posts yet. Start with a private draft.</p><Button onClick={startNewPost} className="mt-4 min-h-11"><Plus className="mr-2 h-4 w-4" />Write a post</Button></CardContent></Card>
           ) : (
-            <div>
-              {!postsData?.posts?.length ? (
-                <Card>
-                  <CardContent className="pt-6 text-center">
-                    <p className="text-gray-500">No blog posts yet. Create your first post to get started!</p>
-                    <Button onClick={() => setActiveTab("editor")} className="mt-4">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Create First Post
-                    </Button>
-                  </CardContent>
-                </Card>
-              ) : (
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Title</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Date</TableHead>
-                        <TableHead className="w-[150px]">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {postsData.posts.map((post) => (
-                        <TableRow key={post.id}>
-                          <TableCell>
-                            <div>
-                              <p className="font-medium">{post.title}</p>
-                              <p className="text-sm text-gray-500">{post.slug}</p>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={post.status === "published" ? "default" : "outline"}>
-                              {post.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-sm text-gray-500">
-                            {format(new Date(post.published_at || new Date()), 'MMM dd, yyyy')}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Button 
-                                variant="ghost" 
-                                size="icon"
-                                onClick={() => {
-                                  setEditingPostId(post.id);
-                                  setActiveTab("editor");
-                                }}
-                              >
-                                <PenSquare className="h-4 w-4" />
-                                <span className="sr-only">Edit</span>
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                size="icon"
-                                onClick={() => handleDeletePost(post.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                                <span className="sr-only">Delete</span>
-                              </Button>
-                              <Link href={`/blog/${post.slug}`}>
-                                <Button variant="ghost" size="icon">
-                                  <Eye className="h-4 w-4" />
-                                  <span className="sr-only">View</span>
-                                </Button>
-                              </Link>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+            <ul className="space-y-4" aria-label="Blog posts">{postsData.posts.map(post => (
+              <li key={post.id}><Card><CardContent className="flex min-w-0 flex-col justify-between gap-4 p-4 sm:flex-row sm:items-center sm:p-5">
+                <div className="min-w-0 space-y-2">
+                  <div className="flex flex-wrap items-center gap-2"><h2 className="break-words text-lg font-semibold">{post.title}</h2><Badge variant={post.status === "published" ? "default" : "outline"}>{post.status}</Badge></div>
+                  <p className="break-all text-sm text-muted-foreground">/blog/{post.slug}</p>
+                  <p className="text-xs text-muted-foreground">{post.updated_at ? `Updated ${format(new Date(post.updated_at), "MMM d, yyyy")}` : "No update date"}</p>
                 </div>
-              )}
-            </div>
+                <div className="flex shrink-0 flex-wrap gap-2">
+                  <Button variant="outline" className="min-h-11" onClick={() => editPost(post)}><PenSquare className="mr-2 h-4 w-4" />Edit<span className="sr-only"> {post.title}</span></Button>
+                  <Button asChild variant="outline" className="min-h-11"><Link href={`/blog/${post.slug}`}><Eye className="mr-2 h-4 w-4" />{post.status === "published" ? "View" : "Preview"}<span className="sr-only"> {post.title}</span></Link></Button>
+                  <Button variant="ghost" className="h-11 w-11 text-destructive hover:text-destructive" onClick={() => setPostToDelete(post)} aria-label={`Delete ${post.title}`}><Trash2 className="h-4 w-4" /></Button>
+                </div>
+              </CardContent></Card></li>
+            ))}</ul>
           )}
+          {postsData && postsData.posts.length >= 100 && <p className="text-sm text-muted-foreground">Showing the latest 100 posts.</p>}
         </TabsContent>
 
-        <TabsContent value="editor" className="space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>{editingPostId ? "Edit Post" : "Create New Post"}</CardTitle>
-              <CardDescription>
-                Fill in the details below to {editingPostId ? "update your" : "create a new"} blog post.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+        <TabsContent value="editor">
+          <Card className="min-w-0">
+            <CardHeader className="p-4 sm:p-6"><CardTitle>{editingPostId ? "Edit post" : "Create a post"}</CardTitle><CardDescription>New posts start as drafts. Published posts are visible to everyone.</CardDescription></CardHeader>
+            <CardContent className="min-w-0 p-4 pt-0 sm:p-6 sm:pt-0">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="title"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Title</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="My Awesome Blog Post" 
-                              {...field} 
-                              onChange={(e) => {
-                                field.onChange(e);
-                                handleTitleChange(e);
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="slug"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Slug</FormLabel>
-                          <FormControl>
-                            <Input placeholder="my-awesome-blog-post" {...field} />
-                          </FormControl>
-                          <FormDescription>
-                            URL-friendly version of the title
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name="summary"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Summary</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="A brief summary of your blog post..." 
-                            className="resize-none h-20"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="content"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Content</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            placeholder="Write your blog post content here..." 
-                            className="resize-none min-h-[300px]"
-                            {...field} 
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Use blank lines to separate paragraphs. You can add media after saving.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      control={form.control}
-                      name="thumbnail_url"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Thumbnail URL</FormLabel>
-                          <FormControl>
-                            <Input placeholder="https://example.com/image.jpg" {...field} />
-                          </FormControl>
-                          <FormDescription>
-                            URL to the thumbnail image for this post
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="tags"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Tags</FormLabel>
-                          <FormControl>
-                            <Input placeholder="tech, programming, startup" {...field} />
-                          </FormControl>
-                          <FormDescription>
-                            Comma-separated list of tags
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name="status"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Status</FormLabel>
-                        <div className="flex items-center space-x-4">
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="radio"
-                              id="draft"
-                              value="draft"
-                              checked={field.value === "draft"}
-                              onChange={() => field.onChange("draft")}
-                              className="form-radio h-4 w-4"
-                            />
-                            <label htmlFor="draft">Draft</label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="radio"
-                              id="published"
-                              value="published"
-                              checked={field.value === "published"}
-                              onChange={() => field.onChange("published")}
-                              className="form-radio h-4 w-4"
-                            />
-                            <label htmlFor="published">Published</label>
-                          </div>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="flex justify-end space-x-4">
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      onClick={() => {
-                        setEditingPostId(null);
-                        form.reset();
-                        setActiveTab("posts");
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button type="submit" disabled={isSubmitting}>
-                      {isSubmitting ? (
-                        <span className="flex items-center">
-                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Saving...
-                        </span>
-                      ) : (
-                        <span className="flex items-center">
-                          <Check className="mr-2 h-4 w-4" />
-                          {editingPostId ? "Update" : "Save"} Post
-                        </span>
-                      )}
-                    </Button>
+                <form onSubmit={form.handleSubmit(onSubmit, () => setPreview(false))} className="min-w-0 space-y-6">
+                  <fieldset disabled={isSubmitting} className="min-w-0 space-y-6 disabled:opacity-70">
+                    <legend className="sr-only">Blog post details</legend>
+                    <div className="grid min-w-0 grid-cols-1 gap-6 md:grid-cols-2">
+                      <FormField control={form.control} name="title" render={({ field }) => <FormItem className="min-w-0"><FormLabel>Title</FormLabel><FormControl><Input placeholder="What I've been working on" {...field} onChange={event => {
+                        const oldTitle = field.value;
+                        const currentSlug = form.getValues("slug");
+                        field.onChange(event);
+                        if (!editingPostId && (!currentSlug || currentSlug === slugFromTitle(oldTitle))) {
+                          form.setValue("slug", slugFromTitle(event.target.value), { shouldDirty: true });
+                        }
+                      }} /></FormControl><FormMessage /></FormItem>} />
+                      <FormField control={form.control} name="slug" render={({ field }) => <FormItem className="min-w-0"><FormLabel>Slug</FormLabel><FormControl><Input placeholder="what-ive-been-working-on" autoCapitalize="none" autoCorrect="off" spellCheck={false} {...field} /></FormControl><FormDescription>The part after /blog/ in the post's URL.</FormDescription><FormMessage /></FormItem>} />
+                    </div>
+                    <FormField control={form.control} name="summary" render={({ field }) => <FormItem><FormLabel>Summary</FormLabel><FormControl><Textarea placeholder="A short introduction for the blog listing…" className="min-h-24 resize-y" {...field} /></FormControl><FormMessage /></FormItem>} />
+                    <FormField control={form.control} name="content" render={({ field }) => <FormItem className="min-w-0">
+                      <div className="flex flex-wrap items-center justify-between gap-3"><FormLabel>Content</FormLabel><Button type="button" variant="outline" size="sm" className="min-h-11" aria-pressed={preview} onClick={() => setPreview(value => !value)}><Eye className="mr-2 h-4 w-4" />{preview ? "Continue writing" : "Preview Markdown"}</Button></div>
+                      {preview ? <div className="min-h-[300px] min-w-0 rounded-md border p-4" aria-label="Markdown preview"><div className="prose prose-sm min-w-0 max-w-none break-words dark:prose-invert [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto"><ReactMarkdown remarkPlugins={[remarkGfm]}>{previewContent || "Your Markdown preview will appear here."}</ReactMarkdown></div></div> : <FormControl><Textarea placeholder="Write your post in Markdown…" className="min-h-[320px] resize-y font-mono" {...field} /></FormControl>}
+                      <FormDescription>Markdown supports headings, links, lists, code blocks, and images: ![Description](https://example.com/image.jpg).</FormDescription><FormMessage />
+                    </FormItem>} />
+                    <div className="grid min-w-0 grid-cols-1 gap-6 md:grid-cols-2">
+                      <FormField control={form.control} name="thumbnail_url" render={({ field }) => <FormItem className="min-w-0"><FormLabel>Thumbnail URL <span className="font-normal text-muted-foreground">(optional)</span></FormLabel><FormControl><Input type="url" placeholder="https://example.com/image.jpg" {...field} /></FormControl><FormDescription>Leave blank to use no thumbnail.</FormDescription><FormMessage /></FormItem>} />
+                      <FormField control={form.control} name="tags" render={({ field }) => <FormItem className="min-w-0"><FormLabel>Tags <span className="font-normal text-muted-foreground">(optional)</span></FormLabel><FormControl><Input placeholder="tech, programming, startup" {...field} /></FormControl><FormDescription>Separate tags with commas.</FormDescription><FormMessage /></FormItem>} />
+                    </div>
+                    <FormField control={form.control} name="status" render={({ field }) => <FormItem>
+                      <fieldset><legend className="mb-2 text-sm font-medium">Visibility</legend><div className="flex flex-wrap gap-x-6 gap-y-2">
+                        <label className="flex min-h-11 cursor-pointer items-center gap-2"><input type="radio" name={field.name} value="draft" checked={field.value === "draft"} onChange={() => field.onChange("draft")} onBlur={field.onBlur} ref={field.ref} className="h-4 w-4" />Draft — only you</label>
+                        <label className="flex min-h-11 cursor-pointer items-center gap-2"><input type="radio" name={field.name} value="published" checked={field.value === "published"} onChange={() => field.onChange("published")} onBlur={field.onBlur} className="h-4 w-4" />Published — everyone</label>
+                      </div></fieldset><FormMessage />
+                    </FormItem>} />
+                  </fieldset>
+                  {form.formState.errors.root?.server && <Alert variant="destructive" role="alert"><AlertCircle className="h-4 w-4" /><AlertTitle>Post could not be saved</AlertTitle><AlertDescription>{form.formState.errors.root.server.message}</AlertDescription></Alert>}
+                  <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                    <Button type="button" variant="outline" className="min-h-11" disabled={isSubmitting} onClick={cancelEditing}>Cancel</Button>
+                    <Button type="submit" className="min-h-11" disabled={isSubmitting}>{isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}{isSubmitting ? "Saving…" : selectedStatus === "published" ? (editingPostId ? "Update published post" : "Publish post") : "Save draft"}</Button>
                   </div>
                 </form>
               </Form>
@@ -530,6 +254,13 @@ export default function AdminPage() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <AlertDialog open={!!postToDelete} onOpenChange={open => { if (!open && !isDeleting) setPostToDelete(null); }}>
+        <AlertDialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-lg">
+          <AlertDialogHeader><AlertDialogTitle>Delete this post?</AlertDialogTitle><AlertDialogDescription>“{postToDelete?.title}” will be permanently removed, including its associated media. This cannot be undone.</AlertDialogDescription></AlertDialogHeader>
+          <AlertDialogFooter><AlertDialogCancel disabled={isDeleting} className="min-h-11">Keep post</AlertDialogCancel><AlertDialogAction disabled={isDeleting} className="min-h-11 bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={event => { event.preventDefault(); void deletePost(); }}>{isDeleting ? "Deleting…" : "Delete post"}</AlertDialogAction></AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

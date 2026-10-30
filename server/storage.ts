@@ -6,7 +6,7 @@ import { users, contactMessages, blogPosts, blogMedia,
   type BlogMedia, type InsertBlogMedia
 } from "@shared/schema";
 import { db, pool } from "./db";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, arrayContains, sql } from "drizzle-orm";
 
 // Storage interface with CRUD methods
 export interface IStorage {
@@ -23,7 +23,7 @@ export interface IStorage {
   updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
   getBlogPost(id: number): Promise<BlogPost | undefined>;
   getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
-  getAllBlogPosts(limit?: number, offset?: number, tag?: string): Promise<BlogPost[]>;
+  getAllBlogPosts(limit?: number, offset?: number, tag?: string, includeDrafts?: boolean): Promise<BlogPost[]>;
   deleteBlogPost(id: number): Promise<boolean>;
   
   // Blog media methods
@@ -144,7 +144,10 @@ export class DatabaseStorage implements IStorage {
   // Blog post methods
   async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
     const [createdPost] = await db.insert(blogPosts)
-      .values(post)
+      .values({
+        ...post,
+        published_at: post.status === "published" ? new Date() : null,
+      })
       .returning();
     return createdPost;
   }
@@ -153,7 +156,11 @@ export class DatabaseStorage implements IStorage {
     // Set updated_at to current timestamp
     const updateData = {
       ...post,
-      updated_at: new Date()
+      updated_at: new Date(),
+      // Preserve the first publication date when editing or republishing a post.
+      ...(post.status === "published" ? {
+        published_at: sql<Date>`coalesce(${blogPosts.published_at}, now())`,
+      } : {}),
     };
     
     const [updatedPost] = await db.update(blogPosts)
@@ -178,48 +185,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllBlogPosts(limit = 10, offset = 0, tag?: string, includeDrafts = false): Promise<BlogPost[]> {
-    console.log(`Running getAllBlogPosts with includeDrafts=${includeDrafts}`);
-    
-    try {
-      // For debugging, let's first try to fetch all blog posts without any filters
-      const allPosts = await db.select().from(blogPosts);
-      console.log(`Debug: Found ${allPosts.length} total posts in database before filtering`);
-      
-      // Log the status of each post we found
-      for (const post of allPosts) {
-        console.log(`Debug: Post ID ${post.id}, Title: ${post.title}, Status: ${post.status}`);
-      }
-      
-      // Now continue with our regular query
-      let query = db.select().from(blogPosts);
-      
-      // Only filter by status if we're not including drafts
-      if (!includeDrafts) {
-        console.log("Filtering to only published posts");
-        query = query.where(eq(blogPosts.status, "published"));
-      } else {
-        console.log("Including all posts (including drafts)");
-      }
-      
-      // Execute the query with ordering and pagination
-      const posts = await query.orderBy(desc(blogPosts.published_at))
-        .limit(limit)
-        .offset(offset);
-      
-      console.log(`Fetched ${posts.length} blog posts after filtering (includeDrafts=${includeDrafts})`);
-      
-      // Filter by tag if specified
-      if (tag && posts.length > 0) {
-        const filteredPosts = posts.filter(post => post.tags && post.tags.includes(tag));
-        console.log(`Filtered to ${filteredPosts.length} posts after tag filtering`);
-        return filteredPosts;
-      }
-      
-      return posts;
-    } catch (error) {
-      console.error("Error fetching blog posts:", error);
-      throw error;
-    }
+    // Apply filters before pagination so each page contains matching posts only.
+    return db.select()
+      .from(blogPosts)
+      .where(and(
+        includeDrafts ? undefined : eq(blogPosts.status, "published"),
+        tag ? arrayContains(blogPosts.tags, [tag]) : undefined,
+      ))
+      .orderBy(desc(blogPosts.published_at), desc(blogPosts.id))
+      .limit(limit)
+      .offset(offset);
   }
 
   async deleteBlogPost(id: number): Promise<boolean> {

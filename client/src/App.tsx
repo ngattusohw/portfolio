@@ -1,4 +1,5 @@
-import { Switch, Route } from "wouter";
+import { useLayoutEffect } from "react";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -13,6 +14,18 @@ import { useAdminAccess } from "@/hooks/useAdminAccess";
 function AdminShortcutWrapper() {
   // Enable secret admin access with Alt+Shift+A
   useAdminAccess();
+  return null;
+}
+
+function ScrollToPageStart() {
+  const [location] = useLocation();
+
+  useLayoutEffect(() => {
+    if (!window.location.hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }
+  }, [location]);
+
   return null;
 }
 
@@ -34,6 +47,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <AdminShortcutWrapper />
+        <ScrollToPageStart />
         <Router />
       </TooltipProvider>
     </QueryClientProvider>

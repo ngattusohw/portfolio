@@ -168,8 +168,25 @@ export default function BlogPostPage() {
       
       // Return the markdown component for text content
       return (
-        <div key={`markdown-${index}`} className="prose prose-lg dark:prose-invert max-w-none">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        <div key={`markdown-${index}`} className="min-w-0 max-w-full">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              pre: ({ node, ...props }) => (
+                <pre
+                  {...props}
+                  className="max-w-full overflow-x-auto whitespace-pre [overflow-wrap:normal] focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+                  tabIndex={0}
+                  aria-label="Code example"
+                />
+              ),
+              table: ({ node, ...props }) => (
+                <div className="my-6 max-w-full overflow-x-auto" tabIndex={0} role="region" aria-label="Scrollable table">
+                  <table {...props} className="min-w-full" />
+                </div>
+              ),
+            }}
+          >
             {part}
           </ReactMarkdown>
         </div>
@@ -182,12 +199,12 @@ export default function BlogPostPage() {
   return (
     <>
       <Header />
-      <main>
+      <main className="pt-20">
         {isLoading ? (
           <div className="container px-4 mx-auto py-16">
             <div className="max-w-3xl mx-auto">
               <Skeleton className="h-10 w-3/4 mb-4" />
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex flex-wrap items-center gap-4 mb-6">
                 <Skeleton className="h-6 w-32" />
                 <Skeleton className="h-6 w-24" />
               </div>
@@ -206,7 +223,7 @@ export default function BlogPostPage() {
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-3xl font-bold mb-4">Blog Post Not Found</h1>
               <p className="mb-6">Sorry, we couldn't find the blog post you're looking for.</p>
-              <div className="flex justify-center gap-4">
+              <div className="flex flex-wrap justify-center gap-4">
                 <Link href="/blog">
                   <Button>Return to Blog</Button>
                 </Link>
@@ -220,29 +237,29 @@ export default function BlogPostPage() {
             </div>
           </div>
         ) : (
-          <div className="container px-4 mx-auto py-8">
-            <div className="max-w-3xl mx-auto">
+          <div className="container px-4 sm:px-6 mx-auto py-6 sm:py-8">
+            <div className="min-w-0 max-w-3xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
                   <Link href="/blog">
-                    <Button variant="ghost" className="pl-0 flex items-center gap-1">
+                    <Button variant="ghost" className="min-h-11 pl-0 flex items-center gap-1">
                       <ChevronLeft size={16} />
                       Back to Blog
                     </Button>
                   </Link>
                   <Link href="/">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="min-h-11">
                       <Home className="mr-2 h-4 w-4" />
                       Home
                     </Button>
                   </Link>
                 </div>
                 
-                <h1 className="text-3xl md:text-4xl font-bold mb-6">{post.title}</h1>
+                <h1 className="text-3xl md:text-4xl leading-tight font-bold mb-6 [overflow-wrap:anywhere]">{post.title}</h1>
                 
                 <div className="flex flex-wrap items-center gap-4 mb-8 text-sm text-gray-600">
                   <div className="flex items-center gap-1">
@@ -251,11 +268,11 @@ export default function BlogPostPage() {
                   </div>
                   
                   {post.tags && post.tags.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Tag size={16} />
+                    <div className="flex min-w-0 flex-wrap items-center gap-2">
+                      <Tag size={16} className="shrink-0" />
                       {post.tags.map(tag => (
-                        <Link key={tag} href={`/blog?tag=${tag}`}>
-                          <Badge variant="outline" className="cursor-pointer">
+                        <Link key={tag} href={`/blog?tag=${tag}`} className="max-w-full">
+                          <Badge variant="outline" className="max-w-full cursor-pointer [overflow-wrap:anywhere]">
                             {tag}
                           </Badge>
                         </Link>
@@ -274,13 +291,13 @@ export default function BlogPostPage() {
                   </div>
                 )}
                 
-                <div className="prose prose-lg dark:prose-invert max-w-none">
+                <div className="prose prose-base sm:prose-lg dark:prose-invert min-w-0 max-w-none [overflow-wrap:anywhere] prose-headings:scroll-mt-24 prose-pre:max-w-full prose-pre:text-sm sm:prose-pre:text-[0.875em]">
                   {processedContent}
                 </div>
                 
                 <div className="mt-12 pt-6 border-t">
-                  <div className="flex flex-wrap justify-between items-center">
-                    <h3 className="text-lg font-semibold mb-4">Share this post</h3>
+                  <div className="flex flex-wrap justify-between items-center gap-4">
+                    <h3 className="text-lg font-semibold">Share this post</h3>
                     <div className="flex gap-3">
                       <Button size="icon" variant="outline">
                         <Facebook size={18} />

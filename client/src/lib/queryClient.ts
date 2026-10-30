@@ -1,44 +1,58 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
-async function throwIfResNotOk(res: Response) {
-  if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
+export class ApiError extends Error {
+  constructor(public status: number, message: string) {
+    super(message);
+    this.name = "ApiError";
   }
 }
 
-export async function apiRequest(
+async function throwIfResNotOk(res: Response) {
+  if (!res.ok) {
+    let message = res.statusText || "The request failed. Please try again.";
+    if (res.headers.get("content-type")?.includes("application/json")) {
+      const body = await res.json().catch(() => null);
+      if (typeof body?.message === "string") message = body.message;
+    }
+    throw new ApiError(res.status, message);
+  }
+}
+
+export async function apiRequest<T = unknown>(
   url: string,
   options?: RequestInit,
-): Promise<Response> {
-  const method = options?.method || 'GET';
-  const hasData = !!options?.body;
-  
+): Promise<T> {
+  // Keep session credentials and the CSRF header on this app's API only.
+  if (!url.startsWith("/api/") || url.includes("\\")) {
+    throw new Error("API requests must use a local /api/ URL.");
+  }
+  const method = (options?.method || "GET").toUpperCase();
+  const isWrite = method !== "GET" && method !== "HEAD";
+  const body = options?.body ?? (isWrite ? "{}" : undefined);
+  const headers = new Headers(options?.headers);
+  if (body != null && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+  if (isWrite) {
+    headers.set("Content-Type", "application/json");
+    headers.set("X-Portfolio-CSRF", "1");
+  }
+
   const res = await fetch(url, {
-    method,
-    headers: {
-      ...(hasData ? { "Content-Type": "application/json" } : {}),
-      ...options?.headers,
-    },
-    body: options?.body,
-    credentials: "include",
     ...options,
+    method,
+    body,
+    headers,
+    credentials: "include",
+    redirect: "error",
   });
 
   await throwIfResNotOk(res);
-  
-  // Clone and parse JSON if it's JSON response
-  if (res.headers.get('content-type')?.includes('application/json')) {
-    const clonedRes = res.clone();
-    try {
-      const data = await clonedRes.json();
-      return data;
-    } catch (e) {
-      console.error('Failed to parse JSON response', e);
-    }
+  if (res.status === 204) return undefined as T;
+  if (!res.headers.get("content-type")?.includes("application/json")) {
+    throw new Error("The server returned an unexpected response. Please try again.");
   }
-  
-  return res;
+  return res.json() as Promise<T>;
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";

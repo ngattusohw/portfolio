@@ -1,107 +1,266 @@
+export type ProjectCategory = "ai" | "developer-tools" | "platforms";
+
+export type ProjectIconName =
+  | "automation" | "legal" | "wedding" | "creative" | "support"
+  | "monitoring" | "community" | "analytics" | "education" | "memory";
+
+export interface ProjectHeroImage {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  srcSet?: string;
+}
+
 export interface Project {
-  id: number;
+  id: string;
   title: string;
   subtitle: string;
   description: string;
-  challenges: string;
-  results: string;
-  technologies: string[];
-  categories: string[];
+  features?: string[];
+  tags: string[];
+  categories: ProjectCategory[];
+  icon: ProjectIconName;
+  hero?: {
+    images: ProjectHeroImage[];
+    layout?: "paired" | "contained";
+    label?: string;
+  };
   url: string;
-  featured?: boolean;
-  metrics?: {
-    label: string;
-    value: string;
-  }[];
-  press?: string[];
+  sourceUrl?: string;
 }
 
-// Featured project - shown prominently at top
-export const featuredProject: Project = {
-  id: 100,
-  title: "Somethings",
-  subtitle: "Founding Team, Head of Engineering",
-  description: "AI-enabled, HIPAA-compliant teen mental health platform connecting ages 13-26 with Certified Peer Specialist mentors who have lived experience with mental health challenges.",
-  challenges: "Building a platform that handles sensitive mental health conversations while ensuring HIPAA compliance, real-time safety screening, and seamless AI-assisted mentor tools required solving complex technical and regulatory challenges.",
-  results: "Led engineering through 1,100x user growth. Platform has supported 11,000+ teens across 200+ schools and 250+ community organizations. Achieved 65% reduction in depression and 60% reduction in suicidal ideation among participants.",
-  technologies: ["React Native", "TypeScript", "AI/ML", "HIPAA Infrastructure", "Real-time Messaging", "Node.js", "PostgreSQL"],
-  categories: ["enterprise", "startup", "ai"],
-  url: "https://somethings.com",
-  featured: true,
-  metrics: [
-    { label: "Series A Raised", value: "$19.2M" },
-    { label: "Teens Helped", value: "11,000+" },
-    { label: "Depression Reduction", value: "65%" },
-    { label: "User Growth", value: "1,100x" },
-  ],
-  press: ["MobiHealthNews", "Yahoo Finance", "Behavioral Health Business", "AlleyWatch", "PR Newswire"]
-};
+export const COLLECT_SOFTWARE_URL = "https://collectsoftware.org/";
 
+// Company portfolio attribution: https://collectsoftware.org/; Recollect's own landing page is linked below.
+// Product descriptions do not imply individual authorship or a specific stack.
 export const projects: Project[] = [
   {
-    id: 1,
+    id: "kai",
     title: "kAI",
-    subtitle: "Engineer",
-    description: "AI engineering agent for enterprise teams. Integrates with Slack to automate bug investigation, diagnose root causes, run tests, and open pull requests autonomously.",
-    challenges: "Building an AI system that can understand complex codebases, integrate with multiple developer tools, and produce production-ready code fixes while maintaining security and compliance standards.",
-    results: "Platform enables engineering teams to reduce time spent on bug triage by automating investigation, testing, and initial fixes. Deployed in enterprise environments with SOC 2 compliance.",
-    technologies: ["Node.js", "TypeScript", "AWS", "Slack API", "GitHub API", "AI/ML", "Datadog"],
-    categories: ["enterprise", "ai", "startup"],
-    url: "https://joinkai.app"
+    subtitle: "AI Infrastructure",
+    description: "An AI engineering product that investigates infrastructure issues and proposes fixes through pull requests.",
+    // Product features: https://joinkai.app/.
+    features: [
+      "Brings logs, metrics, code, and other integrations into investigations.",
+      "Supports reusable workflows and a Command Center for reviewing work.",
+    ],
+    tags: ["AI", "Infrastructure", "Developer Tools"],
+    categories: ["ai", "developer-tools"],
+    icon: "automation",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/kai-clouds-640.f8f5ae1b9801.webp",
+          "alt": "kAI product",
+          "width": 1920,
+          "height": 1080,
+          "srcSet": "/images/projects/collect/kai-clouds-640.f8f5ae1b9801.webp 640w, /images/projects/collect/kai-clouds-1280.f0ee63240131.webp 1280w, /images/projects/collect/kai-clouds-1920.ba38a9adb52d.webp 1920w"
+        }
+      ]
+    },
+    url: "https://joinkai.app/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
   },
   {
-    id: 2,
+    id: "internicola",
+    title: "Internicola Law Firm",
+    subtitle: "Franchise Law",
+    description: "A national franchise law firm providing counsel, compliance support, and resources for growing franchise businesses.",
+    tags: ["Legal", "Franchising"],
+    categories: ["platforms"],
+    icon: "legal",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/franiq-dashboard.png",
+          "alt": "FranIQ compliance dashboard",
+          "width": 800,
+          "height": 480
+        }
+      ]
+    },
+    url: "https://www.franchiselawsolutions.com/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
+  },
+  {
+    id: "wedded",
+    title: "Wedded",
+    subtitle: "Wedding Planning",
+    description: "AI-assisted wedding venue discovery, matching, outreach, and tour coordination.",
+    tags: ["AI", "Wedding Planning"],
+    categories: ["ai", "platforms"],
+    icon: "wedding",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/wedded-venue-800.2cc6a5ba058e.webp",
+          "alt": "Illustrative wedding setting from Wedded’s website",
+          "width": 800,
+          "height": 599
+        }
+      ],
+      "label": "Venue illustration"
+    },
+    url: "https://getwedded.ai/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
+  },
+  {
+    id: "persona-ai",
+    title: "Persona AI",
+    subtitle: "Ad Creative",
+    description: "AI market research, buyer personas, and static-ad generation for review and download.",
+    tags: ["AI", "Marketing", "Ad Creative"],
+    categories: ["ai", "platforms"],
+    icon: "creative",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/persona-ad-400.a98d87abed72.webp",
+          "alt": "Example nutrition ad creative from Persona’s public gallery",
+          "width": 400,
+          "height": 500
+        },
+        {
+          "src": "/images/projects/collect/persona-haircare-400.edb9e33bf735.webp",
+          "alt": "Example haircare ad creative from Persona’s public gallery",
+          "width": 400,
+          "height": 500
+        }
+      ],
+      "layout": "paired",
+      "label": "Example ad creatives"
+    },
+    url: "https://personaapp.ai/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
+  },
+  {
+    id: "somethings",
+    title: "Somethings",
+    subtitle: "Peer Support",
+    description: "A platform connecting young people with Certified Peer Specialist Mentors for ongoing one-to-one support.",
+    tags: ["Peer Support", "Mentorship"],
+    categories: ["platforms"],
+    icon: "support",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/somethings-brand-800.63223c77949f.webp",
+          "alt": "Somethings wordmark with its yellow graffiti loop",
+          "width": 800,
+          "height": 420
+        }
+      ]
+    },
+    url: "https://www.somethings.com/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
+  },
+  {
+    id: "watchpoint",
     title: "Watchpoint",
-    subtitle: "Engineer",
-    description: "Application monitoring and tracking platform providing centralized oversight of multiple applications in one unified interface with real-time alerts and analytics.",
-    challenges: "Creating a unified monitoring solution that aggregates data from diverse application stacks while providing actionable insights without overwhelming users with noise.",
-    results: "Platform enables teams to monitor all their applications from a single dashboard, reducing context switching and improving incident response times.",
-    technologies: ["Next.js", "TRPC", "Tailwind CSS", "PostgreSQL", "React", "TypeScript"],
-    categories: ["web", "enterprise"],
-    url: "https://watchpoint.dev"
+    subtitle: "Application Monitoring",
+    description: "A dashboard bringing service health, errors, analytics, and custom metrics together across applications and APIs.",
+    // Product features: https://watchpoint.dev/.
+    features: [
+      "Monitors uptime with HTTP health checks and tracks application errors.",
+      "Connects App Store Connect, CloudWatch, Sentry, OneSignal, PostHog, and Sendbird.",
+      "Accepts application-specific metrics through a custom metrics API.",
+    ],
+    tags: ["Developer Tools", "Monitoring", "Analytics"],
+    categories: ["developer-tools"],
+    icon: "monitoring",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/watchpoint-brand-800.ff45553ced85.webp",
+          "alt": "Watchpoint’s purple tower brand illustration",
+          "width": 800,
+          "height": 500
+        }
+      ]
+    },
+    url: "https://watchpoint.dev/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
   },
   {
-    id: 3,
+    id: "3punchconvo",
+    title: "3PunchConvo",
+    subtitle: "MMA & UFC Community",
+    description: "A community for MMA and UFC discussion, analysis, and fan engagement.",
+    tags: ["Community", "Sports"],
+    categories: ["platforms"],
+    icon: "community",
+    // Original hero artwork from Collect Software; files are copied unchanged.
+    hero: {
+      "images": [
+        {
+          "src": "/images/projects/collect/punch-brand-800.fdebeee58b23.webp",
+          "alt": "3PunchConvo community",
+          "width": 800,
+          "height": 447
+        }
+      ]
+    },
+    url: "https://3punchconvo.com/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
+  },
+  {
+    id: "modern-ai",
+    title: "Modern.ai",
+    subtitle: "Commerce Analytics",
+    description: "Commerce reporting and AI-powered insights that bring data from sales channels and business tools together.",
+    // Product positioning: https://www.modern.ai/.
+    features: [
+      "Unifies reporting across ecommerce, marketplace, advertising, and other business data.",
+      "Provides structured data for dashboards and AI workflows.",
+    ],
+    tags: ["AI", "Commerce", "Analytics"],
+    categories: ["ai", "platforms"],
+    icon: "analytics",
+    url: "https://modern.ai/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
+  },
+  {
+    id: "life-skills-software",
     title: "Life Skills Software",
-    subtitle: "Co-Founder",
-    description: "Educational video games for students with learning disabilities and special needs, teaching practical life skills like money handling, shopping, and spelling through interactive gameplay.",
-    challenges: "Creating engaging educational content that works for students with diverse learning disabilities while ensuring the games remain fun and not patronizing.",
-    results: "Won 1st place at UPitchNJ 2019 with $2,000 PNC Bank prize. Platform has helped students with special needs develop essential life skills through gamified learning.",
-    technologies: ["Game Development", "Educational Software", "Accessible Design", "JavaScript"],
-    categories: ["startup", "web"],
-    url: "https://lifeskills.software"
+    subtitle: "Educational Games",
+    description: "Educational web games for K–12 special-needs students, covering academic, social, and transitional life skills.",
+    tags: ["Education", "Web Games"],
+    categories: ["platforms"],
+    icon: "education",
+    url: "https://lifeskills.software/",
+    sourceUrl: COLLECT_SOFTWARE_URL,
   },
   {
-    id: 4,
-    title: "What Did You Get Done",
-    subtitle: "Creator",
-    description: "A productivity tracking application designed to help users track daily accomplishments and boost motivation through achievement visualization and weekly summaries.",
-    challenges: "Creating an intuitive interface that encourages daily use without becoming a burden. Implemented minimalist design with smart reminders and quick-entry functionality.",
-    results: "75% of active users report higher motivation and better task completion rates. Visual progress tracking helps users maintain consistent daily habits.",
-    technologies: ["React", "Firebase", "Tailwind CSS", "Redux", "Node.js"],
-    categories: ["web", "startup"],
-    url: "https://whatdidyougetdone.netlify.app/"
+    id: "recollect-ai",
+    title: "Recollect AI",
+    subtitle: "Flashcards & Spaced Repetition",
+    description: "AI-assisted flashcards for curious minds, with ready-made decks, editable AI drafts, spaced repetition, and offline practice.",
+    // Product features and beta status: https://recollect-ai.netlify.app/.
+    features: [
+      "Start with a ready-made deck, draft cards with AI, or write your own.",
+      "Review and edit AI suggestions before saving them to a deck.",
+      "Practice saved cards offline and space reviews over days and weeks.",
+      "Currently in beta for iPhone.",
+    ],
+    tags: ["AI", "Learning", "Mobile"],
+    categories: ["ai", "platforms"],
+    icon: "memory",
+    hero: {
+      images: [{
+        src: "/images/projects/recollect/curiosity-sculpture.png",
+        alt: "Recollect’s sculptural flashcards with a cobalt ribbon and colorful geometric shapes",
+        width: 1254,
+        height: 1254,
+      }],
+      layout: "contained",
+    },
+    url: "https://recollect-ai.netlify.app/",
   },
-  {
-    id: 5,
-    title: "Everybody Polls",
-    subtitle: "Creator",
-    description: "Real-time polling application enabling users to create, share, and participate in polls with instant results visualization and analytics.",
-    challenges: "Real-time data synchronization across thousands of concurrent users. Implemented WebSocket architecture with efficient caching layer.",
-    results: "Platform has facilitated over 100,000 polls with more than 1 million votes across businesses and educational institutions.",
-    technologies: ["Vue.js", "Node.js", "MongoDB", "Socket.IO", "D3.js"],
-    categories: ["web", "startup"],
-    url: "https://www.everybodypolls.com/"
-  },
-  {
-    id: 6,
-    title: "aCrossMinistry",
-    subtitle: "Creator",
-    description: "Digital platform for faith-based communities to connect, share resources, and coordinate ministry efforts across different locations and denominations.",
-    challenges: "Creating a platform that addresses the diverse needs of different faith communities while maintaining an inclusive and user-friendly interface.",
-    results: "Successfully built a platform that serves multiple churches and ministry organizations, facilitating resource sharing and community building.",
-    technologies: ["React", "Node.js", "Express", "MongoDB", "Tailwind CSS"],
-    categories: ["web", "startup"],
-    url: "https://a-crossministry.net"
-  }
 ];

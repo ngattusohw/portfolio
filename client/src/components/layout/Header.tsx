@@ -1,16 +1,28 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+
+const navigation = [
+  ["About", "about"],
+  ["Projects", "projects"],
+  ["Experience", "experience"],
+  ["Blog", "blog"],
+  ["Contact", "contact"],
+];
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    if (!isMobileMenuOpen) return;
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMobileMenuOpen(false);
+        menuButton.current?.focus();
+      }
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isMobileMenuOpen]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -20,114 +32,62 @@ export default function Header() {
     setIsMobileMenuOpen(false);
   };
 
-  const navItems = [
-    { href: "#about", label: "About" },
-    { href: "#projects", label: "Projects" },
-    { href: "#experience", label: "Experience" },
-    { href: "#blog", label: "Blog" },
-    { href: "#contact", label: "Contact" },
-  ];
-
   return (
-    <header
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-slate-950/90 backdrop-blur-md border-b border-slate-800/50"
-          : "bg-transparent"
-      }`}
-    >
-      <div className="container mx-auto px-6 lg:px-8">
-        <div className="flex justify-between items-center py-5">
-          {/* Logo */}
-          <a
-            href="#hero"
-            className="text-xl font-bold tracking-tight text-slate-100 hover:text-blue-400 transition-colors"
-          >
-            NG<span className="text-blue-400">III</span>
+    <header className="fixed inset-x-0 top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 lg:h-[72px] justify-between items-center gap-4">
+          <a href="/#hero" onClick={closeMobileMenu} aria-label="Nick Gattuso home" className="inline-flex min-h-11 items-center text-2xl font-sans font-bold text-primary tracking-tight rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+            NG<span className="text-secondary">III</span>
           </a>
-
+          
           {/* Desktop Navigation */}
-          <nav className="hidden md:block">
-            <ul className="flex items-center gap-8">
-              {navItems.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    className="text-sm text-slate-400 hover:text-slate-100 transition-colors font-medium"
-                  >
-                    {item.label}
-                  </a>
-                </li>
+          <nav aria-label="Main navigation" className="hidden lg:block">
+            <ul className="flex items-center space-x-8">
+              {navigation.map(([label, section]) => (
+                <li key={section}><a href={`/#${section}`} className="inline-flex min-h-11 items-center font-medium hover:text-primary transition-colors rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">{label}</a></li>
               ))}
               <li>
-                <a
-                  href="#contact"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-400 text-white text-sm font-medium rounded-lg transition-colors"
+                <a 
+                  href="/#contact"
+                  className="inline-flex min-h-11 items-center px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary/90 transition-colors"
                 >
-                  Get in touch
+                  Hire Me
                 </a>
               </li>
             </ul>
           </nav>
-
+          
           {/* Mobile Menu Button */}
           <button
             type="button"
-            className="md:hidden text-slate-400 hover:text-slate-100 transition-colors"
+            ref={menuButton}
+            className="lg:hidden inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-slate-700 hover:bg-slate-100 hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
             onClick={toggleMobileMenu}
-            aria-label="Toggle mobile menu"
+            aria-label={isMobileMenuOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-navigation"
           >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              {isMobileMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isMobileMenuOpen ? "M6 6l12 12M6 18L18 6" : "M4 6h16M4 12h16M4 18h16"} />
             </svg>
           </button>
         </div>
-
+        
         {/* Mobile Navigation */}
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ${
-            isMobileMenuOpen ? "max-h-96 pb-6" : "max-h-0"
-          }`}
-        >
-          <nav className="flex flex-col gap-2">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="px-4 py-3 text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 rounded-lg transition-colors"
-                onClick={closeMobileMenu}
-              >
-                {item.label}
-              </a>
+        <nav id="mobile-navigation" aria-label="Mobile navigation" className={`lg:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-slate-100 bg-white shadow-lg ${isMobileMenuOpen ? "block" : "hidden"}`}>
+          <div className="container mx-auto px-4 sm:px-6 pt-2 pb-4 space-y-1">
+            {navigation.map(([label, section]) => (
+              <a key={section} href={`/#${section}`} className="flex min-h-12 items-center px-3 py-3 rounded-md font-medium hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary" onClick={closeMobileMenu}>{label}</a>
             ))}
-            <a
-              href="#contact"
-              className="mx-4 mt-2 px-4 py-3 bg-blue-500 hover:bg-blue-400 text-white text-center font-medium rounded-lg transition-colors"
+            <a 
+              href="/#contact"
+              className="flex min-h-12 items-center justify-center px-3 py-3 bg-primary text-white rounded-md font-medium"
               onClick={closeMobileMenu}
             >
-              Get in touch
+              Hire Me
             </a>
-          </nav>
-        </div>
+          </div>
+        </nav>
       </div>
     </header>
   );
