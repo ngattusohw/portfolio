@@ -10,7 +10,7 @@ import ProjectModal from "@/components/ui/ProjectModal";
 
 export default function Home() {
   return (
-    <div className="portfolio-page">
+    <div className="portfolio-page portfolio-page--workshop">
       <Header />
       <main id="main-content">
         <RomanHero />

@@ -1,140 +1,8 @@
-.retro-hero {
-  position: relative;
-  padding-top: 80px;
-  background: var(--folio-paper);
-  overflow: hidden;
-}
-.hero-stage {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  gap: 55px;
-  position: relative;
-  padding-top: 38px;
-  padding-bottom: 85px;
-  min-height: 740px;
-}
-.hero-copy {
-  position: relative;
-  z-index: 2;
-  padding: 15px 0 45px;
-}
-.hero-greeting {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 29px;
-  font: 400 12px/1.6 var(--folio-mono);
-  color: var(--folio-muted);
-}
-.hero-greeting > span {
-  display: grid;
-  place-items: center;
-  width: 31px;
-  height: 28px;
-  border: 1px solid #adb8a2;
-  border-radius: 5px;
-  background: #e6e9df;
-  color: #48583b;
-  font-size: 12px;
-}
-.hero-copy h1 {
-  font: 500 clamp(58px, 6.4vw, 94px)/1.04 var(--folio-display);
-  letter-spacing: -0.075em;
-  max-width: 650px;
-  margin: 0 0 27px;
-}
-.hero-copy h1 > span {
-  position: relative;
-  display: inline-block;
-}
-.hero-copy h1 > span::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  height: 17%;
-  bottom: 6%;
-  left: 1%;
-  right: -4%;
-  background: var(--folio-pink);
-  transform: rotate(-3deg);
-  border-radius: 2px 6px 3px 2px;
-}
-.hero-intro {
-  max-width: 345px;
-  color: var(--folio-muted);
-  font-size: 17px;
-  line-height: 1.8;
-  letter-spacing: -0.025em;
-  text-wrap: pretty;
-}
-.hero-actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 24px;
-  margin-top: 32px;
-}
-.hero-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-height: 48px;
-  font-size: 13px;
-  font-weight: 500;
-  text-decoration: none;
-}
-.hero-secondary svg {
-  transition: transform 0.2s;
-}
-.hero-secondary:hover svg {
-  transform: translate(2px, -2px);
-}
-.hero-socials {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  margin-top: 34px;
-  font: 400 10px/1.6 var(--folio-mono);
-}
-.hero-socials > a {
-  min-height: 30px;
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  color: var(--folio-muted);
-}
-.hero-socials > a:hover {
-  color: var(--folio-ink);
-  text-decoration: underline;
-  text-underline-offset: 5px;
-}
-.hero-bottom-note {
-  position: absolute;
-  inset: auto 0 23px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  color: #606955;
-  font: 400 10px/1.5 var(--folio-mono);
-}
-.hero-bottom-note > a {
-  display: grid;
-  place-items: center;
-  height: 32px;
-  width: 32px;
-  border: 1px solid #a9b29e;
-  border-radius: 50%;
-}
-.hero-bottom-note svg {
-  animation: hero-nudge 3s ease-in-out infinite;
-}
 .hero-roles-wrap {
   position: relative;
-  background: #cdd3c6;
-  border-block: 1px solid #b7c1ac;
+  background: #1b211a;
+  color: #e6e9da;
+  border-block: 1px solid #b7c1ac33;
 }
 .hero-roles {
   display: grid;
@@ -146,14 +14,14 @@
   align-items: center;
   gap: 8px;
   font-size: 9px;
-  color: #4e6043;
+  color: #bac7a6;
 }
 .role-dot {
   display: inline-block;
   height: 5px;
   width: 5px;
   border-radius: 50%;
-  background: #576e48;
+  background: #b7d595;
 }
 .hero-roles > a {
   display: grid;
@@ -162,11 +30,11 @@
   align-items: center;
   padding: 26px 28px;
   text-decoration: none;
-  border-left: 1px solid #b7c1ac;
+  border-left: 1px solid #b7c1ac33;
   transition: background 0.2s;
 }
 .hero-roles > a:hover {
-  background: #dbe0d4;
+  background: #dbe0d40c;
 }
 .hero-company {
   font: 500 17px/1.2 var(--folio-display);
@@ -175,7 +43,7 @@
 .hero-roles > a > span:nth-child(2) {
   grid-column: 1;
   font: 400 9px/1.6 var(--folio-mono);
-  color: #536348;
+  color: #b9c5ac;
 }
 .hero-roles > a > svg {
   grid-column: 2;
@@ -185,48 +53,7 @@
 .hero-roles > a:hover svg {
   transform: translate(3px, -3px);
 }
-@keyframes hero-nudge {
-  50% {
-    transform: translateY(3px);
-  }
-}
-@media (min-width: 1600px) {
-  .hero-stage {
-    min-height: 810px;
-  }
-}
-@media (max-width: 1100px) {
-  .hero-stage {
-    gap: 30px;
-  }
-  .hero-copy h1 {
-    font-size: clamp(55px, 6.2vw, 75px);
-  }
-  .hero-roles {
-    grid-template-columns: 0.8fr 1fr 1.4fr;
-  }
-  .hero-roles > a {
-    padding-inline: 20px;
-  }
-}
 @media (max-width: 900px) {
-  .hero-stage {
-    gap: 24px;
-  }
-  .hero-actions {
-    gap: 13px;
-  }
-  .hero-intro {
-    font-size: 15px;
-    max-width: 300px;
-  }
-  .hero-greeting {
-    font-size: 10px;
-    gap: 8px;
-  }
-  .hero-copy h1 {
-    font-size: 56px;
-  }
   .hero-roles {
     grid-template-columns: 1fr 1.25fr;
   }
@@ -242,63 +69,13 @@
     padding-left: 24px;
   }
 }
-@media (max-width: 760px) {
-  .hero-stage {
-    grid-template-columns: 1fr;
-    gap: 0;
-    padding-top: 43px;
-    padding-bottom: 64px;
-    min-height: 0;
-  }
-  .hero-copy {
-    padding-bottom: 38px;
-  }
-  .hero-copy h1 {
-    font-size: clamp(60px, 10vw, 76px);
-    margin-bottom: 22px;
-  }
-  .hero-greeting {
-    font-size: 11px;
-    margin-bottom: 24px;
-  }
-  .hero-intro {
-    font-size: 16px;
-    max-width: 360px;
-  }
-  .hero-actions {
-    margin-top: 24px;
-    gap: 24px;
-  }
-  .hero-socials {
-    margin-top: 21px;
-    gap: 24px;
-  }
-  .hero-bottom-note {
-    font-size: 8px;
-    bottom: 19px;
-    max-width: 520px;
-    margin-inline: auto;
-  }
-  .hero-bottom-note > span {
-    max-width: 75%;
-  }
-}
 @media (max-width: 640px) {
-  .retro-hero {
-    padding-top: 70px;
-  }
-  .hero-stage {
-    padding-top: 35px;
-  }
-  .hero-copy h1 {
-    font-size: clamp(57px, 11.3vw, 70px);
-  }
   .hero-roles {
     grid-template-columns: 1fr;
   }
   .hero-roles > a:last-child {
     padding-left: 0;
-    border-top: 1px solid #b7c1ac;
+    border-top: 1px solid #b7c1ac33;
   }
   .hero-roles > a {
     padding-block: 19px;
@@ -310,29 +87,7 @@
     padding-top: 19px;
   }
 }
-@media (max-width: 360px) {
-  .hero-copy h1 {
-    font-size: 53px;
-  }
-  .hero-greeting {
-    font-size: 10px;
-  }
-  .hero-actions {
-    gap: 17px;
-  }
-  .hero-actions .folio-button {
-    padding-inline: 18px;
-    gap: 13px;
-  }
-  .hero-socials {
-    gap: 20px;
-  }
-}
 @media (prefers-reduced-motion: reduce) {
-  .hero-bottom-note svg {
-    animation: none;
-  }
-  .hero-secondary svg,
   .hero-roles > a,
   .hero-roles > a > svg {
     transition: none;
