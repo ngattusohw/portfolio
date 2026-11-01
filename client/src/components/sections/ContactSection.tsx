@@ -68,12 +68,8 @@ export default function ContactSection() {
     >
       <div className="folio-container contact-grid">
         <div className="contact-copy">
-          <p className="folio-kicker">V / Start a conversation</p>
-          <h2 id="contact-title">
-            What are you
-            <br />
-            <em>building?</em>
-          </h2>
+          <p className="folio-kicker">05 / Start a conversation</p>
+          <h2 id="contact-title">Have something in mind?</h2>
           <p>
             Have an idea to explore, a system to untangle, or a team to grow?
             I'd like to hear about it.

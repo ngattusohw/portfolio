@@ -23,10 +23,8 @@ export default function BlogSection() {
       <div className="folio-container">
         <div className="section-heading">
           <div>
-            <p className="folio-kicker">IV / Field notes</p>
-            <h2 id="journal-title">
-              Thinking <em>out loud.</em>
-            </h2>
+            <p className="folio-kicker">04 / From the workbench</p>
+            <h2 id="journal-title">Field notes</h2>
           </div>
           <Link className="folio-text-link" href="/blog">
             All writing <ArrowUpRight size={17} aria-hidden="true" />

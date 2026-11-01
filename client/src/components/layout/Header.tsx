@@ -32,7 +32,7 @@ export default function Header() {
           aria-label="Nick Gattuso home"
           onClick={() => setOpen(false)}
         >
-          NG<span>III</span>
+          nickgattuso<span>_</span>
           <i aria-hidden="true" />
         </a>
         <nav className="desktop-navigation" aria-label="Main navigation">

@@ -9,14 +9,10 @@ export default function Footer() {
             href="/#hero"
             aria-label="Nick Gattuso home"
           >
-            NG<span>III</span>
+            nickgattuso<span>_</span>
             <i aria-hidden="true" />
           </a>
-          <p>
-            Engineering. Entrepreneurship.
-            <br />
-            An enduring curiosity.
-          </p>
+          <p>Software, teams, and things worth building.</p>
           <div className="footer-links">
             <a
               href="https://github.com/ngattusohw"

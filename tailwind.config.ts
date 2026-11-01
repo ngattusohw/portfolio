@@ -7,7 +7,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["DM Sans", "sans-serif"],
-        display: ["Cormorant Garamond", "Georgia", "serif"],
+        display: ["Space Grotesk", "Arial", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -3,52 +3,55 @@
 @tailwind utilities;
 
 :root {
-  --background: 40 33% 96%;
-  --foreground: 30 12% 15%;
-  --muted: 38 20% 91%;
-  --muted-foreground: 30 8% 42%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 30 12% 15%;
-  --card: 0 0% 100%;
-  --card-foreground: 30 12% 15%;
-  --border: 35 18% 83%;
-  --input: 35 18% 83%;
-  --primary: 8 44% 36%;
-  --primary-foreground: 40 33% 98%;
-  --secondary: 36 28% 87%;
-  --secondary-foreground: 30 12% 20%;
-  --accent: 35 25% 88%;
-  --accent-foreground: 30 12% 20%;
-  --destructive: 0 72% 45%;
+  --background: 100 8% 94%;
+  --foreground: 120 8% 10%;
+  --muted: 100 6% 88%;
+  --muted-foreground: 110 5% 38%;
+  --popover: 100 8% 98%;
+  --popover-foreground: 120 8% 10%;
+  --card: 100 8% 98%;
+  --card-foreground: 120 8% 10%;
+  --border: 100 5% 78%;
+  --input: 100 5% 73%;
+  --primary: 125 22% 27%;
+  --primary-foreground: 100 10% 98%;
+  --secondary: 100 7% 87%;
+  --secondary-foreground: 120 8% 10%;
+  --accent: 83 100% 74%;
+  --accent-foreground: 120 8% 10%;
+  --destructive: 0 65% 42%;
   --destructive-foreground: 0 0% 100%;
-  --ring: 8 44% 36%;
-  --radius: 0.35rem;
-  --chart-1: 8 44% 36%;
-  --chart-2: 35 40% 47%;
-  --chart-3: 140 15% 36%;
-  --chart-4: 262 30% 45%;
+  --ring: 125 22% 27%;
+  --radius: 0.65rem;
+  --chart-1: 125 22% 27%;
+  --chart-2: 83 70% 45%;
+  --chart-3: 310 30% 65%;
+  --chart-4: 190 25% 40%;
   --chart-5: 42 60% 45%;
-  --folio-paper: #f5f1e9;
-  --folio-white: #fdfbf7;
-  --folio-ink: #292720;
-  --folio-muted: #6b675e;
-  --folio-red: #873d32;
-  --folio-line: #d9d2c5;
-  --folio-serif: "Cormorant Garamond", Georgia, serif;
+  --folio-paper: #d9dbd6;
+  --folio-white: #f0f1ec;
+  --folio-ink: #1b201b;
+  --folio-muted: #565e54;
+  --folio-red: #3e6040;
+  --folio-line: #c2c7bc;
+  --folio-pink: #eac4df;
+  --folio-lime: #d7ff7a;
+  --folio-display: "Space Grotesk", Arial, sans-serif;
+  --folio-mono: "IBM Plex Mono", monospace;
 }
 .dark {
-  --background: 30 10% 12%;
-  --foreground: 40 33% 96%;
-  --muted: 30 8% 18%;
-  --muted-foreground: 35 15% 72%;
-  --popover: 30 10% 15%;
-  --popover-foreground: 40 33% 96%;
-  --card: 30 10% 15%;
-  --card-foreground: 40 33% 96%;
-  --border: 30 8% 25%;
-  --input: 30 8% 25%;
-  --primary: 12 50% 64%;
-  --primary-foreground: 30 10% 12%;
+  --background: 120 7% 9%;
+  --foreground: 100 10% 94%;
+  --muted: 120 6% 17%;
+  --muted-foreground: 100 8% 72%;
+  --popover: 120 7% 12%;
+  --popover-foreground: 100 10% 94%;
+  --card: 120 7% 12%;
+  --card-foreground: 100 10% 94%;
+  --border: 110 7% 25%;
+  --input: 110 7% 25%;
+  --primary: 83 100% 74%;
+  --primary-foreground: 120 8% 10%;
 }
 @layer base {
   * {
@@ -69,8 +72,8 @@
     font: inherit;
   }
   ::selection {
-    background: #d9b6a8;
-    color: #292720;
+    background: #d7ff7a;
+    color: #1b201b;
   }
 }
 @media (prefers-reduced-motion: reduce) {

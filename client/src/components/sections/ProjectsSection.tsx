@@ -36,10 +36,8 @@ export default function ProjectsSection() {
       <div className="folio-container">
         <div className="section-heading">
           <div>
-            <p className="folio-kicker">I / Selected work</p>
-            <h2 id="work-title">
-              Ideas, <em>made real.</em>
-            </h2>
+            <p className="folio-kicker">01 / Things I've worked on</p>
+            <h2 id="work-title">Selected projects</h2>
           </div>
           <p>
             Selected products and client work across AI, developer tools, and

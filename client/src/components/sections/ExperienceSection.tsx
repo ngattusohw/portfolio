@@ -15,12 +15,8 @@ export default function ExperienceSection() {
     >
       <div className="folio-container experience-grid">
         <div className="experience-heading">
-          <p className="folio-kicker">III / Experience</p>
-          <h2 id="experience-title">
-            A few chapters
-            <br />
-            <em>so far.</em>
-          </h2>
+          <p className="folio-kicker">03 / Experience</p>
+          <h2 id="experience-title">Work history</h2>
           <p>From enterprise systems to companies built from the ground up.</p>
           <a
             className="folio-text-link"

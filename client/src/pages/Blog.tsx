@@ -43,12 +43,8 @@ export default function Blog() {
             Back to the portfolio
           </Link>
           <div className="journal-page-heading">
-            <p className="folio-kicker">The journal / Nick Gattuso III</p>
-            <h1>
-              Notes from
-              <br />
-              <em>the work.</em>
-            </h1>
+            <p className="folio-kicker">The workbench / Nick Gattuso III</p>
+            <h1>Field notes.</h1>
             <p>
               Things I’m building, problems I’m working through, and what I
               learn along the way.

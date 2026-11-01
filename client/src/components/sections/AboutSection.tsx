@@ -9,12 +9,8 @@ export default function AboutSection() {
     >
       <div className="folio-container about-grid">
         <div className="about-heading">
-          <p className="folio-kicker">II / The person behind the work</p>
-          <h2 id="about-title">
-            A builder,
-            <br />
-            at <em>heart.</em>
-          </h2>
+          <p className="folio-kicker">02 / A little about me</p>
+          <h2 id="about-title">About the human</h2>
           <span className="about-monogram" aria-hidden="true">
             NG<span>III</span>
           </span>
