@@ -3,67 +3,88 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
-  Fan,
   Maximize2,
   RotateCcw,
 } from "lucide-react";
 import { motion, useInView, useMotionValue, useTransform } from "framer-motion";
 import { usePortfolioMotion } from "@/hooks/usePortfolioMotion";
-import { WorkshopProjectVisual } from "./WorkshopProjectVisuals";
+import {
+  WorkshopProjectVisual,
+  workshopAssets,
+  type WorkshopStation,
+} from "./WorkshopProjectVisuals";
 import "./CuriosityWorkbench.css";
 
-type Station = "connect" | "remember" | "tinker";
 const stations = [
   {
-    id: "connect" as Station,
-    title: "Somethings",
-    theme: "01 / People",
+    id: "watchpoint" as WorkshopStation,
+    title: "Watchpoint",
+    theme: "01 / Observability",
     point: { x: 0.256, y: 0.339 },
     marker: { x: 0.256, y: 0.51 },
     zoom: 2.6,
     mobileZoom: 3.3,
+    screenHeight: 0.1915,
+    description:
+      "A clearer view of the systems behind a product. Watchpoint brings service health, errors, analytics, and custom metrics into one dashboard.",
+    href: "https://watchpoint.dev/",
+    link: "Explore Watchpoint",
+  },
+  {
+    id: "somethings" as WorkshopStation,
+    title: "Somethings",
+    theme: "02 / People",
+    point: { x: 0.383, y: 0.495 },
+    marker: { x: 0.384, y: 0.63 },
+    zoom: 4.2,
+    mobileZoom: 7,
+    screenHeight: 0.18,
     description:
       "Technology should bring us closer to a real human. I lead engineering at Somethings, connecting young people with peer support.",
-    href: "https://somethings.com/",
+    href: "https://www.somethings.com/",
     link: "Meet Somethings",
   },
   {
-    id: "remember" as Station,
+    id: "remember" as WorkshopStation,
     title: "Recollect AI",
-    theme: "02 / Learning",
+    theme: "03 / Learning",
     point: { x: 0.515, y: 0.438 },
     marker: { x: 0.515, y: 0.58 },
     zoom: 3.5,
     mobileZoom: 4.7,
+    screenHeight: 0.121,
     description:
       "A little curiosity, worth keeping. AI-assisted flashcards and spaced repetition help make room for what you want to remember.",
     href: "https://recollect-ai.netlify.app/",
     link: "Explore Recollect AI · beta",
   },
   {
-    id: "tinker" as Station,
+    id: "tinker" as WorkshopStation,
     title: "Better Saunum",
-    theme: "03 / Tinkering",
+    theme: "04 / Tinkering",
     point: { x: 0.741, y: 0.443 },
     marker: { x: 0.77, y: 0.59 },
     zoom: 3.15,
     mobileZoom: 4.1,
+    screenHeight: 0.089,
     description:
       "My sauna hid the temperature when it was off. So I built an app with temperature history, fan controls, and a little less friction.",
     href: "/blog/building-better-saunum",
     link: "Read the build story",
   },
 ];
-const stops = [0, 0.32, 0.62, 0.94];
+const stops = [0, 0.25, 0.48, 0.71, 0.95];
 const frames = [
   { at: 0, pose: 0 },
-  { at: 0.07, pose: 0 },
-  { at: 0.27, pose: 1 },
-  { at: 0.37, pose: 1 },
-  { at: 0.57, pose: 2 },
-  { at: 0.67, pose: 2 },
-  { at: 0.87, pose: 3 },
-  { at: 1, pose: 3 },
+  { at: 0.045, pose: 0 },
+  { at: 0.2, pose: 1 },
+  { at: 0.29, pose: 1 },
+  { at: 0.43, pose: 2 },
+  { at: 0.52, pose: 2 },
+  { at: 0.66, pose: 3 },
+  { at: 0.75, pose: 3 },
+  { at: 0.9, pose: 4 },
+  { at: 1, pose: 4 },
 ];
 const clamp = (value: number, min: number, max: number) =>
   Math.max(min, Math.min(max, value));
@@ -72,14 +93,15 @@ const clamp = (value: number, min: number, max: number) =>
 export default function CuriosityWorkbench() {
   const section = useRef<HTMLElement>(null);
   const lens = useRef<HTMLDivElement>(null);
+  const consoleRef = useRef<HTMLDivElement>(null);
   const nav = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
   const [size, setSize] = useState({ width: 1440, height: 900, mobile: false });
-  const [connected, setConnected] = useState(false);
-  const [flipped, setFlipped] = useState(false);
-  const [fanOn, setFanOn] = useState(true);
+  const [alternateViews, setAlternateViews] = useState<
+    Record<WorkshopStation, boolean>
+  >({ watchpoint: false, somethings: false, remember: false, tinker: false });
   const [announcement, setAnnouncement] = useState("");
   const { motionEnabled, paused, reducedMotion } = usePortfolioMotion();
   const visible = useInView(section, { amount: 0 });
@@ -93,6 +115,27 @@ export default function CuriosityWorkbench() {
   const sceneHeight = (sceneWidth * 941) / 1672;
   const current = active > 0 ? stations[active - 1] : null;
   const animationEnabled = motionEnabled && visible;
+  const currentAssets = current ? workshopAssets[current.id] : null;
+  const alternate = current ? alternateViews[current.id] : false;
+  const currentImage = currentAssets
+    ? alternate
+      ? currentAssets.alternate
+      : currentAssets.primary
+    : null;
+
+  useEffect(() => {
+    const element = consoleRef.current;
+    if (!element) return;
+    const measure = () =>
+      section.current?.style.setProperty(
+        "--workshop-console-height",
+        `${element.offsetHeight}px`,
+      );
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const element = lens.current;
@@ -127,17 +170,20 @@ export default function CuriosityWorkbench() {
               ),
         };
       const station = stations[index - 1];
-      const screenHeight = [0.1915, 0.121, 0.089][index - 1];
+      const screenHeight = station.screenHeight;
+      const isPhone = station.id === "somethings";
       const scale = Math.min(
         size.mobile ? station.mobileZoom : station.zoom,
-        (size.height * (size.mobile ? 0.7 : 0.45)) /
+        (size.height *
+          (isPhone ? (size.mobile ? 0.82 : 0.54) : size.mobile ? 0.7 : 0.45)) /
           (sceneHeight * screenHeight),
       );
       return {
         scale,
         x: size.width * 0.5 - station.point.x * sceneWidth * scale,
         y:
-          size.height * (size.mobile ? 0.55 : 0.43) -
+          size.height *
+            (isPhone ? (size.mobile ? 0.5 : 0.4) : size.mobile ? 0.55 : 0.43) -
           station.point.y * sceneHeight * scale,
       };
     };
@@ -154,7 +200,15 @@ export default function CuriosityWorkbench() {
         1,
       );
       const nextActive =
-        progress < 0.18 ? 0 : progress < 0.47 ? 1 : progress < 0.77 ? 2 : 3;
+        progress < 0.12
+          ? 0
+          : progress < 0.36
+            ? 1
+            : progress < 0.59
+              ? 2
+              : progress < 0.82
+                ? 3
+                : 4;
       if (nextActive !== activeRef.current) {
         if (
           panel.current?.contains(document.activeElement) ||
@@ -233,30 +287,14 @@ export default function CuriosityWorkbench() {
   );
 
   const interact = () => {
-    if (active === 1) {
-      setConnected((value) => !value);
-      setAnnouncement(
-        connected
-          ? "Connection reset."
-          : "Better, together. The two characters are connected.",
-      );
-    }
-    if (active === 2) {
-      setFlipped((value) => !value);
-      setAnnouncement(
-        flipped
-          ? "Question: What makes an idea stick?"
-          : "Answer: Coming back to it. Small returns. Lasting knowledge.",
-      );
-    }
-    if (active === 3) {
-      setFanOn((value) => !value);
-      setAnnouncement(
-        fanOn
-          ? "Demo fan off. Temperature remains visible at 78 degrees Fahrenheit."
-          : "Demo fan on. Temperature remains visible at 78 degrees Fahrenheit.",
-      );
-    }
+    if (!current || !currentAssets) return;
+    setAlternateViews((views) => ({
+      ...views,
+      [current.id]: !views[current.id],
+    }));
+    setAnnouncement(
+      `${current.title}: ${alternate ? currentAssets.primary.alt : currentAssets.alternate.alt}`,
+    );
   };
 
   return (
@@ -271,7 +309,7 @@ export default function CuriosityWorkbench() {
         <div
           className="workshop-lens"
           ref={lens}
-          aria-label="An illustrated workshop with three project stations"
+          aria-label="A workshop with four project stations and original product screenshots"
         >
           <motion.div
             className="workshop-world"
@@ -286,7 +324,7 @@ export default function CuriosityWorkbench() {
             <img
               className="workshop-room"
               src="/images/workshop/nicks-workshop.webp"
-              alt="A wood workbench with tools, a desktop monitor, a tablet and a handmade sauna controller."
+              alt="A wood workbench with tools, a desktop monitor, a tablet and a handmade sauna controller. A separate phone sits on the table."
               width={1672}
               height={941}
               loading="eager"
@@ -301,9 +339,7 @@ export default function CuriosityWorkbench() {
                 <WorkshopProjectVisual
                   station={station.id}
                   motionEnabled={animationEnabled}
-                  connected={connected}
-                  flipped={flipped}
-                  fanOn={fanOn}
+                  alternate={alternateViews[station.id]}
                 />
                 <span className="workshop-glass" />
               </div>
@@ -369,7 +405,7 @@ export default function CuriosityWorkbench() {
           </a>
         </div>
 
-        <div className="workshop-console">
+        <div className="workshop-console" ref={consoleRef}>
           <div
             ref={panel}
             className="workshop-project-story"
@@ -391,48 +427,32 @@ export default function CuriosityWorkbench() {
             </div>
             <div className="workshop-project-action">
               <span className="workshop-demo-label">
-                {active === 3
-                  ? "INTERACTIVE DEMO · SAMPLE TEMPERATURE"
-                  : "PLAY WITH THE IDEA"}
+                {currentAssets?.sourceLabel}
               </span>
               <button
                 className="workshop-demo-button"
                 type="button"
                 onClick={interact}
-                aria-pressed={
-                  active === 1 ? connected : active === 2 ? flipped : fanOn
-                }
+                aria-pressed={alternate}
               >
-                {active === 1 ? (
-                  <>
-                    {connected ? (
-                      <RotateCcw size={17} />
-                    ) : (
-                      <ArrowRight size={17} />
-                    )}
-                    {connected ? "Connect again" : "Make a connection"}
-                  </>
-                ) : active === 2 ? (
-                  <>
-                    <RotateCcw size={17} />
-                    {flipped ? "Turn the card back" : "Turn the card over"}
-                  </>
+                {alternate ? (
+                  <RotateCcw size={17} aria-hidden="true" />
                 ) : (
-                  <>
-                    <Fan size={17} />
-                    {fanOn ? "Turn demo fan off" : "Turn demo fan on"}
-                  </>
+                  <ArrowRight size={17} aria-hidden="true" />
                 )}
+                {alternate
+                  ? currentAssets?.alternateActionLabel
+                  : currentAssets?.actionLabel}
               </button>
-              <p className="workshop-action-note">
-                {active === 1
-                  ? "A small illustration of human connection."
-                  : active === 2
-                    ? flipped
-                      ? "Coming back to it. That’s the idea."
-                      : "What makes an idea stick?"
-                    : `Sample: 78°F. Heater off. Fan ${fanOn ? "on" : "off"}.`}
-              </p>
+              <a
+                className="workshop-original-link"
+                href={currentImage?.src}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View full screenshot{" "}
+                <ArrowUpRight size={12} aria-hidden="true" />
+              </a>
             </div>
           </div>
           <div
@@ -462,7 +482,7 @@ export default function CuriosityWorkbench() {
               </button>
             ))}
             <span className="workshop-scroll-hint">
-              <span>{String(active).padStart(2, "0")} / 03</span>
+              <span>{String(active).padStart(2, "0")} / 04</span>
               <ArrowDown size={15} aria-hidden="true" />
             </span>
           </div>
