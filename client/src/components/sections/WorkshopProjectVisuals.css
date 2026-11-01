@@ -9,7 +9,7 @@
   user-select: none;
 }
 
-/* Every screen uses an original image at its native aspect ratio. The physical
+/* These image screens use originals at their native aspect ratios. The physical
    displays are viewports into those captures, never stretched recreations. */
 .workshop-product-image {
   display: block;
@@ -34,77 +34,27 @@
   transition: opacity 420ms ease;
 }
 
-/* The monitor scrolls through the real tall dashboard capture. */
+/* Keep the complete official landscape preview visible at its original ratio. */
 .workshop-visual--watchpoint .workshop-product-image {
-  opacity: 1;
-  transform: translateY(0);
-}
-.workshop-visual--watchpoint[data-alternate="yes"] .workshop-product-image {
-  opacity: 1;
-  transform: translateY(-44%);
-}
-.workshop-visual--watchpoint[data-motion="on"] .workshop-product-image {
-  transition: transform 1200ms cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-
-/* Official App Store portrait artwork remains fully visible inside the phone. */
-.workshop-visual--somethings {
-  background: #eee9e0;
-}
-.workshop-visual--somethings .workshop-product-image {
   height: 100%;
   object-fit: contain;
 }
-
-/* Both native iPad captures show the same card. Center its original question /
-   answer text inside the landscape tablet without re-typesetting the UI. */
-.workshop-visual--remember {
-  background: #343ae7;
-}
-.workshop-visual--remember .workshop-product-image {
-  width: 110%;
-  left: -5%;
-  top: 50%;
-  transform: translateY(-47%);
+.workshop-visual--watchpoint {
+  background: #101014;
 }
 
-/* The original iPad UI has a centered 1,104px content column. Crop into it for
-   the wide controller display: temperature at native y≈700, fan at y≈1,750. */
-.workshop-visual--tinker .workshop-product-image {
-  width: 187%;
-  left: -43.5%;
-  transform: translateY(-25.44%);
+/* Viewport into the lossless original: exclude the promotional headline and
+   outer phone frame, preserving the app artwork at its native aspect ratio. */
+.workshop-visual--somethings {
+  background: #fffcf7;
 }
-.workshop-visual--tinker .workshop-product-image--alternate {
-  transform: translateY(-63.59%);
+.workshop-visual--somethings .workshop-product-image {
+  width: 114.36%;
+  left: -6.81%;
+  transform: translateY(-27.15%);
 }
-
 @media (prefers-reduced-motion: reduce) {
   .workshop-visual .workshop-product-image {
     transition: none !important;
-  }
-}
-
-/* Follow the actual temperature capture down to its history graph while this
-   station is selected. Pause/reduced-motion leaves a complete still view. */
-.workshop-project-screen[data-selected="yes"]
-  .workshop-visual--tinker[data-motion="on"][data-alternate="no"]
-  .workshop-product-image--primary {
-  animation: workshop-history-pan 12s ease-in-out infinite;
-}
-@keyframes workshop-history-pan {
-  0%,
-  18%,
-  100% {
-    transform: translateY(-25.44%);
-  }
-  48%,
-  76% {
-    transform: translateY(-49%);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .workshop-visual .workshop-product-image {
-    animation: none !important;
   }
 }

@@ -3,6 +3,7 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
+  Fan,
   Maximize2,
   RotateCcw,
 } from "lucide-react";
@@ -34,11 +35,11 @@ const stations = [
     id: "somethings" as WorkshopStation,
     title: "Somethings",
     theme: "02 / People",
-    point: { x: 0.383, y: 0.495 },
+    point: { x: 0.384, y: 0.5 },
     marker: { x: 0.384, y: 0.63 },
     zoom: 4.2,
     mobileZoom: 7,
-    screenHeight: 0.18,
+    screenHeight: 0.17,
     description:
       "Technology should bring us closer to a real human. I lead engineering at Somethings, connecting young people with peer support.",
     href: "https://www.somethings.com/",
@@ -118,7 +119,7 @@ export default function CuriosityWorkbench() {
   const currentAssets = current ? workshopAssets[current.id] : null;
   const alternate = current ? alternateViews[current.id] : false;
   const currentImage = currentAssets
-    ? alternate
+    ? alternate && currentAssets.alternate
       ? currentAssets.alternate
       : currentAssets.primary
     : null;
@@ -126,30 +127,57 @@ export default function CuriosityWorkbench() {
   useEffect(() => {
     const element = consoleRef.current;
     if (!element) return;
-    const measure = () =>
+    let scheduled = 0;
+    let previousHeight = -1;
+    const measure = () => {
+      scheduled = 0;
+      const height = element.offsetHeight;
+      if (height === previousHeight) return;
+      previousHeight = height;
       section.current?.style.setProperty(
         "--workshop-console-height",
-        `${element.offsetHeight}px`,
+        `${height}px`,
       );
+    };
     measure();
-    const observer = new ResizeObserver(measure);
+    const observer = new ResizeObserver(() => {
+      if (!scheduled) scheduled = requestAnimationFrame(measure);
+    });
     observer.observe(element);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(scheduled);
+    };
   }, []);
 
   useEffect(() => {
     const element = lens.current;
     if (!element) return;
-    const measure = () =>
-      setSize({
+    let scheduled = 0;
+    const measure = () => {
+      scheduled = 0;
+      const next = {
         width: element.clientWidth,
         height: element.clientHeight,
         mobile: window.matchMedia("(max-width: 900px)").matches,
-      });
+      };
+      setSize((previous) =>
+        previous.width === next.width &&
+        previous.height === next.height &&
+        previous.mobile === next.mobile
+          ? previous
+          : next,
+      );
+    };
     measure();
-    const observer = new ResizeObserver(measure);
+    const observer = new ResizeObserver(() => {
+      if (!scheduled) scheduled = requestAnimationFrame(measure);
+    });
     observer.observe(element);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(scheduled);
+    };
   }, []);
 
   useEffect(() => {
@@ -287,13 +315,19 @@ export default function CuriosityWorkbench() {
   );
 
   const interact = () => {
-    if (!current || !currentAssets) return;
+    if (!current) return;
     setAlternateViews((views) => ({
       ...views,
       [current.id]: !views[current.id],
     }));
     setAnnouncement(
-      `${current.title}: ${alternate ? currentAssets.primary.alt : currentAssets.alternate.alt}`,
+      current.id === "remember"
+        ? alternate
+          ? "What makes an idea stick?"
+          : "Coming back to it."
+        : current.id === "tinker"
+          ? `Demo fan ${alternate ? "on" : "off"}. Temperature remains visible at 78 degrees Fahrenheit.`
+          : `${current.title}: ${alternate ? currentAssets?.primary.alt : currentAssets?.alternate?.alt}`,
     );
   };
 
@@ -309,7 +343,7 @@ export default function CuriosityWorkbench() {
         <div
           className="workshop-lens"
           ref={lens}
-          aria-label="A workshop with four project stations and original product screenshots"
+          aria-label="A workshop with four interactive project stations"
         >
           <motion.div
             className="workshop-world"
@@ -427,32 +461,60 @@ export default function CuriosityWorkbench() {
             </div>
             <div className="workshop-project-action">
               <span className="workshop-demo-label">
-                {currentAssets?.sourceLabel}
+                {current?.id === "remember"
+                  ? "PLAY WITH THE IDEA"
+                  : current?.id === "tinker"
+                    ? "INTERACTIVE DEMO · SAMPLE TEMPERATURE"
+                    : currentAssets?.sourceLabel}
               </span>
-              <button
-                className="workshop-demo-button"
-                type="button"
-                onClick={interact}
-                aria-pressed={alternate}
-              >
-                {alternate ? (
-                  <RotateCcw size={17} aria-hidden="true" />
-                ) : (
-                  <ArrowRight size={17} aria-hidden="true" />
-                )}
-                {alternate
-                  ? currentAssets?.alternateActionLabel
-                  : currentAssets?.actionLabel}
-              </button>
-              <a
-                className="workshop-original-link"
-                href={currentImage?.src}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                View full screenshot{" "}
-                <ArrowUpRight size={12} aria-hidden="true" />
-              </a>
+              {current?.id !== "watchpoint" && (
+                <button
+                  className="workshop-demo-button"
+                  type="button"
+                  onClick={interact}
+                  aria-pressed={
+                    current?.id === "tinker" ? !alternate : alternate
+                  }
+                >
+                  {current?.id === "tinker" ? (
+                    <Fan size={17} aria-hidden="true" />
+                  ) : alternate || current?.id === "remember" ? (
+                    <RotateCcw size={17} aria-hidden="true" />
+                  ) : (
+                    <ArrowRight size={17} aria-hidden="true" />
+                  )}
+                  {current?.id === "remember"
+                    ? alternate
+                      ? "Turn the card back"
+                      : "Turn the card over"
+                    : current?.id === "tinker"
+                      ? alternate
+                        ? "Turn demo fan on"
+                        : "Turn demo fan off"
+                      : alternate
+                        ? currentAssets?.alternateActionLabel
+                        : currentAssets?.actionLabel}
+                </button>
+              )}
+              {currentImage ? (
+                <a
+                  className="workshop-original-link"
+                  href={currentImage?.src}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View full screenshot{" "}
+                  <ArrowUpRight size={12} aria-hidden="true" />
+                </a>
+              ) : (
+                <p className="workshop-action-note">
+                  {current?.id === "remember"
+                    ? alternate
+                      ? "Coming back to it. That’s the idea."
+                      : "What makes an idea stick?"
+                    : `Sample: 78°F. Heater off. Fan ${alternate ? "off" : "on"}.`}
+                </p>
+              )}
             </div>
           </div>
           <div
