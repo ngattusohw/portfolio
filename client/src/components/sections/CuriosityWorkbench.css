@@ -24,7 +24,6 @@
   top: 0;
   left: 0;
   transform-origin: 0 0;
-  will-change: transform;
 }
 .workshop-room {
   display: block;
@@ -53,10 +52,10 @@
 }
 /* A separate physical phone, stood on the open worktop beside the monitor. */
 .workshop-project-screen--somethings {
-  left: 35.9%;
-  top: 40.5%;
-  width: 5%;
-  height: 18%;
+  left: 35.6%;
+  top: 41.5%;
+  width: 5.7%;
+  height: 17%;
   padding: 0.35%;
   overflow: visible;
   border-radius: 8% / 4%;
@@ -73,6 +72,14 @@
     3px 3px 0 #161915,
     7px 9px 10px #0009,
     inset 0 0 0 1px #d5d2bf80;
+}
+.workshop-project-screen--watchpoint,
+.workshop-project-screen--somethings {
+  filter: none !important;
+}
+.workshop-project-screen--watchpoint .workshop-glass,
+.workshop-project-screen--somethings .workshop-glass {
+  display: none;
 }
 .workshop-project-screen--somethings .workshop-visual {
   border-radius: 6% / 3%;

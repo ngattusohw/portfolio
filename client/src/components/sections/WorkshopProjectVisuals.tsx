@@ -1,3 +1,4 @@
+import { WorkshopLegacyVisual } from "./WorkshopLegacyVisuals";
 import "./WorkshopProjectVisuals.css";
 
 export type WorkshopStation =
@@ -6,29 +7,23 @@ export type WorkshopStation =
 type ProductAsset = { src: string; alt: string };
 type WorkshopAsset = {
   primary: ProductAsset;
-  alternate: ProductAsset;
+  alternate?: ProductAsset;
   sourceLabel: string;
-  actionLabel: string;
-  alternateActionLabel: string;
+  actionLabel?: string;
+  alternateActionLabel?: string;
 };
 
 const assetRoot = "/images/workshop/products";
 
-/** Original product captures; sources and demo-data boundaries are documented in
- * docs/design/workshop-product-assets.md. No UI is redrawn for these screens. */
-export const workshopAssets: Record<WorkshopStation, WorkshopAsset> = {
+/** The monitor and phone use original product imagery. The other stations
+ * deliberately restore the portfolio's earlier interactive demos. */
+export const workshopAssets: Partial<Record<WorkshopStation, WorkshopAsset>> = {
   watchpoint: {
     primary: {
-      src: `${assetRoot}/watchpoint-dashboard.png`,
-      alt: "Watchpoint dashboard showing service health and application charts for its fictional Northstar Digital demo organization",
+      src: `${assetRoot}/watchpoint-preview.png`,
+      alt: "Watchpoint's official Portfolio Command Center preview showing service health, error trends, subscribers, and notifications",
     },
-    alternate: {
-      src: `${assetRoot}/watchpoint-dashboard.png`,
-      alt: "Watchpoint dashboard showing additional chart types and infrastructure monitoring with demo data",
-    },
-    sourceLabel: "Actual Watchpoint dashboard · demo data",
-    actionLabel: "Explore the dashboard",
-    alternateActionLabel: "Back to dashboard overview",
+    sourceLabel: "Official Watchpoint product preview · sample data",
   },
   somethings: {
     primary: {
@@ -43,32 +38,6 @@ export const workshopAssets: Record<WorkshopStation, WorkshopAsset> = {
     actionLabel: "See the chat screen",
     alternateActionLabel: "See the mentor screen",
   },
-  remember: {
-    primary: {
-      src: `${assetRoot}/recollect-review.png`,
-      alt: "Recollect AI native review screen with the Italian flashcard question Buongiorno",
-    },
-    alternate: {
-      src: `${assetRoot}/recollect-answer.png`,
-      alt: "Recollect AI native answer screen: Good morning; hello during the day",
-    },
-    sourceLabel: "Native app screenshots · sample Italian deck",
-    actionLabel: "Reveal the answer",
-    alternateActionLabel: "Show the question",
-  },
-  tinker: {
-    primary: {
-      src: `${assetRoot}/better-saunum-history.jpg`,
-      alt: "Better Saunum native demo screen showing sauna temperature and saved temperature history",
-    },
-    alternate: {
-      src: `${assetRoot}/better-saunum-controls.jpg`,
-      alt: "Better Saunum native demo screen showing air circulation and sauna light controls",
-    },
-    sourceLabel: "Native app screenshots · simulated sauna data",
-    actionLabel: "See fan controls",
-    alternateActionLabel: "See temperature history",
-  },
 };
 
 type WorkshopProjectVisualProps = {
@@ -77,14 +46,23 @@ type WorkshopProjectVisualProps = {
   alternate: boolean;
 };
 
-/** Decorative crops of authentic screenshots. The stationary panel owns all
- * accessible descriptions, screenshot actions, and full-size image links. */
+/** The stationary panel owns all accessible descriptions and controls. */
 export function WorkshopProjectVisual({
   station,
   motionEnabled,
   alternate,
 }: WorkshopProjectVisualProps) {
-  const assets = workshopAssets[station];
+  if (station === "remember" || station === "tinker") {
+    return (
+      <WorkshopLegacyVisual
+        station={station}
+        motionEnabled={motionEnabled}
+        flipped={alternate}
+        fanOn={!alternate}
+      />
+    );
+  }
+  const assets = workshopAssets[station]!;
   return (
     <div
       className={`workshop-visual workshop-visual--${station}`}
@@ -99,7 +77,7 @@ export function WorkshopProjectVisual({
         draggable={false}
         decoding="async"
       />
-      {station !== "watchpoint" && (
+      {assets.alternate && (
         <img
           className="workshop-product-image workshop-product-image--alternate"
           src={assets.alternate.src}
