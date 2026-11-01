@@ -2,33 +2,36 @@
 
 References: [PromptSites — Scroll Landing](https://www.promptsites.co/prompt/scroll-landing) for camera movement and exploration, the owner-supplied garage-workbench image for physical composition, and the earlier [PromptSites — Retro-Futurist](https://www.promptsites.co/prompt/retro-futurist) reference for tactile hardware and personality. The owner requested a whole workbench that visitors can zoom into, with individual projects animating in different parts of it. The portfolio uses original conceptual artwork and its existing reviewed content.
 
-The current hero is **“Come take a closer look.”** `RomanHero.tsx` combines the immersive workshop with Nick’s current-role strip. `CuriosityWorkbench.tsx` presents a continuous physical room with a desktop monitor, tablet, handmade sauna controller, and surrounding tools. The initial view shows the whole bench; native document scroll then moves a camera between project stations. This replaces the previous standalone CSS instrument, which had replaced the static CRT mascot.
+The current hero is **“Come take a closer look.”** `RomanHero.tsx` combines the immersive workshop with Nick’s current-role strip. `CuriosityWorkbench.tsx` presents a continuous physical room with a Watchpoint desktop monitor, a separate Somethings phone on the tabletop, a Recollect AI tablet, and a Better Saunum controller. The initial view shows the whole bench; native document scroll then moves a camera between project stations. This replaces the previous standalone CSS instrument, which had replaced the static CRT mascot.
 
 The workshop combines warm wood, dark controls, and bright screen illustrations. The surrounding site keeps its established sans-serif and monospace typography, pink and green accents, cool gray surfaces, and charcoal project gallery with the original project artwork. About, experience, field notes, and contact remain part of the ordinary document. Body text has no scanline effects.
 
 ## Scene and camera architecture
 
-One generated room image supplies the physical setting. HTML and SVG screens from `WorkshopProjectVisuals.tsx` sit over the image’s blank device displays, so the illustrations remain live as the camera moves. The screen component is decorative and `aria-hidden`; the stationary project panel owns all actual buttons, project descriptions, links, and action announcements.
+One generated room image supplies the physical setting. Original product screenshots from `WorkshopProjectVisuals.tsx` sit over the blank device displays. A separate CSS phone body stands on the table for Somethings. The owner explicitly requested actual product assets instead of invented illustrations. Camera travel, screenshot panning, and transitions supply motion while preserving the captured product UI. See [product asset provenance](./workshop-product-assets.md). The screen component is decorative and `aria-hidden`; the stationary project panel owns all actual buttons, project descriptions, links, and action announcements.
 
-The scene uses a sticky viewport inside a taller scroll section. Scroll progress interpolates Framer Motion values for translation and scale through an overview and three project poses, with resting intervals at each device. Hotspots and the persistent navigation select the same scroll stops. Captions and action controls stay outside the transformed world; hotspot scale is compensated so targets stay usable. Mobile framing differs from desktop, and short landscape layouts keep navigation within the viewport.
+The scene uses a sticky viewport inside a taller scroll section. Scroll progress interpolates Framer Motion values for translation and scale through an overview and four project poses, with resting intervals at each device. Hotspots and the persistent navigation select the same scroll stops. Captions and action controls stay outside the transformed world; hotspot scale is compensated so targets stay usable. Mobile framing differs from desktop, and short landscape layouts keep navigation within the viewport.
 
 The tour does not intercept native wheel, touch, or keyboard scrolling. A “Skip to project list” link reaches the normal gallery immediately; the full portfolio remains available independently of the tour.
 
 ## Workbench interactions
 
-- **Connect / Somethings:** the desktop monitor shows two large illustrated characters exchanging a signal. The connection button changes their shared symbol and status. This represents Nick’s work on technology supporting human connection, with a link to Somethings. It depicts no real users, conversations, or health outcomes.
-- **Remember / Recollect AI:** the tablet holds a physical-looking stack of flashcards. The active card turns from a question to an answer, alongside illustrative review intervals. Link to Recollect’s verified project page and retain its beta status.
-- **Tinker / Better Saunum:** the wide controller screen shows temperature, a fan, and temperature history together while the heater is off. The fan toggle and persistent reading come from Nick’s stated priorities for the app. Temperatures are explicitly labeled as a non-live demo; the illustration controls no real heater. Link to the public technical post at `/blog/building-better-saunum`.
+- **Watchpoint / monitor:** the actual dashboard capture scrolls between service health and deeper charts. Northstar Digital is seeded demo data; this is not a live monitoring connection.
+- **Somethings / phone:** the official App Store mentor-matching and chat artwork appears on a separate physical phone on the tabletop. It uses public marketing content rather than real private conversations.
+- **Recollect AI / tablet:** genuine native review and answer captures show a card from the product’s Italian starter catalog. The reveal transitions between those two captures. Retain beta attribution.
+- **Better Saunum / controller:** genuine native screenshots show temperature history and controls with documented simulated data. The button changes which screenshot is shown, without controlling a heater.
+
+Every station provides a full screenshot link to show the original frame outside the device crop. Do not claim screenshot controls are live product functionality. The original generated room remains a conceptual setting; no new product imagery was generated for this revision.
 
 Preserve verified role and project attribution. The private prequel’s publication status is independent of this design work.
 
 ## Motion and accessibility
 
-Motion should invite exploration or explain state: camera travel to physical devices, a rotating fan, a connecting signal, a turned card, project-filter reflow, and restrained feedback on project and journal links. Main content stays visible immediately; avoid hidden scroll reveals. Preserve the original project images.
+Motion should invite exploration or explain state: camera travel to physical devices, panning through actual screenshots, revealing the captured answer, project-filter reflow, and restrained feedback on project and journal links. Main content stays visible immediately; avoid hidden scroll reveals. Preserve the original project images.
 
 `PortfolioMotionProvider` centralizes the header pause control, system reduced-motion preference, and hidden-tab handling. The pause choice persists for the browser session, including navigation to the journal. The workbench also pauses decorative motion outside the viewport. Paused and reduced-motion states move directly between station poses without camera travel and retain complete illustrations and usable controls. Scene geometry must not collapse or change when motion is paused or the browser tab is hidden.
 
-Keep keyboard access, visible focus, readable labels, and comfortable touch targets. Move focus to the appropriate navigation button before hiding a focused overview control or changing a focused project panel. Automatic scroll progress does not generate live announcements; explicit demo actions do. Descriptions and sample-data labels remain available without animation.
+Keep keyboard access, visible focus, readable labels, and comfortable touch targets. Move focus to the appropriate navigation button before hiding a focused overview control or changing a focused project panel. Automatic scroll progress does not generate live announcements; explicit demo actions do. Descriptions and screenshot-source labels remain available without animation.
 
 ## Current workshop asset
 
@@ -39,6 +42,8 @@ Keep keyboard access, visible focus, readable labels, and comfortable touch targ
 - Exact generation prompt: [workshop-image-prompt.txt](./workshop-image-prompt.txt). The production image is approximately 324 KiB; no runtime image generation or additional dependency is needed.
 
 ## Validation
+
+Four-station product-asset validation on November 1, 2026: TypeScript, all 12 existing isolated regression tests, and the production build passed. Chrome checks covered the desktop overview, all four stations, original screenshot transitions, full-image link targets, and paused navigation with no active screen animations. Actual 320×568, 390×844, and 844×390 frames were inspected without horizontal page overflow; the portrait camera now measures the story panel so it cannot cover the phone, and landscape retains the screenshot-source disclosure. Source hashes were checked against the original Watchpoint, Recollect, and Better Saunum captures. Reduced-motion behavior was reviewed in code without changing the OS setting. The existing bundle-size and Browserslist warnings remain.
 
 Immersive-workshop validation on November 1, 2026: TypeScript check, all 12 existing isolated regression tests, and production build passed. Chrome checks covered the wide room, all three close-ups, native scrolling, direct station navigation, connection, card flip, fan toggle, paused station navigation, and keyboard focus transfer. Actual 320×568, 390×844, 768×1024, and 844×390 frame layouts were inspected; narrow phone frames had no horizontal overflow and the landscape console stayed inside its 390px viewport. The tour shortcut reached the project list, the Recollect detail modal opened, and contact fields remained readable. The OS reduced-motion branch shares the checked paused-camera behavior and was reviewed in code; the system preference was not changed for this pass. Production is released through a PR, required CI, and the existing main-branch Render deployment. The pre-existing large-bundle and Browserslist warnings remain.
 

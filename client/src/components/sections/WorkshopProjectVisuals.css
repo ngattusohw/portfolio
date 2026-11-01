@@ -3,238 +3,108 @@
   height: 100%;
   position: relative;
   overflow: hidden;
-  container-type: size;
   isolation: isolate;
-  color: #f5f1e7;
-  background: #202a25;
+  background: #101412;
   pointer-events: none;
   user-select: none;
 }
-.workshop-visual--connect {
-  background: radial-gradient(ellipse at 50% 45%, #39303c, #211f29 85%);
-}
-.workshop-visual--remember {
-  background: radial-gradient(ellipse at 55% 25%, #49415c, #272332 90%);
-}
-.workshop-visual--tinker {
-  background: radial-gradient(ellipse at 50% 35%, #29352c, #18221d 90%);
-}
-.workshop-visual-svg {
-  width: 100%;
-  height: 100%;
+
+/* Every screen uses an original image at its native aspect ratio. The physical
+   displays are viewports into those captures, never stretched recreations. */
+.workshop-product-image {
   display: block;
-}
-.workshop-screen-brand {
-  font: 500 19px var(--folio-display, sans-serif);
-  letter-spacing: -0.8px;
-  fill: #f5f1e7;
-}
-.workshop-screen-label {
-  font: 400 9px var(--folio-mono, monospace);
-  letter-spacing: 0.8px;
-  fill: #b2bdaa;
-}
-.workshop-screen-message {
-  font: 500 22px var(--folio-display, sans-serif);
-  letter-spacing: -0.7px;
-  fill: #f1e1ea;
-}
-.workshop-connection-line {
-  fill: none;
-  stroke: #705570;
-  stroke-width: 2;
-}
-.workshop-connection-signal {
-  fill: none;
-  stroke: #edbcd7;
-  stroke-width: 3;
-  stroke-dasharray: 5 95;
-  stroke-linecap: round;
-  opacity: 0.45;
-}
-.workshop-visual[data-connected="yes"] .workshop-connection-line {
-  stroke: #c1c992;
-}
-.workshop-visual[data-connected="yes"] .workshop-connection-signal {
-  stroke: #e8ffc6;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  max-width: none;
   opacity: 1;
 }
-.workshop-person {
-  transform-box: fill-box;
-  transform-origin: center;
+.workshop-product-image--alternate {
+  opacity: 0;
 }
-.workshop-avatar-eyes {
-  transform-box: fill-box;
-  transform-origin: center;
+.workshop-visual[data-alternate="yes"] .workshop-product-image--primary {
+  opacity: 0;
 }
-.workshop-visual[data-motion="on"] .workshop-person {
-  animation: workshop-person-bob 4.8s ease-in-out infinite;
+.workshop-visual[data-alternate="yes"] .workshop-product-image--alternate {
+  opacity: 1;
 }
-.workshop-visual[data-motion="on"] .workshop-person-two {
-  animation-delay: -2.4s;
+.workshop-visual[data-motion="on"] .workshop-product-image {
+  transition: opacity 420ms ease;
 }
-.workshop-visual[data-motion="on"] .workshop-avatar-eyes {
-  animation: workshop-eye-blink 6.2s infinite;
+
+/* The monitor scrolls through the real tall dashboard capture. */
+.workshop-visual--watchpoint .workshop-product-image {
+  opacity: 1;
+  transform: translateY(0);
 }
-.workshop-visual[data-motion="on"] .workshop-connection-signal {
-  animation: workshop-signal-travel 3s linear infinite;
+.workshop-visual--watchpoint[data-alternate="yes"] .workshop-product-image {
+  opacity: 1;
+  transform: translateY(-44%);
 }
-.workshop-recollect-brand {
-  position: absolute;
-  left: 6%;
-  top: 6%;
-  font: 500 4cqw/1 var(--folio-display, sans-serif);
-  letter-spacing: -0.15cqw;
+.workshop-visual--watchpoint[data-motion="on"] .workshop-product-image {
+  transition: transform 1200ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.workshop-recollect-brand > span {
-  margin-left: 1.5cqw;
-  color: #c9b1ed;
-  font: 400 2.1cqw var(--folio-mono, monospace);
-  letter-spacing: 0;
+
+/* Official App Store portrait artwork remains fully visible inside the phone. */
+.workshop-visual--somethings {
+  background: #eee9e0;
 }
-.workshop-memory-stack {
-  position: absolute;
-  inset: 24% 17% 20%;
-  perspective: 800px;
+.workshop-visual--somethings .workshop-product-image {
+  height: 100%;
+  object-fit: contain;
 }
-.workshop-memory-sheet,
-.workshop-memory-card,
-.workshop-memory-face {
-  position: absolute;
-  inset: 0;
-  border-radius: 1.6cqw;
+
+/* Both native iPad captures show the same card. Center its original question /
+   answer text inside the landscape tablet without re-typesetting the UI. */
+.workshop-visual--remember {
+  background: #343ae7;
 }
-.workshop-memory-sheet {
-  background: #a999c9;
-  border: 1px solid #d6c8e7;
-  box-shadow: 0 1cqw 2cqw #0002;
+.workshop-visual--remember .workshop-product-image {
+  width: 110%;
+  left: -5%;
+  top: 50%;
+  transform: translateY(-47%);
 }
-.workshop-memory-sheet-one {
-  transform: translate(2%, 3%) rotate(9deg);
+
+/* The original iPad UI has a centered 1,104px content column. Crop into it for
+   the wide controller display: temperature at native y≈700, fan at y≈1,750. */
+.workshop-visual--tinker .workshop-product-image {
+  width: 187%;
+  left: -43.5%;
+  transform: translateY(-25.44%);
 }
-.workshop-memory-sheet-two {
-  transform: translate(-2%, 1%) rotate(-7deg);
-  background: #d1c4e5;
+.workshop-visual--tinker .workshop-product-image--alternate {
+  transform: translateY(-63.59%);
 }
-.workshop-memory-card {
-  transform-style: preserve-3d;
-  transform: rotate(-2deg);
-}
-.workshop-visual[data-motion="on"] .workshop-memory-card {
-  transition: transform 850ms cubic-bezier(0.2, 0.75, 0.2, 1);
-}
-.workshop-visual[data-flipped="yes"] .workshop-memory-card {
-  transform: rotate(-2deg) rotateY(180deg);
-}
-.workshop-memory-face {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 7% 9%;
-  color: #322d39;
-  background: linear-gradient(135deg, #fff9e9, #ece5d7);
-  box-shadow: 0 0.8cqw 2.5cqw #0003;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-.workshop-memory-back {
-  background: linear-gradient(135deg, #e1d6ff, #c1afe4);
-  transform: rotateY(180deg);
-}
-.workshop-memory-face strong {
-  font: 500 6.6cqw/0.98 var(--folio-display, sans-serif);
-  letter-spacing: -0.35cqw;
-}
-.workshop-card-label,
-.workshop-card-footer {
-  font: 400 1.4cqw/1.3 var(--folio-mono, monospace);
-  letter-spacing: 0.12cqw;
-}
-.workshop-card-footer {
-  font-size: 1.1cqw;
-  letter-spacing: 0.04cqw;
-}
-.workshop-review-intervals {
-  position: absolute;
-  inset: auto 15% 6%;
-  display: flex;
-  align-items: center;
-  gap: 2cqw;
-  color: #dfd4ed;
-  font: 400 1.7cqw/1.2 var(--folio-mono, monospace);
-}
-.workshop-review-intervals i {
-  height: 1px;
-  flex: 1;
-  background: #82768f;
-}
-.workshop-visual[data-flipped="yes"] .workshop-review-intervals i {
-  background: #dfd0ff;
-}
-.workshop-temperature {
-  font: 500 100px var(--folio-display, sans-serif);
-  letter-spacing: -7px;
-  fill: #f6c386;
-}
-.workshop-visual--tinker .workshop-screen-label {
-  font-size: 10px;
-  letter-spacing: 0.55px;
-}
-.workshop-temperature-unit {
-  font-size: 32px;
-  letter-spacing: -1px;
-}
-.workshop-fan-rotor {
-  transform-origin: 385px 127px;
-}
-.workshop-visual[data-motion="on"][data-fan="on"] .workshop-fan-rotor {
-  animation: workshop-fan-spin 1.8s linear infinite;
-}
-.workshop-history-line {
-  fill: none;
-  stroke: #f6c386;
-  stroke-width: 2.5;
-  stroke-linecap: round;
-}
-.workshop-visual[data-motion="on"] .workshop-history-now {
-  animation: workshop-temperature-glow 3s ease-in-out infinite;
-}
-@keyframes workshop-person-bob {
-  50% {
-    transform: translateY(-5px) rotate(-2deg);
+
+@media (prefers-reduced-motion: reduce) {
+  .workshop-visual .workshop-product-image {
+    transition: none !important;
   }
 }
-@keyframes workshop-eye-blink {
+
+/* Follow the actual temperature capture down to its history graph while this
+   station is selected. Pause/reduced-motion leaves a complete still view. */
+.workshop-project-screen[data-selected="yes"]
+  .workshop-visual--tinker[data-motion="on"][data-alternate="no"]
+  .workshop-product-image--primary {
+  animation: workshop-history-pan 12s ease-in-out infinite;
+}
+@keyframes workshop-history-pan {
   0%,
-  43%,
-  47%,
+  18%,
   100% {
-    transform: scaleY(1);
+    transform: translateY(-25.44%);
   }
-  45% {
-    transform: scaleY(0.15);
-  }
-}
-@keyframes workshop-signal-travel {
-  to {
-    stroke-dashoffset: -100;
-  }
-}
-@keyframes workshop-fan-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes workshop-temperature-glow {
-  50% {
-    opacity: 0.4;
+  48%,
+  76% {
+    transform: translateY(-49%);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .workshop-visual *,
-  .workshop-visual *::before,
-  .workshop-visual *::after {
+  .workshop-visual .workshop-product-image {
     animation: none !important;
-    transition: none !important;
   }
 }
