@@ -1,6 +1,8 @@
 import { ArrowUpRight, Plus } from "lucide-react";
+import { motion } from "framer-motion";
 import type { Project } from "@/data/projects";
 import ProjectHero from "@/components/ui/ProjectHero";
+import { usePortfolioMotion } from "@/hooks/usePortfolioMotion";
 
 export default function ProjectCard({
   project,
@@ -9,10 +11,18 @@ export default function ProjectCard({
   project: Project;
   number: number;
 }) {
+  const { motionEnabled } = usePortfolioMotion();
   return (
-    <article
+    <motion.article
       className="project-card"
       data-category={project.categories.join(" ")}
+      layout={motionEnabled ? "position" : false}
+      initial={false}
+      transition={
+        motionEnabled
+          ? { layout: { type: "spring", stiffness: 360, damping: 34 } }
+          : { duration: 0 }
+      }
     >
       <div className="project-card-art">
         <ProjectHero project={project} />
@@ -53,6 +63,6 @@ export default function ProjectCard({
           </button>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }

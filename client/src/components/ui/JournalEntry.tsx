@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { format } from "date-fns";
 import { ArrowUpRight } from "lucide-react";
 import type { BlogPost } from "@shared/schema";
+import "@/components/sections/PortfolioMotion.css";
 export default function JournalEntry({
   post,
   index,

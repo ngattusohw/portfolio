@@ -1,0 +1,179 @@
+/* Motion gives the work a little physical feedback without hiding content. */
+.work-section .work-filters button {
+  position: relative;
+  isolation: isolate;
+}
+
+.work-section .work-filters button[aria-pressed="true"] {
+  background: transparent;
+}
+
+.work-filter-active {
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--folio-lime);
+  pointer-events: none;
+}
+
+[data-portfolio-motion] .project-card .project-card-art > div {
+  transition: transform 550ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+[data-portfolio-motion] .project-card:hover .project-card-art > div {
+  transform: none;
+}
+
+[data-portfolio-motion] .project-card .project-index,
+[data-portfolio-motion] .project-card .project-card-title > a svg,
+[data-portfolio-motion] .project-card .project-card-bottom > button svg,
+[data-portfolio-motion] .work-section .project-row-actions svg {
+  transition: transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+[data-portfolio-motion="on"]
+  .project-card:focus-within
+  .project-card-art
+  > div {
+  transform: scale(1.035);
+}
+
+[data-portfolio-motion="on"] .project-card:focus-within .project-index {
+  transform: translate(2px, 2px);
+}
+
+[data-portfolio-motion="on"]
+  .project-card
+  .project-card-title
+  > a:focus-visible
+  svg,
+[data-portfolio-motion="on"]
+  .work-section
+  .project-row-actions
+  > a:focus-visible
+  svg {
+  transform: translate(2px, -2px);
+}
+
+[data-portfolio-motion="on"]
+  .project-card
+  .project-card-bottom
+  > button:focus-visible
+  svg,
+[data-portfolio-motion="on"]
+  .work-section
+  .project-row-actions
+  > button:focus-visible
+  svg {
+  transform: rotate(90deg);
+}
+
+[data-portfolio-motion] .journal-entry {
+  position: relative;
+}
+
+[data-portfolio-motion] .journal-entry::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0 auto;
+  height: 1px;
+  background: var(--folio-ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 450ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  pointer-events: none;
+}
+
+[data-portfolio-motion] .journal-entry .journal-arrow,
+[data-portfolio-motion] .journal-entry .journal-arrow svg {
+  transition:
+    transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    background-color 200ms,
+    border-color 200ms;
+}
+
+[data-portfolio-motion="on"] .journal-entry:focus-within::before {
+  transform: scaleX(1);
+}
+
+[data-portfolio-motion="on"] .journal-entry:focus-within .journal-arrow svg {
+  transform: translate(2px, -2px);
+}
+
+[data-portfolio-motion] .journal-entry:focus-within .journal-arrow {
+  background: var(--folio-pink, #e8b8d1);
+  border-color: var(--folio-ink);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-portfolio-motion="on"] .project-card:hover .project-card-art > div {
+    transform: scale(1.035);
+  }
+
+  [data-portfolio-motion="on"] .project-card:hover .project-index {
+    transform: translate(2px, 2px);
+  }
+
+  [data-portfolio-motion="on"] .project-card .project-card-title > a:hover svg,
+  [data-portfolio-motion="on"] .work-section .project-row-actions > a:hover svg,
+  [data-portfolio-motion="on"] .journal-entry:hover .journal-arrow svg {
+    transform: translate(2px, -2px);
+  }
+
+  [data-portfolio-motion="on"]
+    .project-card
+    .project-card-bottom
+    > button:hover
+    svg,
+  [data-portfolio-motion="on"]
+    .work-section
+    .project-row-actions
+    > button:hover
+    svg {
+    transform: rotate(90deg);
+  }
+
+  [data-portfolio-motion="on"] .journal-entry:hover::before {
+    transform: scaleX(1);
+  }
+
+  [data-portfolio-motion] .journal-entry:hover .journal-arrow {
+    background: var(--folio-pink, #e8b8d1);
+    border-color: var(--folio-ink);
+  }
+}
+
+[data-portfolio-motion="off"] .project-card .project-card-art > div,
+[data-portfolio-motion="off"] .project-card .project-index,
+[data-portfolio-motion="off"] .project-card .project-card-title > a svg,
+[data-portfolio-motion="off"] .project-card .project-card-bottom > button svg,
+[data-portfolio-motion="off"] .work-section .work-filters button,
+[data-portfolio-motion="off"] .work-section .project-row-actions svg,
+[data-portfolio-motion="off"] .journal-entry::before,
+[data-portfolio-motion="off"] .journal-entry .journal-arrow,
+[data-portfolio-motion="off"] .journal-entry .journal-arrow svg {
+  transform: none;
+  transition: none;
+}
+
+[data-portfolio-motion="off"] .journal-entry::before {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-portfolio-motion] .project-card .project-card-art > div,
+  [data-portfolio-motion] .project-card .project-index,
+  [data-portfolio-motion] .project-card .project-card-title > a svg,
+  [data-portfolio-motion] .project-card .project-card-bottom > button svg,
+  [data-portfolio-motion] .work-section .project-row-actions svg,
+  [data-portfolio-motion] .journal-entry .journal-arrow,
+  [data-portfolio-motion] .journal-entry .journal-arrow svg {
+    transform: none !important;
+    transition: none;
+  }
+
+  [data-portfolio-motion] .journal-entry::before {
+    display: none;
+  }
+}
