@@ -10,6 +10,7 @@ import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import Admin from "@/pages/Admin";
 import { useAdminAccess } from "@/hooks/useAdminAccess";
+import { PortfolioMotionProvider } from "@/hooks/usePortfolioMotion";
 
 function AdminShortcutWrapper() {
   // Enable secret admin access with Alt+Shift+A
@@ -44,12 +45,14 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <AdminShortcutWrapper />
-        <ScrollToPageStart />
-        <Router />
-      </TooltipProvider>
+      <PortfolioMotionProvider>
+        <TooltipProvider>
+          <Toaster />
+          <AdminShortcutWrapper />
+          <ScrollToPageStart />
+          <Router />
+        </TooltipProvider>
+      </PortfolioMotionProvider>
     </QueryClientProvider>
   );
 }

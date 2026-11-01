@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { ArrowUpRight, Menu, Pause, Play, X } from "lucide-react";
+import { usePortfolioMotion } from "@/hooks/usePortfolioMotion";
 const navigation = [
   ["Work", "projects"],
   ["About", "about"],
@@ -9,6 +10,7 @@ const navigation = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const { paused, reducedMotion, toggleMotion } = usePortfolioMotion();
   useEffect(() => {
     if (!open) return;
     const escape = (e: KeyboardEvent) => {
@@ -45,17 +47,48 @@ export default function Header() {
             Let’s talk <ArrowUpRight size={15} aria-hidden="true" />
           </a>
         </nav>
-        <button
-          ref={menuButton}
-          className="mobile-menu-button"
-          type="button"
-          aria-label={open ? "Close navigation" : "Open navigation"}
-          aria-controls="mobile-navigation"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X size={23} /> : <Menu size={23} />}
-        </button>
+        <div className="header-controls">
+          <button
+            className="motion-toggle"
+            type="button"
+            onClick={toggleMotion}
+            disabled={reducedMotion}
+            aria-label={
+              reducedMotion
+                ? "Reduced motion is enabled in your system settings"
+                : paused
+                  ? "Resume motion"
+                  : "Pause motion"
+            }
+            title={
+              reducedMotion
+                ? "Following your reduced-motion preference"
+                : paused
+                  ? "Resume motion"
+                  : "Pause motion"
+            }
+          >
+            {paused || reducedMotion ? (
+              <Play size={13} aria-hidden="true" />
+            ) : (
+              <Pause size={13} aria-hidden="true" />
+            )}
+            <span>
+              {reducedMotion ? "Motion off" : paused ? "Play" : "Pause"}
+            </span>
+          </button>
+          <button
+            ref={menuButton}
+            className="mobile-menu-button"
+            type="button"
+            aria-label={open ? "Close navigation" : "Open navigation"}
+            aria-controls="mobile-navigation"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X size={23} /> : <Menu size={23} />}
+          </button>
+        </div>
       </div>
       <nav
         id="mobile-navigation"

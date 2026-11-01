@@ -1284,3 +1284,78 @@
     transform: none;
   }
 }
+
+/* A quiet, persistent way to stop the living elements. */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.motion-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 11px;
+  border: 1px solid #aeb8a4;
+  border-radius: 20px;
+  font: 400 9px/1 var(--folio-mono);
+  white-space: nowrap;
+}
+.motion-toggle:hover {
+  background: #e5e9de;
+}
+.motion-toggle:disabled {
+  color: #65705b;
+  cursor: default;
+}
+.desktop-navigation {
+  margin-left: auto;
+}
+[data-portfolio-motion="off"] .portfolio-page *,
+[data-portfolio-motion="off"] .site-header * {
+  animation-play-state: paused !important;
+  transition-duration: 0s !important;
+  scroll-behavior: auto;
+}
+@media (max-width: 900px) and (min-width: 641px) {
+  .desktop-navigation {
+    gap: 17px;
+  }
+  .header-inner {
+    gap: 16px;
+  }
+  .motion-toggle {
+    width: 36px;
+    padding: 0;
+  }
+  .motion-toggle > span {
+    display: none;
+  }
+}
+@media (max-width: 400px) {
+  .header-controls {
+    gap: 6px;
+  }
+  .motion-toggle {
+    padding-inline: 9px;
+  }
+  .header-inner {
+    gap: 12px;
+  }
+  .site-wordmark > i {
+    display: none;
+  }
+}
+.motion-toggle {
+  min-height: 44px;
+}
+@media (max-width: 900px) and (min-width: 641px) {
+  .motion-toggle {
+    width: 44px;
+  }
+}
+html:has([data-portfolio-motion="off"]) {
+  scroll-behavior: auto;
+}

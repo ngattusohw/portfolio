@@ -1,5 +1,6 @@
-import { ArrowDown, ArrowUpRight, Asterisk } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import "./RomanHero.css";
+import CuriosityWorkbench from "./CuriosityWorkbench";
 
 export default function RomanHero() {
   return (
@@ -10,13 +11,13 @@ export default function RomanHero() {
             <span aria-hidden="true">&gt;_</span> Hey, I’m Nick Gattuso III.
           </p>
           <h1 id="hero-title">
-            Good ideas.
+            Curiosity,
             <br />
-            Built to <span>work.</span>
+            put to <span>work.</span>
           </h1>
           <p className="hero-intro">
-            Engineer, founder, and a very curious human. I build software and
-            the teams that bring it to life.
+            I build software, lead engineering teams, and occasionally rebuild
+            the app that came with my sauna.
           </p>
           <div className="hero-actions">
             <a className="folio-button" href="#projects">
@@ -44,23 +45,9 @@ export default function RomanHero() {
             <a href="/blog">Field notes ↗</a>
           </div>
         </div>
-        <div className="hero-character" aria-hidden="true">
-          <div className="character-orbit" />
-          <Asterisk className="character-spark" strokeWidth={1} />
-          <img
-            src="/images/retro/terminal-friend.webp"
-            alt=""
-            width="1086"
-            height="1448"
-            loading="eager"
-            decoding="async"
-          />
-          <span className="character-caption">
-            A little human. A little hardware.
-          </span>
-        </div>
+        <CuriosityWorkbench />
         <div className="hero-bottom-note">
-          <span>Independent thinking. Collective building.</span>
+          <span>People. Learning. The urge to make things work better.</span>
           <a href="#projects" aria-label="Scroll to selected projects">
             <ArrowDown size={17} aria-hidden="true" />
           </a>
