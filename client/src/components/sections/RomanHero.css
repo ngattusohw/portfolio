@@ -1,187 +1,389 @@
-.roman-hero {
+.retro-hero {
+  background: var(--folio-paper);
+  padding-top: 80px;
+  overflow: hidden;
+}
+.hero-stage {
+  min-height: 710px;
   position: relative;
   display: grid;
-  justify-items: center;
-  align-content: center;
-  gap: clamp(2rem, 4vw, 3rem);
-  min-height: 100svh;
-  padding: 8rem clamp(1.25rem, 4vw, 4rem) 4rem;
-  isolation: isolate;
+  grid-template-columns: 1fr 1.1fr;
+  align-items: center;
 }
-
-.roman-hero .scanlines {
-  z-index: -1;
-  opacity: 0.45;
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  padding: 64px 0 110px;
 }
-
-.roman-hero__scene {
-  container-type: inline-size;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 16fr) minmax(0, 1fr);
-  align-items: end;
-  gap: clamp(0.5rem, 2vw, 1.75rem);
-  width: min(100%, 64rem);
-  min-width: 0;
-}
-
-.roman-hero__art {
-  justify-self: center;
-  width: max-content;
-  margin: 0;
-  color: hsl(var(--roman-gold));
-  font-family: "Fira Mono", monospace;
-  font-size: clamp(2px, 1.05vw, 12px);
-  font-size: min(1.16cqi, 12px);
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-  white-space: pre;
-  text-shadow: 0 0 8px hsl(var(--roman-gold) / 0.25);
-}
-
-.roman-hero__column {
+.hero-greeting {
   display: flex;
-  flex-direction: column;
-  height: clamp(4rem, 23vw, 15rem);
-  height: clamp(3.5rem, 23cqi, 15rem);
-  min-width: 0;
-  color: hsl(var(--roman-text));
-  filter: drop-shadow(0 4px 0 hsl(var(--roman-bg) / 0.4));
+  align-items: center;
+  gap: 12px;
+  font: 12px/1.6 var(--folio-mono);
+  margin-bottom: 28px;
 }
-
-.roman-hero__column-cap {
-  flex: 0 0 8%;
-  border: 2px solid currentColor;
-  background: hsl(var(--roman-marble));
-  box-shadow: inset 3px 3px 0 hsl(var(--roman-marble-dark));
+.hero-greeting > span {
+  background: var(--folio-ink);
+  color: var(--folio-paper);
+  border-radius: 5px;
+  padding: 3px 7px;
+  font-size: 14px;
 }
-
-.roman-hero__column-cap--base {
-  box-shadow: inset -3px -3px 0 hsl(var(--roman-marble-dark));
+.hero-copy h1 {
+  font: 500 clamp(58px, 6.3vw, 94px)/1.02 var(--folio-display);
+  letter-spacing: -0.075em;
+  margin: 0 0 28px;
 }
-
-.roman-hero__column-shaft {
-  flex: 1;
-  margin-inline: 12%;
-  border-inline: 2px solid currentColor;
-  background: linear-gradient(
-    to right,
-    hsl(var(--roman-marble-dark)) 20%,
-    hsl(var(--roman-marble)) 20% 80%,
-    hsl(var(--roman-marble-dark)) 80%
-  );
+.hero-copy h1 > span {
+  position: relative;
 }
-
-.roman-hero__content {
-  display: grid;
-  justify-items: center;
-  gap: 1rem;
-  width: min(100%, 48rem);
-  min-width: 0;
-  text-align: center;
+.hero-copy h1 > span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 6px;
+  background: var(--folio-pink);
+  z-index: -1;
 }
-
-.roman-hero__title {
-  max-width: 100%;
-  margin: 0;
-  color: hsl(var(--roman-parchment));
-  font-family: "Press Start 2P", cursive;
-  font-size: clamp(1.375rem, 4.6vw, 2.75rem);
-  line-height: 1.55;
-  letter-spacing: -0.04em;
-  text-wrap: balance;
+.hero-intro {
+  font-size: 17px;
+  line-height: 1.65;
+  max-width: 370px;
+  color: var(--folio-muted);
 }
-
-.roman-hero__subtitle {
-  max-width: 30ch;
-  margin: 0;
-  color: hsl(var(--roman-gold));
-  font-family: "Press Start 2P", cursive;
-  font-size: clamp(0.625rem, 2.1vw, 1rem);
-  line-height: 2;
-  text-wrap: balance;
-}
-
-.roman-hero__actions {
+.hero-actions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.75rem;
-  margin-top: 1rem;
-  max-width: 100%;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
 }
-
-.roman-hero__link {
+.hero-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 20px;
+  border: 1px solid #aeb2ad;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-size: 13px;
   min-height: 48px;
-  padding: 0.75rem 1.25rem;
-  border: 1px solid hsl(var(--roman-gold) / 0.6);
-  color: hsl(var(--roman-parchment));
-  font-family: "Fira Mono", monospace;
-  font-size: 0.8125rem;
-  transition: background-color 160ms ease, border-color 160ms ease;
+  transition: background 0.2s;
 }
-
-.roman-hero__link:hover {
-  border-color: hsl(var(--roman-gold));
-  background: hsl(var(--roman-gold) / 0.12);
+.hero-secondary:hover {
+  background: #e9ece6;
 }
-
-.roman-hero__link--primary {
-  border-color: hsl(var(--roman-gold));
-  background: hsl(var(--roman-gold));
-  color: hsl(var(--roman-bg));
+.hero-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 23px;
+  margin-top: 26px;
+  font-size: 11px;
+  color: #4e544e;
 }
-
-.roman-hero__link--primary:hover {
-  background: hsl(var(--roman-parchment));
-  border-color: hsl(var(--roman-parchment));
+.hero-socials a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
-
-.roman-hero__link:focus-visible {
-  outline: 2px solid hsl(var(--roman-parchment));
-  outline-offset: 4px;
+.hero-character {
+  position: absolute;
+  inset: 0 -25px 0 43%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
 }
-
-@media (max-width: 767px) {
-  .roman-hero {
-    min-height: min(42rem, 82svh);
-    gap: 2.25rem;
-    padding-top: 7rem;
-    padding-bottom: 3rem;
+.hero-character img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  z-index: 1;
+}
+.character-orbit {
+  position: absolute;
+  width: 440px;
+  height: 440px;
+  max-width: 90%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid #babfb7;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.character-orbit::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #7b8675;
+  top: 46px;
+  right: 71px;
+  box-shadow: 0 0 0 6px var(--folio-paper);
+}
+.character-spark {
+  position: absolute;
+  right: 25px;
+  top: 94px;
+  width: 65px;
+  height: 65px;
+  color: #737c6c;
+  transform: rotate(12deg);
+}
+.character-caption {
+  position: absolute;
+  right: 0;
+  bottom: 34px;
+  z-index: 2;
+  font: 9px var(--folio-mono);
+  writing-mode: vertical-rl;
+  letter-spacing: 0.06em;
+  color: #4e544e;
+}
+.hero-bottom-note {
+  position: absolute;
+  left: 0;
+  bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font: 10px var(--folio-mono);
+  color: #4e544e;
+  z-index: 2;
+}
+.hero-bottom-note a {
+  border: 1px solid #aeb2ad;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+}
+.hero-roles-wrap {
+  background: #e8eae5;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid #bec3b9;
+}
+.hero-roles {
+  display: grid;
+  grid-template-columns: 0.9fr 1fr 1.3fr;
+  align-items: center;
+  gap: 40px;
+  padding: 30px 0;
+}
+.hero-roles > .folio-kicker {
+  color: #555d51;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.role-dot {
+  display: block;
+  height: 7px;
+  width: 7px;
+  flex-shrink: 0;
+  background: #66804a;
+  border-radius: 50%;
+}
+.hero-roles > a {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 15px;
+  font-size: 11px;
+  color: #555d51;
+}
+.hero-company {
+  font: 500 20px/1.4 var(--folio-display);
+  letter-spacing: -0.04em;
+  color: var(--folio-ink);
+}
+.hero-roles > a > span:not(.hero-company) {
+  grid-row: 2;
+  margin-top: 3px;
+}
+.hero-roles > a svg {
+  grid-area: 1 / 2 / 3;
+}
+@media (min-width: 1600px) {
+  .hero-stage {
+    min-height: 780px;
   }
-
-  .roman-hero__content {
-    gap: 0.875rem;
+}
+@media (max-width: 1000px) {
+  .hero-stage {
+    min-height: 650px;
   }
-
-  .roman-hero__actions {
-    gap: 0.625rem;
-    margin-top: 0.75rem;
+  .hero-copy h1 {
+    font-size: 68px;
+  }
+  .hero-character {
+    left: 42%;
+    right: -50px;
+  }
+  .hero-intro {
+    max-width: 310px;
+    font-size: 16px;
+  }
+  .hero-roles {
+    gap: 24px;
+    grid-template-columns: 0.8fr 1fr 1.3fr;
+  }
+  .hero-company {
+    font-size: 18px;
+  }
+  .hero-roles > .folio-kicker {
+    font-size: 9px;
   }
 }
-
-@media (max-height: 600px) {
-  .roman-hero {
+@media (max-width: 760px) {
+  .hero-stage {
+    min-height: 620px;
+  }
+  .hero-copy h1 {
+    font-size: 58px;
+  }
+  .hero-intro {
+    max-width: 290px;
+    font-size: 15px;
+  }
+  .hero-character {
+    left: 39%;
+    right: -85px;
+    opacity: 0.95;
+  }
+  .hero-copy {
+    padding-bottom: 150px;
+  }
+  .hero-roles {
+    grid-template-columns: 1fr 1fr;
+    gap: 17px 30px;
+  }
+  .hero-roles > .folio-kicker {
+    grid-column: 1 / -1;
+  }
+  .hero-roles > a {
+    font-size: 10px;
+  }
+  .character-spark,
+  .character-caption {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  .retro-hero {
+    padding-top: 70px;
+  }
+  .hero-stage {
+    display: flex;
+    flex-direction: column;
     min-height: auto;
-    padding-top: 6.5rem;
-    padding-bottom: 3rem;
+    align-items: stretch;
   }
-}
-
-@media (max-width: 359px) {
-  .roman-hero__actions {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
+  .hero-copy {
+    padding: 43px 0 0;
+  }
+  .hero-greeting {
+    font-size: 10px;
+    margin-bottom: 23px;
+  }
+  .hero-copy h1 {
+    font-size: clamp(52px, 13.8vw, 82px);
+    line-height: 1.03;
+    margin-bottom: 23px;
+  }
+  .hero-intro {
+    font-size: 15px;
+    max-width: 340px;
+  }
+  .hero-actions {
+    margin-top: 23px;
+    gap: 8px;
+  }
+  .hero-secondary {
+    font-size: 12px;
+    gap: 15px;
+    padding-inline: 19px;
+  }
+  .hero-socials {
+    margin-top: 13px;
+    gap: 25px;
+    font-size: 10px;
+  }
+  .hero-character {
+    position: relative;
+    inset: auto;
+    height: 365px;
+    margin: -15px -20px 0;
+    opacity: 1;
+  }
+  .hero-character img {
+    object-fit: contain;
     width: 100%;
   }
+  .character-orbit {
+    width: 260px;
+    height: 260px;
+    top: 30px;
+  }
+  .character-orbit::after {
+    top: 25px;
+    right: 40px;
+    height: 7px;
+    width: 7px;
+  }
+  .hero-bottom-note {
+    position: static;
+    padding: 16px 0;
+    border-top: 1px solid #bfc4ba;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 8px;
+  }
+  .hero-bottom-note a {
+    width: 34px;
+    height: 34px;
+  }
+  .hero-roles {
+    padding: 25px 0;
+    gap: 20px;
+  }
+  .hero-company {
+    font-size: 17px;
+  }
+  .hero-roles > a {
+    column-gap: 5px;
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  .hero-roles > a svg {
+    width: 14px;
+  }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .roman-hero__link {
-    transition: none;
+@media (max-width: 359px) {
+  .hero-copy h1 {
+    font-size: 49px;
+  }
+  .hero-character {
+    height: 315px;
+  }
+  .hero-roles {
+    grid-template-columns: 1fr;
+  }
+  .hero-roles > .folio-kicker {
+    grid-column: auto;
+  }
+  .hero-roles > a {
+    min-height: 44px;
   }
 }

@@ -1,63 +1,43 @@
-import { Experience } from "@/data/experiences";
+import { Plus } from "lucide-react";
+import type { Experience } from "@/data/experiences";
 
-interface ExperienceItemProps {
+export default function ExperienceItem({
+  experience,
+  defaultOpen = false,
+}: {
   experience: Experience;
-  delay: number;
-  animate?: boolean;
-}
-
-export default function ExperienceItem({ experience, delay, animate = true }: ExperienceItemProps) {
-  const delayClass = `delay-${delay}`;
-  
+  defaultOpen?: boolean;
+}) {
   return (
-    <div className={`mb-12 relative ${animate ? `animate-slide-up opacity-0 ${delayClass}` : ""}`}>
-      <div className="absolute left-[-40px] w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center">
-        {experience.type === 'work' ? (
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            className="h-5 w-5" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
+    <details className="experience-row" open={defaultOpen || undefined}>
+      <summary>
+        <div className="experience-row-title">
+          <span className="experience-period">{experience.period}</span>
+          <h3>{experience.company}</h3>
+          <p>{experience.role}</p>
+        </div>
+        <Plus className="experience-toggle" size={18} aria-hidden="true" />
+      </summary>
+      <div className="experience-details">
+        {experience.arrangement && (
+          <p className="experience-arrangement">{experience.arrangement}</p>
+        )}
+        <p>{experience.description}</p>
+        <ul aria-label="Skills">
+          {experience.skills.map((skill) => (
+            <li key={skill}>{skill}</li>
+          ))}
+        </ul>
+        {experience.companyUrl && (
+          <a
+            href={experience.companyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-        ) : (
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            className="h-5 w-5" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-          </svg>
+            Company website ↗
+          </a>
         )}
       </div>
-      <div className={`bg-white p-4 sm:p-6 break-words rounded-lg shadow-md border-l-4 ${experience.type === 'startup' ? 'border-secondary' : 'border-primary'}`}>
-        <div className="flex flex-wrap justify-between items-start gap-2 mb-2">
-          <h3 className="text-xl font-bold">{experience.role}</h3>
-          <span className="text-sm text-slate-500 bg-slate-100 px-2 py-1 rounded">{experience.period}</span>
-        </div>
-        <p className="text-lg text-primary mb-2">
-          {experience.companyUrl ? (
-            <a href={experience.companyUrl} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">
-              {experience.company}
-            </a>
-          ) : experience.company}
-          {experience.arrangement && <span className="block text-sm text-slate-500">{experience.arrangement}</span>}
-        </p>
-        <p className="text-slate-700 mb-4">
-          {experience.description}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {experience.skills.map((skill, index) => (
-            <span key={index} className="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded">
-              {skill}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
+    </details>
   );
 }
