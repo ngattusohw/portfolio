@@ -52,7 +52,7 @@ export default function RomanHero() {
             alt=""
             width="1086"
             height="1448"
-            fetchPriority="high"
+            loading="eager"
             decoding="async"
           />
           <span className="character-caption">
