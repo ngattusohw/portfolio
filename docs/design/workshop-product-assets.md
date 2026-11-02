@@ -97,9 +97,11 @@ or device.
   [information page](https://guitar-rudiments.netlify.app/support.html). The native
   app was awaiting App Store review at the time of this addition. Do not imply
   that the App Store release is available until verified.
-- The browser app displayed a local-storage startup error during this check, so
-  portfolio links deliberately target the working information page. The screenshot
-  remains the original native capture. No changes were made to the separate app.
+- Links target the [browser app](https://guitar-rudiments.netlify.app/), whose home
+  and tuner screens were verified in the existing Chrome tab. An additional tab
+  displayed a practice-storage startup error while the existing tab continued to
+  work; concurrent-tab storage behavior was not diagnosed or changed here. The
+  screenshot remains the original native capture.
 - “Strum the guitar · sound” explicitly starts a short synthesized E minor chord
   and string vibration. This is a portfolio interaction, not a recording or app
   screenshot animation. There is no autoplay, microphone access, or external audio

@@ -57,7 +57,7 @@ export const projects: Project[] = [
       }],
       layout: "contained",
     },
-    url: "https://guitar-rudiments.netlify.app/support.html",
+    url: "https://guitar-rudiments.netlify.app/",
   },
   {
     id: "kai",

@@ -86,8 +86,8 @@ const stations = [
     screenHeight: 0.245,
     description:
       "A little practice, a little progress. I built Guitar Rudiments for focused sessions: guided drills, chord loops, a metronome, a tuner, and a practice journal.",
-    href: "https://guitar-rudiments.netlify.app/support.html",
-    link: "About Guitar Rudiments",
+    href: "https://guitar-rudiments.netlify.app/",
+    link: "Open Guitar Rudiments",
   },
 ];
 const stops = [0, ...stations.map((_, index) => 0.2 + index * 0.19)];
