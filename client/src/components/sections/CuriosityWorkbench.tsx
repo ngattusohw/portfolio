@@ -89,60 +89,14 @@ const stations = [
     href: "https://guitar-rudiments.netlify.app/",
     link: "Open Guitar Rudiments",
   },
-  {
-    id: "persona" as WorkshopStation,
-    title: "Persona",
-    theme: "06 / Creativity",
-    point: { x: 0.46, y: 0.25 },
-    marker: { x: 0.46, y: 0.135 },
-    zoom: 3.6,
-    mobileZoom: 4.8,
-    screenHeight: 0.2,
-    description:
-      "Every good ad starts with understanding someone. Persona connects market research and buyer personas to finished ad creative, ready to review and download.",
-    href: "https://personaapp.ai/",
-    link: "Explore Persona",
-  },
-  {
-    id: "wedded" as WorkshopStation,
-    title: "GetWedded",
-    theme: "07 / Possibility",
-    point: { x: 0.628, y: 0.572 },
-    marker: { x: 0.635, y: 0.665 },
-    zoom: 3.3,
-    mobileZoom: 3.8,
-    screenHeight: 0.15,
-    description:
-      "Start with how you want the day to feel. Wedded turns that vision into venue discovery, with an AI assistant to handle outreach, follow-ups, and tour coordination.",
-    href: "https://getwedded.ai/",
-    link: "Explore GetWedded",
-  },
-  {
-    id: "franiq" as WorkshopStation,
-    title: "FranIQ",
-    theme: "08 / Clarity",
-    point: { x: 0.63, y: 0.25 },
-    marker: { x: 0.63, y: 0.135 },
-    zoom: 3.5,
-    mobileZoom: 4.5,
-    screenHeight: 0.21,
-    description:
-      "A clearer picture of a growing franchise. FranIQ, The Internicola Law Firm’s platform, brings registrations, disclosures, documents, and compliance workflows together.",
-    href: "https://www.franchiselawsolutions.com/franiq",
-    link: "Explore FranIQ",
-  },
 ];
-// Evenly distribute every station within the native scroll range. Leave room
-// for an overview and a final hold, regardless of how many projects are added.
-const stationSpacing = 0.84 / Math.max(1, stations.length - 1);
-const stops = [0, ...stations.map((_, index) => 0.12 + index * stationSpacing)];
-const hold = Math.min(0.035, stationSpacing * 0.2);
+const stops = [0, ...stations.map((_, index) => 0.2 + index * 0.19)];
 const frames = [
   { at: 0, pose: 0 },
   { at: 0.045, pose: 0 },
   ...stops.slice(1).flatMap((stop, index) => [
-    { at: stop - hold, pose: index + 1 },
-    { at: Math.min(1, stop + hold), pose: index + 1 },
+    { at: stop - 0.035, pose: index + 1 },
+    { at: Math.min(1, stop + 0.035), pose: index + 1 },
   ]),
   { at: 1, pose: stations.length },
 ];
@@ -160,7 +114,7 @@ export default function CuriosityWorkbench() {
   const activeRef = useRef(0);
   const [size, setSize] = useState({ width: 1440, height: 900, mobile: false });
   const [alternateViews, setAlternateViews] = useState<
-    Partial<Record<WorkshopStation, boolean>>
+    Record<WorkshopStation, boolean>
   >({ watchpoint: false, somethings: false, remember: false, tinker: false, guitar: false });
   const [announcement, setAnnouncement] = useState("");
   const { motionEnabled, paused, reducedMotion } = usePortfolioMotion();
@@ -177,23 +131,12 @@ export default function CuriosityWorkbench() {
   const { strum, strumming } = useGuitarStrum(current?.id === "guitar");
   const animationEnabled = motionEnabled && visible;
   const currentAssets = current ? workshopAssets[current.id] : null;
-  const alternate = current ? Boolean(alternateViews[current.id]) : false;
+  const alternate = current ? alternateViews[current.id] : false;
   const currentImage = currentAssets
     ? alternate && currentAssets.alternate
       ? currentAssets.alternate
       : currentAssets.primary
     : null;
-
-  useEffect(() => {
-    const navigation = nav.current;
-    const button = navigation?.querySelectorAll<HTMLButtonElement>("button")[active];
-    if (!navigation || !button) return;
-    // Scroll only the tab strip, never the document that drives the camera.
-    navigation.scrollTo({
-      left: button.offsetLeft - navigation.clientWidth / 2 + button.offsetWidth / 2,
-      behavior: motionEnabled ? "smooth" : "instant",
-    });
-  }, [active, motionEnabled, size.width]);
 
   useEffect(() => {
     const element = consoleRef.current;
@@ -256,37 +199,26 @@ export default function CuriosityWorkbench() {
     if (!element) return;
     let scheduled = 0;
     const pose = (index: number) => {
-      if (index === 0) {
-        const overviewScale = size.mobile && window.innerWidth < 560
-          ? size.width / sceneWidth : 1;
+      if (index === 0)
         return {
-          scale: overviewScale,
-          x: (size.width - sceneWidth * overviewScale) / 2,
+          scale: 1,
+          x: (size.width - sceneWidth) / 2,
           y: size.mobile
-            ? size.height * (overviewScale < 1 ? 0.72 : 0.63) - sceneHeight * overviewScale / 2
+            ? size.height * 0.63 - sceneHeight / 2
             : clamp(
                 size.height * 0.46 - sceneHeight * 0.41,
                 size.height - sceneHeight,
                 0,
               ),
         };
-      }
       const station = stations[index - 1];
       const screenHeight = station.screenHeight;
       const isPhone = station.id === "somethings" || station.id === "guitar";
-      const isPaper = ["persona", "wedded", "franiq"].includes(station.id);
-      const compactDesktop = !size.mobile && size.width <= 1200;
-      const paperWidth = station.id === "wedded" ? 0.2
-        : station.id === "persona" ? 0.145
-        : station.id === "franiq" ? 0.12 : 0;
-      const heightFraction = size.mobile ? (isPhone ? 0.82 : 0.7)
-        : compactDesktop ? 0.38 : isPhone ? 0.54 : isPaper ? 0.38 : 0.45;
-      const verticalFocus = size.mobile ? (isPhone ? 0.5 : 0.55)
-        : compactDesktop ? 0.36 : isPhone ? 0.4 : isPaper ? 0.37 : 0.43;
       const scale = Math.min(
         size.mobile ? station.mobileZoom : station.zoom,
-        paperWidth ? (size.width * 0.9) / (sceneWidth * paperWidth) : Infinity,
-        (size.height * heightFraction) / (sceneHeight * screenHeight),
+        (size.height *
+          (isPhone ? (size.mobile ? 0.82 : 0.54) : size.mobile ? 0.7 : 0.45)) /
+          (sceneHeight * screenHeight),
       );
       return {
         scale,
@@ -296,7 +228,10 @@ export default function CuriosityWorkbench() {
           Math.min(0, size.width - sceneWidth * scale),
           0,
         ),
-        y: size.height * verticalFocus - station.point.y * sceneHeight * scale,
+        y:
+          size.height *
+            (isPhone ? (size.mobile ? 0.5 : 0.4) : size.mobile ? 0.55 : 0.43) -
+          station.point.y * sceneHeight * scale,
       };
     };
     const update = () => {
@@ -424,14 +359,12 @@ export default function CuriosityWorkbench() {
       className="workshop-tour"
       aria-labelledby="hero-title"
       data-station={active}
-      data-motion={animationEnabled ? "on" : "off"}
-      style={{ height: `${(stations.length + 1) * 100 + 10}svh` }}
     >
       <div className="workshop-stage">
         <div
           className="workshop-lens"
           ref={lens}
-          aria-label={`A workshop with ${stations.length} interactive project stations`}
+          aria-label="A workshop with five interactive project stations"
         >
           <motion.div
             className="workshop-world"
@@ -481,7 +414,7 @@ export default function CuriosityWorkbench() {
                 <WorkshopProjectVisual
                   station={station.id}
                   motionEnabled={animationEnabled}
-                  alternate={Boolean(alternateViews[station.id])}
+                  alternate={alternateViews[station.id]}
                 />
                 <span className="workshop-glass" />
               </div>
@@ -575,7 +508,7 @@ export default function CuriosityWorkbench() {
                     ? "INTERACTIVE DEMO · SAMPLE TEMPERATURE"
                     : currentAssets?.sourceLabel}
               </span>
-              {(currentAssets?.alternate || current?.id === "guitar" || current?.id === "remember" || current?.id === "tinker") && (
+              {current?.id !== "watchpoint" && (
                 <button
                   className="workshop-demo-button"
                   type="button"
@@ -615,7 +548,7 @@ export default function CuriosityWorkbench() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {currentAssets?.originalLabel ?? "View full screenshot"}{" "}
+                  View full screenshot{" "}
                   <ArrowUpRight size={12} aria-hidden="true" />
                 </a>
               ) : (
@@ -628,10 +561,6 @@ export default function CuriosityWorkbench() {
                 </p>
               )}
             </div>
-          </div>
-          <div className="workshop-navigation-caption" aria-hidden="true">
-            <span>EXPLORE THE BENCH</span>
-            <span>{String(active).padStart(2, "0")} / {String(stations.length).padStart(2, "0")} · Swipe tabs →</span>
           </div>
           <div
             className="workshop-navigation"

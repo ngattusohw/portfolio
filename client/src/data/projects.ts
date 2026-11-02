@@ -110,32 +110,6 @@ export const projects: Project[] = [
     sourceUrl: COLLECT_SOFTWARE_URL,
   },
   {
-    id: "franiq",
-    title: "FranIQ",
-    subtitle: "Franchise Compliance",
-    description: "The Internicola Law Firm’s franchise compliance platform, bringing registrations, disclosures, documents, and workflows into one place.",
-    features: [
-      "Track state registrations, renewals, and compliance deadlines.",
-      "Organize FDD delivery, receipt tracking, and franchise agreement activity.",
-      "Keep documents and compliance workflows visible across a franchise system.",
-    ],
-    tags: ["Legal Tech", "Franchising", "Workflows"],
-    categories: ["platforms"],
-    icon: "legal",
-    hero: {
-      images: [{
-        src: "/images/workshop/products/franiq-compliance.png",
-        alt: "Official FranIQ artwork showing its compliance overview and registration map",
-        width: 1464,
-        height: 1596,
-      }],
-      layout: "contained",
-      label: "Official product artwork · sample data",
-    },
-    url: "https://www.franchiselawsolutions.com/franiq",
-    sourceUrl: COLLECT_SOFTWARE_URL,
-  },
-  {
     id: "wedded",
     title: "Wedded",
     subtitle: "Wedding Planning",
