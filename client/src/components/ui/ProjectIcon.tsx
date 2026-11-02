@@ -1,5 +1,5 @@
 import {
-  Activity, BarChart3, Bot, Brain, GraduationCap, Heart, MessagesSquare,
+  Activity, BarChart3, Bot, Brain, GraduationCap, Guitar, Heart, MessagesSquare,
   Palette, Scale, Users,
 } from "lucide-react";
 import type { ProjectIconName } from "@/data/projects";
@@ -15,6 +15,7 @@ const icons = {
   analytics: BarChart3,
   education: GraduationCap,
   memory: Brain,
+  guitar: Guitar,
 } satisfies Record<ProjectIconName, typeof Activity>;
 
 export default function ProjectIcon({

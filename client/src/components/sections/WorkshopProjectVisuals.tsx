@@ -2,7 +2,7 @@ import { WorkshopLegacyVisual } from "./WorkshopLegacyVisuals";
 import "./WorkshopProjectVisuals.css";
 
 export type WorkshopStation =
-  "watchpoint" | "somethings" | "remember" | "tinker";
+  "watchpoint" | "somethings" | "remember" | "tinker" | "guitar";
 
 type ProductAsset = { src: string; alt: string };
 type WorkshopAsset = {
@@ -15,8 +15,8 @@ type WorkshopAsset = {
 
 const assetRoot = "/images/workshop/products";
 
-/** The monitor and phone use original product imagery. The other stations
- * deliberately restore the portfolio's earlier interactive demos. */
+/** The monitor and two phones use original product imagery. Recollect and
+ * Saunum deliberately restore the portfolio's earlier interactive demos. */
 export const workshopAssets: Partial<Record<WorkshopStation, WorkshopAsset>> = {
   watchpoint: {
     primary: {
@@ -37,6 +37,13 @@ export const workshopAssets: Partial<Record<WorkshopStation, WorkshopAsset>> = {
     sourceLabel: "Official Somethings App Store screenshots",
     actionLabel: "See the chat screen",
     alternateActionLabel: "See the mentor screen",
+  },
+  guitar: {
+    primary: {
+      src: `${assetRoot}/guitar-rudiments-home.jpg`,
+      alt: "Guitar Rudiments running on iPhone, with a practice session, metronome, chord loops, rudiments, and tuner",
+    },
+    sourceLabel: "Original Guitar Rudiments iPhone screenshot",
   },
 };
 

@@ -4,11 +4,13 @@ import {
   ArrowRight,
   ArrowUpRight,
   Fan,
+  Guitar,
   Maximize2,
   RotateCcw,
 } from "lucide-react";
 import { motion, useInView, useMotionValue, useTransform } from "framer-motion";
 import { usePortfolioMotion } from "@/hooks/usePortfolioMotion";
+import { useGuitarStrum } from "@/hooks/useGuitarStrum";
 import {
   WorkshopProjectVisual,
   workshopAssets,
@@ -73,19 +75,30 @@ const stations = [
     href: "/blog/building-better-saunum",
     link: "Read the build story",
   },
+  {
+    id: "guitar" as WorkshopStation,
+    title: "Guitar Rudiments",
+    theme: "05 / Practice",
+    point: { x: 0.862, y: 0.655 },
+    marker: { x: 0.927, y: 0.675 },
+    zoom: 2.7,
+    mobileZoom: 5.8,
+    screenHeight: 0.245,
+    description:
+      "A little practice, a little progress. I built Guitar Rudiments for focused sessions: guided drills, chord loops, a metronome, a tuner, and a practice journal.",
+    href: "https://guitar-rudiments.netlify.app/support.html",
+    link: "About Guitar Rudiments",
+  },
 ];
-const stops = [0, 0.25, 0.48, 0.71, 0.95];
+const stops = [0, ...stations.map((_, index) => 0.2 + index * 0.19)];
 const frames = [
   { at: 0, pose: 0 },
   { at: 0.045, pose: 0 },
-  { at: 0.2, pose: 1 },
-  { at: 0.29, pose: 1 },
-  { at: 0.43, pose: 2 },
-  { at: 0.52, pose: 2 },
-  { at: 0.66, pose: 3 },
-  { at: 0.75, pose: 3 },
-  { at: 0.9, pose: 4 },
-  { at: 1, pose: 4 },
+  ...stops.slice(1).flatMap((stop, index) => [
+    { at: stop - 0.035, pose: index + 1 },
+    { at: Math.min(1, stop + 0.035), pose: index + 1 },
+  ]),
+  { at: 1, pose: stations.length },
 ];
 const clamp = (value: number, min: number, max: number) =>
   Math.max(min, Math.min(max, value));
@@ -102,7 +115,7 @@ export default function CuriosityWorkbench() {
   const [size, setSize] = useState({ width: 1440, height: 900, mobile: false });
   const [alternateViews, setAlternateViews] = useState<
     Record<WorkshopStation, boolean>
-  >({ watchpoint: false, somethings: false, remember: false, tinker: false });
+  >({ watchpoint: false, somethings: false, remember: false, tinker: false, guitar: false });
   const [announcement, setAnnouncement] = useState("");
   const { motionEnabled, paused, reducedMotion } = usePortfolioMotion();
   const visible = useInView(section, { amount: 0 });
@@ -115,6 +128,7 @@ export default function CuriosityWorkbench() {
     : Math.max(size.width, (size.height * 1672) / 941);
   const sceneHeight = (sceneWidth * 941) / 1672;
   const current = active > 0 ? stations[active - 1] : null;
+  const { strum, strumming } = useGuitarStrum(current?.id === "guitar");
   const animationEnabled = motionEnabled && visible;
   const currentAssets = current ? workshopAssets[current.id] : null;
   const alternate = current ? alternateViews[current.id] : false;
@@ -199,7 +213,7 @@ export default function CuriosityWorkbench() {
         };
       const station = stations[index - 1];
       const screenHeight = station.screenHeight;
-      const isPhone = station.id === "somethings";
+      const isPhone = station.id === "somethings" || station.id === "guitar";
       const scale = Math.min(
         size.mobile ? station.mobileZoom : station.zoom,
         (size.height *
@@ -208,7 +222,12 @@ export default function CuriosityWorkbench() {
       );
       return {
         scale,
-        x: size.width * 0.5 - station.point.x * sceneWidth * scale,
+        x: clamp(
+          size.width * 0.5 -
+            (station.id === "guitar" && size.mobile ? 0.843 : station.point.x) * sceneWidth * scale,
+          Math.min(0, size.width - sceneWidth * scale),
+          0,
+        ),
         y:
           size.height *
             (isPhone ? (size.mobile ? 0.5 : 0.4) : size.mobile ? 0.55 : 0.43) -
@@ -227,16 +246,11 @@ export default function CuriosityWorkbench() {
         0,
         1,
       );
-      const nextActive =
-        progress < 0.12
-          ? 0
-          : progress < 0.36
-            ? 1
-            : progress < 0.59
-              ? 2
-              : progress < 0.82
-                ? 3
-                : 4;
+      const nextActive = stops.reduce(
+        (nearest, stop, index) =>
+          Math.abs(progress - stop) < Math.abs(progress - stops[nearest]) ? index : nearest,
+        0,
+      );
       if (nextActive !== activeRef.current) {
         if (
           panel.current?.contains(document.activeElement) ||
@@ -314,8 +328,15 @@ export default function CuriosityWorkbench() {
     [paused, reducedMotion],
   );
 
-  const interact = () => {
+  const interact = async () => {
     if (!current) return;
+    if (current.id === "guitar") {
+      const played = await strum();
+      setAnnouncement(played
+        ? "Playing an E minor chord. The guitar sound is a portfolio demo."
+        : "Sound is unavailable in this browser. You can still explore Guitar Rudiments.");
+      return;
+    }
     setAlternateViews((views) => ({
       ...views,
       [current.id]: !views[current.id],
@@ -343,7 +364,7 @@ export default function CuriosityWorkbench() {
         <div
           className="workshop-lens"
           ref={lens}
-          aria-label="A workshop with four interactive project stations"
+          aria-label="A workshop with five interactive project stations"
         >
           <motion.div
             className="workshop-world"
@@ -358,12 +379,32 @@ export default function CuriosityWorkbench() {
             <img
               className="workshop-room"
               src="/images/workshop/nicks-workshop.webp"
-              alt="A wood workbench with tools, a desktop monitor, a tablet and a handmade sauna controller. A separate phone sits on the table."
+              alt="A wood workbench with tools, a desktop monitor, a tablet and a handmade sauna controller. A phone sits on the table; a guitar and practice phone stand beside the bench."
               width={1672}
               height={941}
               loading="eager"
               decoding="async"
             />
+            <div className="workshop-guitar-amp" aria-hidden="true">
+              <span>GUITAR RUDIMENTS</span>
+            </div>
+            <div
+              className="workshop-guitar"
+              data-strumming={strumming && animationEnabled ? "yes" : "no"}
+              aria-hidden="true"
+            >
+              <span className="workshop-guitar-floor-shadow" />
+              <img
+                src="/images/workshop/acoustic-guitar.webp"
+                alt=""
+                width={1194}
+                height={2961}
+                draggable={false}
+              />
+              <div className="workshop-guitar-strings">
+                {[0, 1, 2, 3, 4, 5].map((string) => <i key={string} />)}
+              </div>
+            </div>
             {stations.map((station, index) => (
               <div
                 key={station.id}
@@ -473,17 +514,21 @@ export default function CuriosityWorkbench() {
                   type="button"
                   onClick={interact}
                   aria-pressed={
-                    current?.id === "tinker" ? !alternate : alternate
+                    current?.id === "guitar" ? undefined : current?.id === "tinker" ? !alternate : alternate
                   }
                 >
-                  {current?.id === "tinker" ? (
+                  {current?.id === "guitar" ? (
+                    <Guitar size={17} aria-hidden="true" />
+                  ) : current?.id === "tinker" ? (
                     <Fan size={17} aria-hidden="true" />
                   ) : alternate || current?.id === "remember" ? (
                     <RotateCcw size={17} aria-hidden="true" />
                   ) : (
                     <ArrowRight size={17} aria-hidden="true" />
                   )}
-                  {current?.id === "remember"
+                  {current?.id === "guitar"
+                    ? "Strum the guitar · sound"
+                    : current?.id === "remember"
                     ? alternate
                       ? "Turn the card back"
                       : "Turn the card over"
@@ -540,11 +585,12 @@ export default function CuriosityWorkbench() {
                 aria-pressed={active === index + 1}
               >
                 <span className="workshop-nav-number">0{index + 1}</span>
-                <span>{station.title}</span>
+                <span className={station.id === "guitar" ? "workshop-nav-full-title" : undefined}>{station.title}</span>
+                {station.id === "guitar" && <span className="workshop-mobile-label">Guitar</span>}
               </button>
             ))}
             <span className="workshop-scroll-hint">
-              <span>{String(active).padStart(2, "0")} / 04</span>
+              <span>{String(active).padStart(2, "0")} / {String(stations.length).padStart(2, "0")}</span>
               <ArrowDown size={15} aria-hidden="true" />
             </span>
           </div>

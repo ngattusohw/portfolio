@@ -2,7 +2,7 @@ export type ProjectCategory = "ai" | "developer-tools" | "platforms";
 
 export type ProjectIconName =
   | "automation" | "legal" | "wedding" | "creative" | "support"
-  | "monitoring" | "community" | "analytics" | "education" | "memory";
+  | "monitoring" | "community" | "analytics" | "education" | "memory" | "guitar";
 
 export interface ProjectHeroImage {
   src: string;
@@ -35,6 +35,30 @@ export const COLLECT_SOFTWARE_URL = "https://collectsoftware.org/";
 // Company portfolio attribution: https://collectsoftware.org/; Recollect's own landing page is linked below.
 // Product descriptions do not imply individual authorship or a specific stack.
 export const projects: Project[] = [
+  {
+    id: "guitar-rudiments",
+    title: "Guitar Rudiments",
+    subtitle: "Guitar practice, made a habit",
+    description: "A focused guitar practice app I built for guided rudiments, chord loops, tuning, and a local practice journal.",
+    features: [
+      "Practice Spider, alternate-picking, and hammer-on/pull-off drills with fretboard guidance and adjustable tempo progression.",
+      "Build chord loops, use the metronome, and tune with live microphone feedback.",
+      "Keep practice sessions, notes, and saved progressions on the device.",
+    ],
+    tags: ["Music", "Practice", "Mobile"],
+    categories: ["platforms"],
+    icon: "guitar",
+    hero: {
+      images: [{
+        src: "/images/projects/guitar-rudiments/icon.svg",
+        alt: "Guitar Rudiments’ original six-string fretboard mark with red finger positions",
+        width: 1024,
+        height: 1024,
+      }],
+      layout: "contained",
+    },
+    url: "https://guitar-rudiments.netlify.app/support.html",
+  },
   {
     id: "kai",
     title: "kAI",
