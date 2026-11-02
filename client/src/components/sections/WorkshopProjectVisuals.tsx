@@ -2,7 +2,8 @@ import { WorkshopLegacyVisual } from "./WorkshopLegacyVisuals";
 import "./WorkshopProjectVisuals.css";
 
 export type WorkshopStation =
-  "watchpoint" | "somethings" | "remember" | "tinker" | "guitar";
+  "watchpoint" | "somethings" | "remember" | "tinker" | "guitar"
+  | "persona" | "wedded" | "franiq";
 
 type ProductAsset = { src: string; alt: string };
 type WorkshopAsset = {
@@ -11,6 +12,7 @@ type WorkshopAsset = {
   sourceLabel: string;
   actionLabel?: string;
   alternateActionLabel?: string;
+  originalLabel?: string;
 };
 
 const assetRoot = "/images/workshop/products";
@@ -45,6 +47,48 @@ export const workshopAssets: Partial<Record<WorkshopStation, WorkshopAsset>> = {
     },
     sourceLabel: "Original Guitar Rudiments iPhone screenshot",
   },
+  persona: {
+    primary: {
+      src: `${assetRoot}/persona-nutrition.webp`,
+      alt: "Persona's original nutrition ad creative for Persona Bar",
+    },
+    alternate: {
+      src: `${assetRoot}/persona-haircare.webp`,
+      alt: "Persona's original haircare ad creative for Glass Coat",
+    },
+    sourceLabel: "Original ads from Persona's public gallery",
+    actionLabel: "Swap to the haircare ad",
+    alternateActionLabel: "Swap to the nutrition ad",
+    originalLabel: "View original ad",
+  },
+  wedded: {
+    primary: {
+      src: `${assetRoot}/wedded-garden.jpg`,
+      alt: "Wedded's original garden ceremony illustration",
+    },
+    alternate: {
+      src: `${assetRoot}/wedded-hilltop.jpg`,
+      alt: "Wedded's original hilltop ceremony illustration",
+    },
+    sourceLabel: "Original Wedded venue illustrations · fictional settings",
+    actionLabel: "Turn to the hilltop ceremony",
+    alternateActionLabel: "Turn back to the garden",
+    originalLabel: "View original illustration",
+  },
+  franiq: {
+    primary: {
+      src: `${assetRoot}/franiq-compliance.png`,
+      alt: "FranIQ's official compliance platform artwork, with a registration map and disclosure overview",
+    },
+    alternate: {
+      src: "/images/projects/collect/franiq-dashboard.png",
+      alt: "FranIQ's original dashboard artwork from Collect Software, showing its compliance and knowledge-base screens",
+    },
+    sourceLabel: "Official FranIQ product artwork · sample data",
+    actionLabel: "Reveal the dashboard artwork",
+    alternateActionLabel: "Return to the compliance overview",
+    originalLabel: "View original artwork",
+  },
 };
 
 type WorkshopProjectVisualProps = {
@@ -77,6 +121,20 @@ export function WorkshopProjectVisual({
       data-alternate={alternate ? "yes" : "no"}
       aria-hidden="true"
     >
+      {station === "persona" && <>
+        <div className="workshop-pinboard-brand">
+          <img src={`${assetRoot}/persona-wordmark.svg`} alt="" />
+          <span>THE CREATIVE WALL</span>
+        </div>
+        <span className="workshop-paper-pin" />
+      </>}
+      {station === "wedded" && <div className="workshop-book-title">
+        <img src={`${assetRoot}/wedded-wordmark.svg`} alt="" />
+        <span>A day that<br />feels like you.</span>
+        <div className="workshop-book-swatches"><i /><i /><i /></div>
+        <small>{alternate ? "02 / HILLTOP" : "01 / GARDEN"}</small>
+      </div>}
+      {station === "franiq" && <span className="workshop-clipboard-clip" />}
       <img
         className="workshop-product-image workshop-product-image--primary"
         src={assets.primary.src}
@@ -93,6 +151,7 @@ export function WorkshopProjectVisual({
           decoding="async"
         />
       )}
+      {station === "wedded" && <span className="workshop-book-binding" />}
     </div>
   );
 }
