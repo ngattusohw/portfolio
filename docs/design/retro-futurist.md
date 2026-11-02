@@ -2,7 +2,7 @@
 
 References: [PromptSites — Scroll Landing](https://www.promptsites.co/prompt/scroll-landing) for camera movement and exploration, the owner-supplied garage-workbench image for physical composition, and the earlier [PromptSites — Retro-Futurist](https://www.promptsites.co/prompt/retro-futurist) reference for tactile hardware and personality. The owner requested a whole workbench that visitors can zoom into, with individual projects animating in different parts of it. The portfolio uses original conceptual artwork and its existing reviewed content.
 
-The current hero is **“Come take a closer look.”** `RomanHero.tsx` combines the immersive workshop with Nick’s current-role strip. `CuriosityWorkbench.tsx` presents a continuous physical room with a Watchpoint desktop monitor, a separate Somethings phone on the tabletop, a Recollect AI tablet, a Better Saunum controller, a guitar beside a second phone showing Guitar Rudiments, a Persona creative pinboard, a GetWedded inspiration book, and a FranIQ clipboard. The initial view shows the whole bench; native document scroll then moves a camera between project stations. This replaces the previous standalone CSS instrument, which had replaced the static CRT mascot.
+The current hero is **“Come take a closer look.”** `RomanHero.tsx` combines the immersive workshop with Nick’s current-role strip. `CuriosityWorkbench.tsx` presents a continuous physical room with a Watchpoint desktop monitor, a separate Somethings phone on the tabletop, a Recollect AI tablet, a Better Saunum controller, and a guitar beside a second phone showing Guitar Rudiments. The initial view shows the whole bench; native document scroll then moves a camera between project stations. This replaces the previous standalone CSS instrument, which had replaced the static CRT mascot.
 
 The workshop combines warm wood, dark controls, and bright screen illustrations. The surrounding site keeps its established sans-serif and monospace typography, pink and green accents, cool gray surfaces, and charcoal project gallery with the original project artwork. About, experience, field notes, and contact remain part of the ordinary document. Body text has no scanline effects.
 
@@ -10,7 +10,7 @@ The workshop combines warm wood, dark controls, and bright screen illustrations.
 
 One generated room image supplies the physical setting. `WorkshopProjectVisuals.tsx` places Watchpoint’s complete official landscape product preview over the monitor and original Somethings App Store imagery inside a separate CSS phone on the table. The phone crops out the promotional headline and outer frame while retaining the original app pixels. Both image displays omit the brightness/saturation filter and glass overlay, and the camera world has no permanent `will-change: transform` layer, to keep the imagery crisp while zooming. At the owner’s explicit request, `WorkshopLegacyVisuals.tsx` restores the earlier Recollect card and Better Saunum controller illustrations from commit `10a14b2`. Camera travel, the phone’s image transition, card flipping, and fan rotation supply movement. See [product asset provenance](./workshop-product-assets.md). Screen components are decorative and `aria-hidden`; the stationary project panel owns all actual buttons, project descriptions, links, and action announcements.
 
-The scene uses a sticky viewport inside a taller scroll section. Scroll progress interpolates Framer Motion values for translation and scale through an overview and eight project poses, with resting intervals at each device. Hotspots and the persistent navigation select the same scroll stops. Captions and action controls stay outside the transformed world; hotspot scale is compensated so targets stay usable. Mobile framing differs from desktop, and short landscape layouts keep navigation within the viewport. Horizontal camera positions stay within the room bounds to avoid an empty edge at the guitar close-up.
+The scene uses a sticky viewport inside a taller scroll section. Scroll progress interpolates Framer Motion values for translation and scale through an overview and five project poses, with resting intervals at each device. Hotspots and the persistent navigation select the same scroll stops. Captions and action controls stay outside the transformed world; hotspot scale is compensated so targets stay usable. Mobile framing differs from desktop, and short landscape layouts keep navigation within the viewport. Horizontal camera positions stay within the room bounds to avoid an empty edge at the guitar close-up.
 
 The tour does not intercept native wheel, touch, or keyboard scrolling. A “Skip to project list” link reaches the normal gallery immediately; the full portfolio remains available independently of the tour.
 
@@ -43,19 +43,6 @@ Keep keyboard access, visible focus, readable labels, and comfortable touch targ
 - Exact generation prompt: [workshop-image-prompt.txt](./workshop-image-prompt.txt). The production image is approximately 324 KiB; no runtime image generation or additional dependency is needed.
 
 ## Validation
-
-The eight-station addition was checked in Chrome at desktop size and in actual
-320×568, 390×844, 844×390, and 1024×768 frames. Persona, GetWedded, and FranIQ
-fit their close-ups without cropped artwork or controls. The tab strip keeps its
-active item visible, every new asset loads, paused navigation remains usable, and
-repeated station changes produced no runtime or resize warnings. The original
-Recollect flip and Saunum fan controls still work; the guitar phone fits above the
-console. Portrait overview framing now shows the complete bench, and the
-landscape introduction sits beside the scene so it cannot cover the new hotspots.
-The separate FranIQ gallery details open at every tested width. Keyboard focus
-moves from hotspots to their navigation tab, and Tab/Enter reaches the next
-station. TypeScript, all 12 isolated tests, and the production build pass; the
-existing Browserslist and bundle-size warnings remain.
 
 The Guitar Rudiments addition passed TypeScript, all 12 isolated regression tests, and the production build on November 1, 2026. Chrome checks covered the fifth camera stop, the original native screenshot, explicit chord playback, and paused navigation. Actual 320×568, 390×844, and 844×390 frames had no horizontal overflow, clipped controls, or resize errors. Every navigation target is at least 47 pixels wide at 320px. The app screenshot and icon hashes match their source files. System reduced-motion behavior uses the existing shared provider and was reviewed in code without changing the OS preference. No backend or infrastructure settings changed.
 
