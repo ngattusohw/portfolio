@@ -1,6 +1,6 @@
 # Workshop product assets
 
-Watchpoint, Somethings, and Guitar Rudiments use original product imagery. At the owner’s
+Watchpoint, Somethings, Guitar Rudiments, Persona, GetWedded, and FranIQ use original product imagery. At the owner’s
 explicit request, Recollect AI and Better Saunum restore the earlier interactive
 portfolio illustrations from commit `10a14b2`. No new product imagery was
 generated for this correction. The conceptual room artwork is documented in
@@ -9,7 +9,7 @@ generated for this correction. The conceptual room artwork is documented in
 `WorkshopProjectVisuals.tsx` owns the image displays and delegates the restored
 demos to `WorkshopLegacyVisuals.tsx`. These screens are decorative. The stationary
 panel provides readable descriptions, actions, state announcements, and full-image
-links for the three screenshot stations. Nothing operates a real product account
+links to the original images for all six asset-based stations. Nothing operates a real product account
 or device.
 
 ## Watchpoint
@@ -120,3 +120,63 @@ or device.
   screenshot framing, card/fan states, motion pause, and repeated station changes
   without resize warnings. TypeScript, all 12 isolated tests, and production build
   also passed. See `retro-futurist.md` for the validation record.
+
+## Persona, GetWedded, and FranIQ (stations six through eight)
+
+Added November 1, 2026. No new product imagery was generated. The cork board, book,
+and clipboard are CSS scene props around original assets, not recreated app UI.
+
+### Persona
+
+- Product and public creative gallery: <https://personaapp.ai/>.
+- `persona-nutrition.webp` and `persona-haircare.webp` are unchanged **800 × 1000**
+  originals from `persona-ai/apps/marketing/assets/ads/bar-forget-cheat-days.webp`
+  and `glass-forget-frizz.webp`, twice the resolution of the existing gallery
+  thumbnails. The wordmark is the original `persona-lockup-horizontal-1c-forest.svg`.
+- Both complete prints appear on a cork board. An explicit action changes which
+  creative is foregrounded; the image link and screen-reader announcement follow it.
+- Description follows the public site's research → personas → creative → review flow.
+
+### GetWedded / Wedded
+
+- Product: <https://getwedded.ai/>. The product itself is branded **Wedded**.
+- `wedded-garden.jpg` and `wedded-hilltop.jpg` are unchanged `castle-gardens.jpg`
+  (**1200 × 900**) and `estate-hilltop.jpg` (**1200 × 898**) from
+  `wedding-ai/apps/web/public/anon/`. The wordmark is the original
+  `apps/web/public/brand/wordmark-ink.svg`.
+- The source README and manifest identify these as the product's own generated
+  illustrations of fictional settings. They are not photographs of real venues
+  or Nick's wedding. The source label on the portfolio makes that distinction.
+- The book lifts from the table when selected and turns between the two original illustrations. Its title and swatches
+  are decorative portfolio copy. No private signed-in wedding data is used.
+- Venue discovery, outreach, follow-ups, and tour coordination are already
+  verified on Collect's public portfolio: <https://collectsoftware.org/>.
+
+### FranIQ
+
+- Official product page: <https://www.franchiselawsolutions.com/franiq>.
+- `franiq-compliance.png` is the public **1464 × 1596** product hero retrieved from
+  <https://internicola.imgix.net/FranIQ-Franchise-Compliance-Infrastructure.png?auto=format&fit=max&w=1600&q=95>.
+- The alternate is the existing unchanged **800 × 480**
+  `/images/projects/collect/franiq-dashboard.png` from Collect Software.
+- A clipboard displays the full original artwork with sample-data attribution.
+  The reveal action switches to the original dashboard composition; neither is
+  presented as live client data or a live compliance system.
+- FranIQ gets its own project entry; the reviewed Internicola Law Firm entry is
+  preserved. Features and attribution follow the official product page.
+
+### Expanded tour
+
+- Camera stops are evenly distributed inside the native scroll range, with
+  overview and final resting intervals. The tour height derives from the number
+  of stations. Every station is reachable by scrolling or direct navigation.
+- The tab strip has horizontal overflow on small screens, a visible swipe hint,
+  and minimum 92 × 46 pixel tabs. Active-tab centering scrolls only the strip.
+- New paper transitions use the same motion preference as existing displays;
+  paused, reduced-motion, hidden-tab, and offscreen behavior is preserved.
+
+- Browser verification: 320×568, 390×844, 844×390, and 1024×768 frames had
+  no page overflow, broken workshop assets, clipped new-station artwork, or
+  runtime/resize errors. Original card/fan interactions and guitar framing were
+  checked after expanding the navigation. The FranIQ details modal opens with
+  its source attribution at every tested size.

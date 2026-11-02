@@ -62,6 +62,179 @@
   left: -6.81%;
   transform: translateY(-27.15%);
 }
+
+/* Original ad prints clipped to a small cork board. The active creative moves
+   to the front; both complete product assets retain their 4:5 proportions. */
+.workshop-visual--persona {
+  overflow: visible;
+  background: #aa8258;
+  background-image: radial-gradient(#72543688 0.6px, transparent 0.8px);
+  background-size: 3px 3px;
+  border: 5px solid #624631;
+  box-shadow: inset 0 0 10px #4f311f66, 3px 5px 6px #0006;
+}
+.workshop-pinboard-brand {
+  position: absolute;
+  left: 4%;
+  top: 4%;
+  width: 52%;
+  padding: 3% 5%;
+  background: #efe8cd;
+  transform: rotate(-3deg);
+  box-shadow: 1px 2px 2px #0004;
+}
+.workshop-pinboard-brand img { width: 100%; height: auto; }
+.workshop-pinboard-brand span {
+  display: block;
+  margin-top: 5%;
+  font: 500 0.29cqw/1.4 var(--folio-mono);
+  color: #26432c;
+  letter-spacing: 0.07em;
+}
+.workshop-visual--persona .workshop-product-image {
+  top: 22%;
+  left: 8%;
+  width: 47%;
+  height: 70%;
+  object-fit: contain;
+  background: #f3ecd6;
+  padding: 2%;
+  transform: rotate(-7deg);
+  transform-origin: 50% 7%;
+  opacity: 1;
+  z-index: 2;
+  box-shadow: 2px 4px 5px #0006;
+}
+.workshop-visual--persona .workshop-product-image--alternate {
+  left: 47%;
+  top: 15%;
+  transform: rotate(8deg) scale(0.88);
+  z-index: 1;
+}
+.workshop-visual--persona[data-alternate="yes"] .workshop-product-image--primary {
+  transform: rotate(-10deg) scale(0.88);
+  opacity: 1;
+  z-index: 1;
+}
+.workshop-visual--persona[data-alternate="yes"] .workshop-product-image--alternate {
+  transform: rotate(3deg) scale(1.08);
+  z-index: 2;
+}
+.workshop-visual--persona[data-motion="on"] .workshop-product-image {
+  transition: transform 650ms cubic-bezier(0.2, 0.7, 0.25, 1);
+}
+.workshop-paper-pin {
+  position: absolute;
+  right: 18%;
+  top: 10%;
+  width: 4%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, #e8c0ac, #9d3f32 55%, #592619);
+  box-shadow: 1px 2px 2px #0008;
+  z-index: 3;
+}
+
+/* A small open inspiration book. These are Wedded's own illustrative venue
+   assets, presented as paper pages, not a recreation of its app interface. */
+.workshop-visual--wedded {
+  overflow: visible;
+  background: linear-gradient(90deg, #f0e4d5, #fff6e8 45%, #c4b8a6 50%, #fff9ed 54%, #ece1d1);
+  border: 3px solid #693d41;
+  border-radius: 2px 8px 8px 2px;
+  box-shadow: 0 3px 0 #cabb9f, 0 5px 0 #694947, 4px 9px 8px #0007;
+}
+.workshop-book-title {
+  position: absolute;
+  inset: 12% 56% 10% 6%;
+  color: #563940;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.workshop-book-title > img { width: 85%; height: auto; }
+.workshop-book-title > span {
+  margin-top: auto;
+  font: italic 400 0.9cqw/1.15 Georgia, serif;
+  letter-spacing: -0.03em;
+}
+.workshop-book-title small {
+  margin-top: auto;
+  font: 500 0.32cqw/1.4 var(--folio-mono);
+  letter-spacing: 0.08em;
+}
+.workshop-book-swatches { display: flex; gap: 0.3cqw; margin: 8% 0; }
+.workshop-book-swatches i { width: 0.8cqw; aspect-ratio: 1; background: #748773; border-radius: 50%; }
+.workshop-book-swatches i:nth-child(2) { background: #c7a08d; }
+.workshop-book-swatches i:nth-child(3) { background: #bfa76e; }
+.workshop-visual--wedded .workshop-product-image {
+  top: 15%;
+  left: 53%;
+  width: 43%;
+  height: 70%;
+  object-fit: contain;
+  background: #eadbc6;
+  box-shadow: 0 1px 3px #462d2438;
+  transform-origin: left center;
+  transform: perspective(600px) rotateY(0);
+}
+.workshop-visual--wedded[data-motion="on"] .workshop-product-image {
+  transition: opacity 500ms ease, transform 650ms ease;
+}
+.workshop-visual--wedded[data-alternate="yes"] .workshop-product-image--primary,
+.workshop-visual--wedded[data-alternate="no"] .workshop-product-image--alternate {
+  transform: perspective(600px) rotateY(-85deg);
+}
+.workshop-book-binding {
+  position: absolute;
+  top: 0;
+  bottom: -10%;
+  left: 49%;
+  width: 2%;
+  background: #a24c5d;
+  box-shadow: 1px 0 3px #58332e55;
+}
+
+/* Official FranIQ artwork on a wall-mounted clipboard. */
+.workshop-visual--franiq {
+  overflow: visible;
+  padding: 9% 5% 5%;
+  background: #513e28;
+  border: 2px solid #9d8057;
+  border-radius: 4%;
+  box-shadow: 3px 5px 7px #0008;
+}
+.workshop-visual--franiq .workshop-product-image {
+  left: 5%;
+  top: 10%;
+  width: 90%;
+  height: 85%;
+  object-fit: contain;
+  background: #f4f3ef;
+  box-shadow: 1px 2px 2px #0005;
+  transform-origin: top center;
+}
+.workshop-visual--franiq[data-motion="on"] .workshop-product-image {
+  transition: opacity 400ms ease, transform 550ms ease;
+}
+.workshop-visual--franiq[data-alternate="yes"] .workshop-product-image--primary {
+  transform: rotate(-7deg) translateX(-8%);
+}
+.workshop-visual--franiq[data-alternate="no"] .workshop-product-image--alternate {
+  transform: translateY(4%);
+}
+.workshop-clipboard-clip {
+  position: absolute;
+  z-index: 3;
+  left: 30%;
+  top: -3%;
+  width: 40%;
+  height: 12%;
+  border: 1px solid #9b9d91;
+  border-radius: 4px;
+  background: linear-gradient(160deg, #d2d1c7, #646b65 48%, #c2c4b8 60%, #62675f);
+  box-shadow: 0 2px 3px #0006;
+}
 @media (prefers-reduced-motion: reduce) {
   .workshop-visual .workshop-product-image {
     transition: none !important;
