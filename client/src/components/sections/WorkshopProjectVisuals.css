@@ -43,6 +43,15 @@
   background: #101014;
 }
 
+/* The complete native capture, including its original iPhone status bar. */
+.workshop-visual--guitar {
+  background: #f4f1ea;
+}
+.workshop-visual--guitar .workshop-product-image {
+  height: 100%;
+  object-fit: contain;
+}
+
 /* Viewport into the lossless original: exclude the promotional headline and
    outer phone frame, preserving the app artwork at its native aspect ratio. */
 .workshop-visual--somethings {

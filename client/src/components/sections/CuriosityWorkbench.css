@@ -1,7 +1,7 @@
 /* One continuous photographic room, explored with a native-scroll camera. */
 .workshop-tour {
   position: relative;
-  height: 510svh;
+  height: 610svh;
   background: #151714;
   color: #f5f0e6;
 }
@@ -74,11 +74,13 @@
     inset 0 0 0 1px #d5d2bf80;
 }
 .workshop-project-screen--watchpoint,
-.workshop-project-screen--somethings {
+.workshop-project-screen--somethings,
+.workshop-project-screen--guitar {
   filter: none !important;
 }
 .workshop-project-screen--watchpoint .workshop-glass,
-.workshop-project-screen--somethings .workshop-glass {
+.workshop-project-screen--somethings .workshop-glass,
+.workshop-project-screen--guitar .workshop-glass {
   display: none;
 }
 .workshop-project-screen--somethings .workshop-visual {
@@ -113,6 +115,100 @@
   height: 8.9%;
   transform: skewY(3deg);
   transform-origin: top left;
+}
+
+/* A second, distinct phone rests on a practice amp beside the guitar. */
+.workshop-project-screen--guitar {
+  left: 81.15%;
+  top: 53.25%;
+  width: 6.35%;
+  height: 24.5%;
+  padding: 0.28%;
+  background: linear-gradient(110deg, #9d9386, #252722 9%, #10120f 90%, #756d61);
+  border-radius: 12% / 5.5%;
+  overflow: visible;
+  transform: rotate(4deg);
+  transform-origin: 50% 100%;
+  box-shadow: 3px 2px 0 #191b17, 8px 7px 10px #0008, inset 0 0 0 1px #c7c0b54d;
+}
+.workshop-project-screen--guitar .workshop-visual {
+  border-radius: 9% / 4%;
+}
+.workshop-guitar {
+  position: absolute;
+  left: 83.3%;
+  top: 18%;
+  width: 17%;
+  transform: rotate(-10deg);
+  transform-origin: 50% 100%;
+  pointer-events: none;
+}
+.workshop-guitar > img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: brightness(0.79) saturate(0.78) drop-shadow(8px 5px 5px #080b0a99);
+}
+.workshop-guitar-floor-shadow {
+  position: absolute;
+  inset: 94% -8% -3%;
+  border-radius: 50%;
+  background: #080b08a6;
+  filter: blur(8px);
+}
+.workshop-guitar-strings {
+  position: absolute;
+  left: 44.6%;
+  right: 44.5%;
+  top: 16%;
+  bottom: 20.6%;
+  display: flex;
+  justify-content: space-between;
+  transform: skewX(-0.1deg);
+  opacity: 0;
+}
+.workshop-guitar-strings i {
+  display: block;
+  width: 1px;
+  height: 100%;
+  background: #ead5a0;
+  box-shadow: 0 0 2px #ffe7af;
+}
+.workshop-guitar[data-strumming="yes"] .workshop-guitar-strings {
+  opacity: 0.8;
+}
+.workshop-guitar[data-strumming="yes"] .workshop-guitar-strings i {
+  animation: workshop-string-pluck 90ms ease-in-out alternate infinite;
+}
+.workshop-guitar-strings i:nth-child(even) { animation-delay: -45ms !important; }
+@keyframes workshop-string-pluck {
+  from { transform: translateX(-1px); }
+  to { transform: translateX(1px); }
+}
+.workshop-guitar-amp {
+  position: absolute;
+  left: 77.7%;
+  top: 77.7%;
+  width: 12.4%;
+  height: 15.6%;
+  padding: 0.75%;
+  border: 3px solid #211e17;
+  border-radius: 7% / 10%;
+  background: repeating-linear-gradient(0deg, #2c2b24 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, #3d392c 0 1px, #161a16 1px 3px);
+  box-shadow: inset 0 0 0 5px #383327, inset 0 0 14px #0a0d0a, 6px 8px 10px #0009;
+  transform: skewY(2deg);
+  pointer-events: none;
+}
+.workshop-guitar-amp span {
+  display: block;
+  padding: 2% 0 5%;
+  color: #ddd1ae;
+  font: 500 clamp(4px, 0.52vw, 9px) var(--folio-mono);
+  letter-spacing: 0.08em;
+  text-align: center;
+  background: #26251e;
 }
 .workshop-glass {
   position: absolute;
@@ -357,7 +453,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 8px 24px;
+    padding: 8px 17px;
   border-radius: 6px;
   font: 400 11px/1.4 var(--folio-display);
   color: #c2c6b7;
@@ -426,13 +522,13 @@
     transform: translateY(4px);
   }
 }
-@media (max-width: 1000px) and (min-width: 901px) {
+@media (max-width: 1200px) and (min-width: 901px) {
   .workshop-navigation > button {
-    padding-inline: 17px;
-    gap: 8px;
+    padding-inline: 11px;
+    gap: 6px;
   }
   .workshop-scroll-hint {
-    padding-inline: 10px;
+    display: none;
   }
   .workshop-project-story {
     padding: 24px;
@@ -474,7 +570,7 @@
 }
 @media (max-width: 900px) {
   .workshop-tour {
-    height: 510svh;
+    height: 610svh;
   }
   .workshop-stage {
     min-height: 0;
@@ -595,6 +691,9 @@
   }
   .workshop-mobile-label {
     display: inline;
+  }
+  .workshop-nav-full-title {
+    display: none;
   }
   .workshop-nav-number {
     font-size: 7px;
@@ -782,6 +881,9 @@
   .workshop-mobile-label {
     display: inline;
   }
+  .workshop-nav-full-title {
+    display: none;
+  }
   .workshop-nav-number {
     font-size: 7px;
   }
@@ -827,7 +929,7 @@
     font-size: 8px;
   }
   .workshop-navigation > button:first-child {
-    flex: 0.8;
+    flex: 1;
   }
   .workshop-navigation > button[aria-pressed="true"]::after {
     left: 5px;

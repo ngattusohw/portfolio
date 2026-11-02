@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"
+  style="--brand-paper: #F7F7F5; --brand-white: #FFFFFF; --brand-charcoal: #191B18; --brand-red: #B82D24;"
+  role="img" aria-labelledby="title description">
+  <title id="title">Guitar Rudiments</title>
+  <desc id="description">Six charcoal guitar strings and three fret bars on white, with two red finger positions.</desc>
+  <!-- Palette constants above and geometry below are the editable asset source.
+       scripts/generate-brand-assets.py renders this SVG subset to opaque RGB PNGs.
+       The splash variant replaces the white background with brand-paper. -->
+  <rect id="background" x="0" y="0" width="1024" height="1024" fill="var(--brand-white)" />
+  <line x1="232" y1="176" x2="232" y2="848" stroke="var(--brand-charcoal)" stroke-width="12" stroke-linecap="round" />
+  <line x1="344" y1="176" x2="344" y2="848" stroke="var(--brand-charcoal)" stroke-width="12" stroke-linecap="round" />
+  <line x1="456" y1="176" x2="456" y2="848" stroke="var(--brand-charcoal)" stroke-width="12" stroke-linecap="round" />
+  <line x1="568" y1="176" x2="568" y2="848" stroke="var(--brand-charcoal)" stroke-width="12" stroke-linecap="round" />
+  <line x1="680" y1="176" x2="680" y2="848" stroke="var(--brand-charcoal)" stroke-width="12" stroke-linecap="round" />
+  <line x1="792" y1="176" x2="792" y2="848" stroke="var(--brand-charcoal)" stroke-width="12" stroke-linecap="round" />
+  <line x1="176" y1="304" x2="848" y2="304" stroke="var(--brand-charcoal)" stroke-width="12" stroke-linecap="round" />
+  <line x1="176" y1="512" x2="848" y2="512" stroke="var(--brand-charcoal)" stroke-width="12" stroke-linecap="round" />
+  <line x1="176" y1="720" x2="848" y2="720" stroke="var(--brand-charcoal)" stroke-width="12" stroke-linecap="round" />
+  <circle cx="456" cy="408" r="44" fill="var(--brand-red)" />
+  <circle cx="680" cy="616" r="44" fill="var(--brand-red)" />
+</svg>

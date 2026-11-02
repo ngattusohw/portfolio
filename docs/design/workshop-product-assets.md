@@ -1,6 +1,6 @@
 # Workshop product assets
 
-Watchpoint and Somethings use original public product imagery. At the owner’s
+Watchpoint, Somethings, and Guitar Rudiments use original product imagery. At the owner’s
 explicit request, Recollect AI and Better Saunum restore the earlier interactive
 portfolio illustrations from commit `10a14b2`. No new product imagery was
 generated for this correction. The conceptual room artwork is documented in
@@ -9,7 +9,7 @@ generated for this correction. The conceptual room artwork is documented in
 `WorkshopProjectVisuals.tsx` owns the image displays and delegates the restored
 demos to `WorkshopLegacyVisuals.tsx`. These screens are decorative. The stationary
 panel provides readable descriptions, actions, state announcements, and full-image
-links for the two screenshot stations. Nothing operates a real product account
+links for the three screenshot stations. Nothing operates a real product account
 or device.
 
 ## Watchpoint
@@ -76,7 +76,38 @@ or device.
   sauna data. Those screenshot crops are no longer used by the workshop.
 - Related technical article: <https://nickgattuso.com/blog/building-better-saunum>.
 
-## Motion and accessibility
+## Guitar Rudiments (fifth station)
+
+- Native app capture: `client/public/images/workshop/products/guitar-rudiments-home.jpg`.
+  Copied unchanged from `learn-guitar/docs/app-store/screenshots/iphone/01-practice-home.jpg`:
+  **1206 × 2622**, captured November 1, 2026 on an isolated iPhone 16 Pro simulator
+  from source commit `638b4f5694e1a8ebd212e248825b2666db0e5e9d`. It contains no
+  fabricated practice results. The complete screenshot fits inside a separate
+  phone resting on a small practice amp beside the bench.
+- Original product mark: `client/public/images/projects/guitar-rudiments/icon.svg`,
+  copied unchanged from `learn-guitar/assets/icon.svg` for the project details.
+- Decorative guitar: `client/public/images/workshop/acoustic-guitar.webp`, converted
+  at quality 92 from the **1194 × 2961** transparent [PurePNG guitar photograph](https://purepng.com/photo/10674/objects-acoustic-guitar).
+  Source uploader: LPuo. The source page identifies it as CC0, free for commercial
+  use with no attribution required. It is stock scene decoration, not a photograph
+  documented as Nick’s own instrument. Transparency and proportions are preserved.
+- Source PNG:
+  <https://purepng.com/public/uploads/large/purepng.com-acoustic-guitarguitarmusicalinstrumentstringacoustic-guitarelectrical-14215265368472bdsf.png>.
+- Product description is grounded in `learn-guitar/README.md` and its public
+  [information page](https://guitar-rudiments.netlify.app/support.html). The native
+  app was awaiting App Store review at the time of this addition. Do not imply
+  that the App Store release is available until verified.
+- Links target the [browser app](https://guitar-rudiments.netlify.app/), whose home
+  and tuner screens were verified in the existing Chrome tab. An additional tab
+  displayed a practice-storage startup error while the existing tab continued to
+  work; concurrent-tab storage behavior was not diagnosed or changed here. The
+  screenshot remains the original native capture.
+- “Strum the guitar · sound” explicitly starts a short synthesized E minor chord
+  and string vibration. This is a portfolio interaction, not a recording or app
+  screenshot animation. There is no autoplay, microphone access, or external audio
+  request. Playback stops on station exit, hidden tab, completion, or unmount.
+
+## Shared motion and accessibility
 
 - The camera retains native document scrolling and the existing pause,
   reduced-motion, hidden-tab, and offscreen behavior.
