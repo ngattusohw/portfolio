@@ -1,603 +1,154 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  ArrowDown,
-  ArrowRight,
-  ArrowUpRight,
-  Fan,
-  Guitar,
-  Maximize2,
-  RotateCcw,
-} from "lucide-react";
-import { motion, useInView, useMotionValue, useTransform } from "framer-motion";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Fan, Guitar, RotateCcw } from "lucide-react";
 import { usePortfolioMotion } from "@/hooks/usePortfolioMotion";
 import { useGuitarStrum } from "@/hooks/useGuitarStrum";
-import {
-  WorkshopProjectVisual,
-  workshopAssets,
-  type WorkshopStation,
-} from "./WorkshopProjectVisuals";
+import { WorkshopProjectVisual, workshopAssets, type WorkshopStation } from "./WorkshopProjectVisuals";
+import { tourPose, tourStops, type WorkshopFrame } from "./workshop3d/tour";
 import "./CuriosityWorkbench.css";
 
-const stations = [
-  {
-    id: "watchpoint" as WorkshopStation,
-    title: "Watchpoint",
-    theme: "01 / Observability",
-    point: { x: 0.256, y: 0.339 },
-    marker: { x: 0.256, y: 0.51 },
-    zoom: 2.6,
-    mobileZoom: 3.3,
-    screenHeight: 0.1915,
-    description:
-      "A clearer view of the systems behind a product. Watchpoint brings service health, errors, analytics, and custom metrics into one dashboard.",
-    href: "https://watchpoint.dev/",
-    link: "Explore Watchpoint",
-  },
-  {
-    id: "somethings" as WorkshopStation,
-    title: "Somethings",
-    theme: "02 / People",
-    point: { x: 0.384, y: 0.5 },
-    marker: { x: 0.384, y: 0.63 },
-    zoom: 4.2,
-    mobileZoom: 7,
-    screenHeight: 0.17,
-    description:
-      "Technology should bring us closer to a real human. I lead engineering at Somethings, connecting young people with peer support.",
-    href: "https://www.somethings.com/",
-    link: "Meet Somethings",
-  },
-  {
-    id: "remember" as WorkshopStation,
-    title: "Recollect AI",
-    theme: "03 / Learning",
-    point: { x: 0.515, y: 0.438 },
-    marker: { x: 0.515, y: 0.58 },
-    zoom: 3.5,
-    mobileZoom: 4.7,
-    screenHeight: 0.121,
-    description:
-      "A little curiosity, worth keeping. AI-assisted flashcards and spaced repetition help make room for what you want to remember.",
-    href: "https://recollect-ai.netlify.app/",
-    link: "Explore Recollect AI · beta",
-  },
-  {
-    id: "tinker" as WorkshopStation,
-    title: "Better Saunum",
-    theme: "04 / Tinkering",
-    point: { x: 0.741, y: 0.443 },
-    marker: { x: 0.77, y: 0.59 },
-    zoom: 3.15,
-    mobileZoom: 4.1,
-    screenHeight: 0.089,
-    description:
-      "My sauna hid the temperature when it was off. So I built an app with temperature history, fan controls, and a little less friction.",
-    href: "/blog/building-better-saunum",
-    link: "Read the build story",
-  },
-  {
-    id: "guitar" as WorkshopStation,
-    title: "Guitar Rudiments",
-    theme: "05 / Practice",
-    point: { x: 0.862, y: 0.655 },
-    marker: { x: 0.927, y: 0.675 },
-    zoom: 2.7,
-    mobileZoom: 5.8,
-    screenHeight: 0.245,
-    description:
-      "A little practice, a little progress. I built Guitar Rudiments for focused sessions: guided drills, chord loops, a metronome, a tuner, and a practice journal.",
-    href: "https://guitar-rudiments.netlify.app/",
-    link: "Open Guitar Rudiments",
-  },
+const stations: {id: WorkshopStation; title: string; theme: string; heading: string; description: string; note: string; href: string; link: string}[] = [
+  { id: "watchpoint", title: "Watchpoint", theme: "01 / A CLEARER PICTURE", heading: "See the whole system.", description: "The services, the errors, the signals that matter. Watchpoint brings the moving parts of a product into one clear view.", note: "Observability, made approachable.", href: "https://watchpoint.dev/", link: "Explore Watchpoint" },
+  { id: "somethings", title: "Somethings", theme: "02 / A HUMAN CONNECTION", heading: "Someone in your corner.", description: "I lead engineering at Somethings, where technology helps young people connect with a real peer mentor. The important part is the person on the other side.", note: "Building for people, with people.", href: "https://www.somethings.com/", link: "Meet Somethings" },
+  { id: "remember", title: "Recollect AI", theme: "03 / A LITTLE CURIOSITY", heading: "Make room for what sticks.", description: "An interesting thought deserves another visit. AI-assisted flashcards and spaced repetition turn small moments of curiosity into lasting knowledge.", note: "A little reminder. A reason to return.", href: "https://recollect-ai.netlify.app/", link: "Explore Recollect AI · beta" },
+  { id: "tinker", title: "Better Saunum", theme: "04 / A REASON TO TINKER", heading: "It started with a missing temperature.", description: "My sauna hid its temperature when it was off. So I built an app with temperature history, fan controls, and the information I wanted to see all along.", note: "An everyday frustration, turned into a build.", href: "/blog/building-better-saunum", link: "Read the build story" },
+  { id: "guitar", title: "Guitar Rudiments", theme: "05 / A DAILY PRACTICE", heading: "A little better, every day.", description: "A guitar, a few focused minutes, and something to work on. I built Guitar Rudiments for guided drills, chord loops, a metronome, a tuner, and a practice journal.", note: "Software for the things I keep coming back to.", href: "https://guitar-rudiments.netlify.app/", link: "Open Guitar Rudiments" },
 ];
-const stops = [0, ...stations.map((_, index) => 0.2 + index * 0.19)];
-const frames = [
-  { at: 0, pose: 0 },
-  { at: 0.045, pose: 0 },
-  ...stops.slice(1).flatMap((stop, index) => [
-    { at: stop - 0.035, pose: index + 1 },
-    { at: Math.min(1, stop + 0.035), pose: index + 1 },
-  ]),
-  { at: 1, pose: stations.length },
-];
-const clamp = (value: number, min: number, max: number) =>
-  Math.max(min, Math.min(max, value));
 
-/** Native document scroll drives one camera across a single, continuous room. */
 export default function CuriosityWorkbench() {
   const section = useRef<HTMLElement>(null);
-  const lens = useRef<HTMLDivElement>(null);
-  const consoleRef = useRef<HTMLDivElement>(null);
-  const nav = useRef<HTMLDivElement>(null);
-  const panel = useRef<HTMLDivElement>(null);
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const story = useRef<HTMLDivElement>(null);
+  const navigation = useRef<HTMLElement>(null);
+  const engine = useRef<{invalidate: () => void; dispose: () => void} | null>(null);
+  const goToRef = useRef<(index: number, focus?: boolean) => void>(() => {});
   const [active, setActive] = useState(0);
-  const activeRef = useRef(0);
-  const [size, setSize] = useState({ width: 1440, height: 900, mobile: false });
-  const [alternateViews, setAlternateViews] = useState<
-    Record<WorkshopStation, boolean>
-  >({ watchpoint: false, somethings: false, remember: false, tinker: false, guitar: false });
+  const [status, setStatus] = useState<"loading" | "ready" | "fallback">("loading");
+  const [alternate, setAlternate] = useState(false);
+  const [flipped, setFlipped] = useState(false);
+  const [fanOn, setFanOn] = useState(true);
   const [announcement, setAnnouncement] = useState("");
+  const [visible, setVisible] = useState(true);
   const { motionEnabled, paused, reducedMotion } = usePortfolioMotion();
-  const visible = useInView(section, { amount: 0 });
-  const cameraX = useMotionValue(0);
-  const cameraY = useMotionValue(0);
-  const cameraScale = useMotionValue(1);
-  const inverseScale = useTransform(cameraScale, (value) => 1 / value);
-  const sceneWidth = size.mobile
-    ? size.width * 1.45
-    : Math.max(size.width, (size.height * 1672) / 941);
-  const sceneHeight = (sceneWidth * 941) / 1672;
-  const current = active > 0 ? stations[active - 1] : null;
-  const { strum, strumming } = useGuitarStrum(current?.id === "guitar");
-  const animationEnabled = motionEnabled && visible;
-  const currentAssets = current ? workshopAssets[current.id] : null;
-  const alternate = current ? alternateViews[current.id] : false;
-  const currentImage = currentAssets
-    ? alternate && currentAssets.alternate
-      ? currentAssets.alternate
-      : currentAssets.primary
-    : null;
+  const { strum, strumming } = useGuitarStrum(active === 5);
+  const current = active ? stations[active - 1] : null;
+  const state = useRef<WorkshopFrame>({ progress: 0, active: 0, motion: motionEnabled, visible: true, fanOn: true, flipped: false, alternate: false, strumming: false, storyWidth: 400, storyHeight: 300, mobile: false });
+  Object.assign(state.current, { active, motion: motionEnabled, visible, fanOn, flipped, alternate, strumming });
+
+  const goTo = useCallback((index: number, focus = false) => {
+    const element = section.current;
+    const view = stage.current;
+    if (!element || !view) return;
+    if (focus) navigation.current?.querySelectorAll<HTMLButtonElement>("button")[index]?.focus({ preventScroll: true });
+    window.scrollTo({ top: window.scrollY + element.getBoundingClientRect().top + (element.offsetHeight - view.offsetHeight) * tourStops[index], behavior: paused || reducedMotion ? "instant" : "smooth" });
+  }, [paused, reducedMotion]);
+  goToRef.current = goTo;
 
   useEffect(() => {
-    const element = consoleRef.current;
-    if (!element) return;
-    let scheduled = 0;
-    let previousHeight = -1;
-    const measure = () => {
-      scheduled = 0;
-      const height = element.offsetHeight;
-      if (height === previousHeight) return;
-      previousHeight = height;
-      section.current?.style.setProperty(
-        "--workshop-console-height",
-        `${height}px`,
-      );
-    };
-    measure();
-    const observer = new ResizeObserver(() => {
-      if (!scheduled) scheduled = requestAnimationFrame(measure);
-    });
-    observer.observe(element);
-    return () => {
-      observer.disconnect();
-      cancelAnimationFrame(scheduled);
-    };
-  }, []);
-
-  useEffect(() => {
-    const element = lens.current;
-    if (!element) return;
-    let scheduled = 0;
-    const measure = () => {
-      scheduled = 0;
-      const next = {
-        width: element.clientWidth,
-        height: element.clientHeight,
-        mobile: window.matchMedia("(max-width: 900px)").matches,
-      };
-      setSize((previous) =>
-        previous.width === next.width &&
-        previous.height === next.height &&
-        previous.mobile === next.mobile
-          ? previous
-          : next,
-      );
-    };
-    measure();
-    const observer = new ResizeObserver(() => {
-      if (!scheduled) scheduled = requestAnimationFrame(measure);
-    });
-    observer.observe(element);
-    return () => {
-      observer.disconnect();
-      cancelAnimationFrame(scheduled);
-    };
+    let cancelled = false;
+    void import("./workshop3d/scene").then(({ createWorkshopScene }) => {
+      if (cancelled || !canvas.current) return;
+      engine.current = createWorkshopScene(canvas.current, () => state.current, index => goToRef.current(index, true), () => { if (!cancelled) setStatus("ready"); }, () => { if (!cancelled) setStatus("fallback"); });
+    }).catch(() => { if (!cancelled) setStatus("fallback"); });
+    return () => { cancelled = true; engine.current?.dispose(); engine.current = null; };
   }, []);
 
   useEffect(() => {
     const element = section.current;
     if (!element) return;
-    let scheduled = 0;
-    const pose = (index: number) => {
-      if (index === 0)
-        return {
-          scale: 1,
-          x: (size.width - sceneWidth) / 2,
-          y: size.mobile
-            ? size.height * 0.63 - sceneHeight / 2
-            : clamp(
-                size.height * 0.46 - sceneHeight * 0.41,
-                size.height - sceneHeight,
-                0,
-              ),
-        };
-      const station = stations[index - 1];
-      const screenHeight = station.screenHeight;
-      const isPhone = station.id === "somethings" || station.id === "guitar";
-      const scale = Math.min(
-        size.mobile ? station.mobileZoom : station.zoom,
-        (size.height *
-          (isPhone ? (size.mobile ? 0.82 : 0.54) : size.mobile ? 0.7 : 0.45)) /
-          (sceneHeight * screenHeight),
-      );
-      return {
-        scale,
-        x: clamp(
-          size.width * 0.5 -
-            (station.id === "guitar" && size.mobile ? 0.843 : station.point.x) * sceneWidth * scale,
-          Math.min(0, size.width - sceneWidth * scale),
-          0,
-        ),
-        y:
-          size.height *
-            (isPhone ? (size.mobile ? 0.5 : 0.4) : size.mobile ? 0.55 : 0.43) -
-          station.point.y * sceneHeight * scale,
-      };
-    };
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const element = section.current;
+    const view = stage.current;
+    if (!element || !view) return;
+    let request = 0;
     const update = () => {
-      scheduled = 0;
-      const travel = Math.max(
-        1,
-        element.offsetHeight -
-          (element.firstElementChild as HTMLElement).offsetHeight,
-      );
-      const progress = clamp(
-        -element.getBoundingClientRect().top / travel,
-        0,
-        1,
-      );
-      const nextActive = stops.reduce(
-        (nearest, stop, index) =>
-          Math.abs(progress - stop) < Math.abs(progress - stops[nearest]) ? index : nearest,
-        0,
-      );
-      if (nextActive !== activeRef.current) {
-        if (
-          panel.current?.contains(document.activeElement) ||
-          (nextActive !== 0 &&
-            document.activeElement?.closest(
-              ".workshop-overview, .workshop-hotspot",
-            ))
-        )
-          nav.current
-            ?.querySelectorAll<HTMLButtonElement>("button")
-            [nextActive]?.focus({ preventScroll: true });
-        activeRef.current = nextActive;
-        setActive(nextActive);
+      request = 0;
+      const progress = Math.max(0, Math.min(1, -element.getBoundingClientRect().top / Math.max(1, element.offsetHeight - view.offsetHeight)));
+      state.current.progress = progress;
+      const next = Math.round(tourPose(progress));
+      if (next !== state.current.active) {
+        const focused = document.activeElement;
+        if (focused instanceof HTMLElement && (story.current?.contains(focused) || focused.closest(".spatial-intro"))) navigation.current?.querySelectorAll<HTMLButtonElement>("button")[next]?.focus({ preventScroll: true });
+        state.current.active = next;
+        setActive(next);
         setAnnouncement("");
       }
-      // Paused/reduced-motion views change only at a station boundary, without travel.
-      if (!motionEnabled) {
-        const target = pose(nextActive);
-        cameraX.set(target.x);
-        cameraY.set(target.y);
-        cameraScale.set(target.scale);
-        return;
-      }
-      let segment = 0;
-      while (segment < frames.length - 2 && progress > frames[segment + 1].at)
-        segment++;
-      const from = frames[segment];
-      const to = frames[segment + 1];
-      const fraction = clamp((progress - from.at) / (to.at - from.at), 0, 1);
-      const eased = fraction * fraction * (3 - 2 * fraction);
-      const a = pose(from.pose);
-      const b = pose(to.pose);
-      cameraX.set(a.x + (b.x - a.x) * eased);
-      cameraY.set(a.y + (b.y - a.y) * eased);
-      cameraScale.set(a.scale + (b.scale - a.scale) * eased);
+      engine.current?.invalidate();
     };
-    const schedule = () => {
-      if (!scheduled) scheduled = requestAnimationFrame(update);
+    const schedule = () => { if (!request) request = requestAnimationFrame(update); };
+    const measure = () => {
+      state.current.mobile = window.matchMedia("(max-width: 760px)").matches;
+      state.current.storyWidth = story.current?.offsetWidth || 0;
+      state.current.storyHeight = story.current?.offsetHeight || 0;
+      update();
     };
-    update();
+    const resize = new ResizeObserver(measure);
+    resize.observe(view);
+    if (story.current) resize.observe(story.current);
+    measure();
     window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
-    return () => {
-      cancelAnimationFrame(scheduled);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-    };
-  }, [
-    size,
-    sceneWidth,
-    sceneHeight,
-    motionEnabled,
-    cameraX,
-    cameraY,
-    cameraScale,
-  ]);
+    window.addEventListener("resize", measure);
+    return () => { cancelAnimationFrame(request); resize.disconnect(); window.removeEventListener("scroll", schedule); window.removeEventListener("resize", measure); };
+  }, []);
 
-  const goTo = useCallback(
-    (index: number, focusNavigation = false) => {
-      const element = section.current;
-      if (!element) return;
-      if (focusNavigation)
-        nav.current
-          ?.querySelectorAll<HTMLButtonElement>("button")
-          [index]?.focus({ preventScroll: true });
-      const top = element.getBoundingClientRect().top + window.scrollY;
-      const travel =
-        element.offsetHeight -
-        (element.firstElementChild as HTMLElement).offsetHeight;
-      window.scrollTo({
-        top: top + travel * stops[index],
-        behavior: paused || reducedMotion ? "instant" : "smooth",
-      });
-    },
-    [paused, reducedMotion],
-  );
+  useEffect(() => { engine.current?.invalidate(); }, [active, alternate, flipped, fanOn, strumming, motionEnabled, visible, status]);
 
   const interact = async () => {
-    if (!current) return;
-    if (current.id === "guitar") {
-      const played = await strum();
-      setAnnouncement(played
-        ? "Playing an E minor chord. The guitar sound is a portfolio demo."
-        : "Sound is unavailable in this browser. You can still explore Guitar Rudiments.");
-      return;
-    }
-    setAlternateViews((views) => ({
-      ...views,
-      [current.id]: !views[current.id],
-    }));
-    setAnnouncement(
-      current.id === "remember"
-        ? alternate
-          ? "What makes an idea stick?"
-          : "Coming back to it."
-        : current.id === "tinker"
-          ? `Demo fan ${alternate ? "on" : "off"}. Temperature remains visible at 78 degrees Fahrenheit.`
-          : `${current.title}: ${alternate ? currentAssets?.primary.alt : currentAssets?.alternate?.alt}`,
-    );
+    if (current?.id === "somethings") { setAlternate(!alternate); setAnnouncement(alternate ? "Showing the original mentor screen." : "Showing the original chat screen."); }
+    if (current?.id === "remember") { setFlipped(!flipped); setAnnouncement(flipped ? "What makes an idea stick?" : "Coming back to it."); }
+    if (current?.id === "tinker") { setFanOn(!fanOn); setAnnouncement(`Demo fan ${fanOn ? "off" : "on"}. Temperature remains visible at 78 degrees Fahrenheit.`); }
+    if (current?.id === "guitar") { const played = await strum(); setAnnouncement(played ? "Playing an E minor chord. This sound is a portfolio demo." : "Sound is unavailable. You can still explore the app."); }
   };
+  const assets = current ? workshopAssets[current.id] : undefined;
+  const productImage = assets ? alternate && current?.id === "somethings" && assets.alternate ? assets.alternate : assets.primary : undefined;
+  const actionText = current?.id === "somethings" ? alternate ? "Meet the mentor" : "See the conversation" : current?.id === "remember" ? flipped ? "Turn the card back" : "Turn the card over" : current?.id === "tinker" ? fanOn ? "Turn the fan off" : "Turn the fan on" : "Strum the guitar · sound";
 
   return (
-    <section
-      id="hero"
-      ref={section}
-      className="workshop-tour"
-      aria-labelledby="hero-title"
-      data-station={active}
-    >
-      <div className="workshop-stage">
-        <div
-          className="workshop-lens"
-          ref={lens}
-          aria-label="A workshop with five interactive project stations"
-        >
-          <motion.div
-            className="workshop-world"
-            style={{
-              width: sceneWidth,
-              height: sceneHeight,
-              x: cameraX,
-              y: cameraY,
-              scale: cameraScale,
-            }}
-          >
-            <img
-              className="workshop-room"
-              src="/images/workshop/nicks-workshop.webp"
-              alt="A wood workbench with tools, a desktop monitor, a tablet and a handmade sauna controller. A phone sits on the table; a guitar and practice phone stand beside the bench."
-              width={1672}
-              height={941}
-              loading="eager"
-              decoding="async"
-            />
-            <div className="workshop-guitar-amp" aria-hidden="true">
-              <span>GUITAR RUDIMENTS</span>
-            </div>
-            <div
-              className="workshop-guitar"
-              data-strumming={strumming && animationEnabled ? "yes" : "no"}
-              aria-hidden="true"
-            >
-              <span className="workshop-guitar-floor-shadow" />
-              <img
-                src="/images/workshop/acoustic-guitar.webp"
-                alt=""
-                width={1194}
-                height={2961}
-                draggable={false}
-              />
-              <div className="workshop-guitar-strings">
-                {[0, 1, 2, 3, 4, 5].map((string) => <i key={string} />)}
-              </div>
-            </div>
-            {stations.map((station, index) => (
-              <div
-                key={station.id}
-                className={`workshop-project-screen workshop-project-screen--${station.id}`}
-                data-selected={active === index + 1 ? "yes" : "no"}
-              >
-                <WorkshopProjectVisual
-                  station={station.id}
-                  motionEnabled={animationEnabled}
-                  alternate={alternateViews[station.id]}
-                />
-                <span className="workshop-glass" />
-              </div>
-            ))}
-            {stations.map((station, index) => (
-              <motion.button
-                key={station.id}
-                className="workshop-hotspot"
-                style={{
-                  left: `${station.marker.x * 100}%`,
-                  top: `${station.marker.y * 100}%`,
-                  scale: inverseScale,
-                  x: "-50%",
-                  y: "-50%",
-                }}
-                type="button"
-                onClick={() => goTo(index + 1, true)}
-                tabIndex={active === 0 ? 0 : -1}
-                aria-hidden={active !== 0}
-                aria-label={`Explore ${station.title} on the workbench`}
-              >
-                <span className="workshop-hotspot-number">0{index + 1}</span>
-                <span className="workshop-hotspot-name">
-                  {station.title}
-                  <ArrowUpRight size={12} aria-hidden="true" />
-                </span>
-              </motion.button>
-            ))}
-          </motion.div>
-          <div className="workshop-vignette" aria-hidden="true" />
+    <section id="hero" ref={section} className="spatial-tour" aria-labelledby="hero-title" data-station={active} data-renderer={status}>
+      <div ref={stage} className="spatial-stage">
+        <div className="spatial-scene" role="img" aria-label="A three-dimensional workbench with Watchpoint, Somethings, Recollect AI, Better Saunum, and Guitar Rudiments. Explore each project using the controls below.">
+          <canvas ref={canvas} className="spatial-canvas" aria-hidden="true" />
+          {status !== "ready" && <div className="spatial-poster" aria-hidden="true">
+            {!current ? <img src="/images/workshop/nicks-workshop.webp" alt="" /> : <div className={`spatial-fallback-screen spatial-fallback-screen--${current.id}`}><WorkshopProjectVisual station={current.id} motionEnabled={motionEnabled && visible} alternate={current.id === "remember" ? flipped : current.id === "tinker" ? !fanOn : alternate} /></div>}
+          </div>}
         </div>
-
-        <div
-          className="workshop-overview"
-          data-visible={active === 0 ? "yes" : "no"}
-        >
-          <p className="workshop-eyebrow">
-            NICK GATTUSO III / ENGINEER, FOUNDER, TINKERER
-          </p>
-          <h1 id="hero-title">
-            Come take
-            <br />a closer look.
-          </h1>
-          <div className="workshop-overview-aside">
-            <p>
-              I build software, lead teams, and tinker until things work better.
-              Here’s a look around.
-            </p>
-            <button
-              type="button"
-              onClick={() => goTo(1, true)}
-              tabIndex={active === 0 ? 0 : -1}
-            >
-              Scroll to explore <ArrowDown size={17} aria-hidden="true" />
-            </button>
+        <div className="spatial-shade" aria-hidden="true" />
+        <div className="spatial-topline"><span><i /> NICK’S WORKSHOP</span><a href="#projects">All projects <ArrowUpRight size={12} aria-hidden="true" /></a></div>
+        <div className="spatial-intro" aria-hidden={active !== 0}>
+          <p className="spatial-eyebrow">ENGINEER. FOUNDER. CONSTANT TINKERER.</p>
+          <h1 id="hero-title">Always making<br /><em>something.</em></h1>
+          <p className="spatial-intro-copy">I build software, lead teams, and follow<br className="spatial-desktop-break" /> the things that make me curious.</p>
+          <button onClick={() => goTo(1, true)} tabIndex={active === 0 ? 0 : -1} className="spatial-explore">Come take a closer look <ArrowDown size={16} aria-hidden="true" /></button>
+        </div>
+        <div className="spatial-room-caption" aria-hidden={active !== 0}><span>FIVE PROJECTS. ONE WORKBENCH.</span><p>Scroll to look around.<br />Or pick something that catches your eye.</p></div>
+        <div ref={story} className="spatial-story" hidden={active === 0}>
+          <div key={current?.id} className="spatial-story-content">
+            <p className="spatial-eyebrow">{current?.theme}</p><h2>{current?.heading}</h2>
+            <p className="spatial-story-description">{current?.description}</p>
+            <div className="spatial-action-area">
+              {current?.id !== "watchpoint" && <button type="button" className="spatial-action" onClick={interact} aria-pressed={current?.id === "guitar" ? undefined : current?.id === "tinker" ? fanOn : current?.id === "remember" ? flipped : alternate}>
+                {current?.id === "guitar" ? <Guitar size={17} /> : current?.id === "tinker" ? <Fan size={17} /> : current?.id === "remember" ? <RotateCcw size={17} /> : <ArrowRight size={17} />}{actionText}
+              </button>}
+              <span className="spatial-source">{current?.id === "tinker" ? `INTERACTIVE DEMO · 78°F · HEATER OFF · FAN ${fanOn ? "ON" : "OFF"}` : current?.id === "remember" ? "INTERACTIVE PORTFOLIO DEMO" : assets?.sourceLabel}</span>
+            </div>
+            <a className="spatial-project-link" href={current?.href} {...(current?.href.startsWith("https") ? {target: "_blank", rel: "noopener noreferrer"} : {})}>{current?.link}<ArrowUpRight size={16} aria-hidden="true" /></a>
+            {productImage && <a className="spatial-original" href={productImage.src} target="_blank" rel="noopener noreferrer">View original screenshot <ArrowUpRight size={11} aria-hidden="true" /></a>}
+            <p className="spatial-note">{current?.note}</p>
           </div>
         </div>
-
-        <div className="workshop-topbar">
-          <span>{active === 0 ? "THE WORKBENCH" : current?.theme}</span>
-          <a href="#projects">
-            Skip to project list <ArrowUpRight size={13} aria-hidden="true" />
-          </a>
+        <div className="spatial-bottom">
+          <nav ref={navigation} className="spatial-navigation" aria-label="Explore the workshop">
+            <button onClick={() => goTo(0)} aria-current={active === 0 ? "step" : undefined} aria-label="Overview of the workbench"><span className="spatial-overview-icon">⌂</span><span className="spatial-nav-title">The workbench</span></button>
+            {stations.map((station, index) => <button key={station.id} onClick={() => goTo(index + 1)} aria-current={active === index + 1 ? "step" : undefined} aria-label={`Explore ${station.title}`}><span className="spatial-nav-number">0{index + 1}</span><span className="spatial-nav-title">{station.title}</span></button>)}
+          </nav>
+          <div className="spatial-step-controls"><button onClick={() => goTo(Math.max(0, active - 1))} disabled={active === 0} aria-label="Previous project"><ArrowLeft size={16} /></button><span>0{active}<i>/</i>05</span>{active < 5 ? <button onClick={() => goTo(active + 1)} aria-label="Next project"><ArrowRight size={16} /></button> : <a href="#projects" aria-label="Continue to the project list"><ArrowDown size={16} /></a>}</div>
         </div>
-
-        <div className="workshop-console" ref={consoleRef}>
-          <div
-            ref={panel}
-            className="workshop-project-story"
-            hidden={active === 0}
-          >
-            <div className="workshop-project-copy">
-              <p className="workshop-eyebrow">{current?.theme}</p>
-              <h2>{current?.title}</h2>
-              <p>{current?.description}</p>
-              <a
-                href={current?.href}
-                {...(current?.href.startsWith("https")
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
-              >
-                {current?.link}
-                <ArrowUpRight size={15} aria-hidden="true" />
-              </a>
-            </div>
-            <div className="workshop-project-action">
-              <span className="workshop-demo-label">
-                {current?.id === "remember"
-                  ? "PLAY WITH THE IDEA"
-                  : current?.id === "tinker"
-                    ? "INTERACTIVE DEMO · SAMPLE TEMPERATURE"
-                    : currentAssets?.sourceLabel}
-              </span>
-              {current?.id !== "watchpoint" && (
-                <button
-                  className="workshop-demo-button"
-                  type="button"
-                  onClick={interact}
-                  aria-pressed={
-                    current?.id === "guitar" ? undefined : current?.id === "tinker" ? !alternate : alternate
-                  }
-                >
-                  {current?.id === "guitar" ? (
-                    <Guitar size={17} aria-hidden="true" />
-                  ) : current?.id === "tinker" ? (
-                    <Fan size={17} aria-hidden="true" />
-                  ) : alternate || current?.id === "remember" ? (
-                    <RotateCcw size={17} aria-hidden="true" />
-                  ) : (
-                    <ArrowRight size={17} aria-hidden="true" />
-                  )}
-                  {current?.id === "guitar"
-                    ? "Strum the guitar · sound"
-                    : current?.id === "remember"
-                    ? alternate
-                      ? "Turn the card back"
-                      : "Turn the card over"
-                    : current?.id === "tinker"
-                      ? alternate
-                        ? "Turn demo fan on"
-                        : "Turn demo fan off"
-                      : alternate
-                        ? currentAssets?.alternateActionLabel
-                        : currentAssets?.actionLabel}
-                </button>
-              )}
-              {currentImage ? (
-                <a
-                  className="workshop-original-link"
-                  href={currentImage?.src}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View full screenshot{" "}
-                  <ArrowUpRight size={12} aria-hidden="true" />
-                </a>
-              ) : (
-                <p className="workshop-action-note">
-                  {current?.id === "remember"
-                    ? alternate
-                      ? "Coming back to it. That’s the idea."
-                      : "What makes an idea stick?"
-                    : `Sample: 78°F. Heater off. Fan ${alternate ? "off" : "on"}.`}
-                </p>
-              )}
-            </div>
-          </div>
-          <div
-            className="workshop-navigation"
-            ref={nav}
-            role="group"
-            aria-label="Explore the workshop"
-          >
-            <button
-              type="button"
-              onClick={() => goTo(0)}
-              aria-pressed={active === 0}
-            >
-              <Maximize2 size={15} aria-hidden="true" />
-              <span>The whole bench</span>
-              <span className="workshop-mobile-label">Overview</span>
-            </button>
-            {stations.map((station, index) => (
-              <button
-                key={station.id}
-                type="button"
-                onClick={() => goTo(index + 1)}
-                aria-pressed={active === index + 1}
-              >
-                <span className="workshop-nav-number">0{index + 1}</span>
-                <span className={station.id === "guitar" ? "workshop-nav-full-title" : undefined}>{station.title}</span>
-                {station.id === "guitar" && <span className="workshop-mobile-label">Guitar</span>}
-              </button>
-            ))}
-            <span className="workshop-scroll-hint">
-              <span>{String(active).padStart(2, "0")} / {String(stations.length).padStart(2, "0")}</span>
-              <ArrowDown size={15} aria-hidden="true" />
-            </span>
-          </div>
-        </div>
-        <span className="sr-only" role="status">
-          {announcement}
-        </span>
+        <span className="sr-only" role="status" aria-live="polite">{announcement}</span>
       </div>
     </section>
   );
